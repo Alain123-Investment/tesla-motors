@@ -3,209 +3,334 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Alain Investment – Urubuga rw'Gushora Imari</title>
+  <title>TESLA MOTORS - Investment Platform</title>
   <style>
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-      font-family: Arial, sans-serif;
-    }
-    body {
-      background: #f5f7fb;
-      color: #172033;
-      line-height: 1.6;
-    }
-    header {
-      background: #0b1736;
-      color: white;
-      padding: 18px 20px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-    header .logo {
-      font-size: 20px;
-      font-weight: bold;
-    }
-    .btn {
-      padding: 10px 18px;
-      border-radius: 6px;
-      text-decoration: none;
-      font-weight: bold;
-      display: inline-block;
-      cursor: pointer;
-    }
-    .btn-primary {
-      background: #10b981;
-      color: white;
-    }
-    .btn-outline {
-      border: 1px solid white;
-      color: white;
-    }
-    .hero {
-      background: #0b1736;
-      color: white;
-      padding: 60px 20px;
-      text-align: center;
-    }
-    .hero h1 {
-      font-size: 32px;
-      margin-bottom: 15px;
-    }
-    .hero p {
-      font-size: 16px;
-      color: #cbd5e1;
-      max-width: 600px;
-      margin: 0 auto 25px;
-    }
-    .section {
-      padding: 50px 20px;
-      max-width: 1100px;
-      margin: 0 auto;
-    }
-    .section-title {
-      text-align: center;
-      margin-bottom: 35px;
-      font-size: 24px;
-      color: #0b1736;
-    }
-    .cards {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-      gap: 20px;
-    }
-    .card {
-      background: white;
-      padding: 25px;
-      border-radius: 10px;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.05);
-      text-align: center;
-    }
-    .card .icon {
-      font-size: 35px;
-      margin-bottom: 10px;
-    }
-    .card h3 {
-      margin-bottom: 10px;
-      color: #0b1736;
-    }
-    /* Investment Plans Style */
-    .plan-card {
-      background: white;
-      border: 2px solid #e2e8f0;
-      border-radius: 12px;
-      padding: 30px 20px;
-      text-align: center;
-      transition: 0.3s;
-    }
-    .plan-card.popular {
-      border-color: #10b981;
-      position: relative;
-    }
-    .plan-card .price {
-      font-size: 26px;
-      font-weight: bold;
-      color: #10b981;
-      margin: 15px 0;
-    }
-    .payments {
-      background: #e2e8f0;
-      text-align: center;
-      padding: 25px;
-      border-radius: 8px;
-    }
-    footer {
-      background: #0b1736;
-      color: #94a3b8;
-      text-align: center;
-      padding: 20px;
-      margin-top: 40px;
-    }
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
+    body { background-color: #f2f4f8; color: #1e293b; display: flex; justify-content: center; }
+    .app-container { width: 100%; max-width: 480px; background: #f8fafc; min-height: 100vh; position: relative; padding-bottom: 70px; }
+
+    /* Header */
+    .brand-header { text-align: center; padding: 25px 15px 15px; }
+    .brand-logo { font-weight: 900; font-size: 22px; color: #1d4ed8; letter-spacing: 1px; display: flex; align-items: center; justify-content: center; gap: 8px; }
+    .brand-sub { font-size: 13px; color: #64748b; font-weight: 600; margin-top: 2px; }
+
+    /* Card Form Styles */
+    .auth-card { background: white; margin: 10px 16px; padding: 24px 20px; border-radius: 20px; box-shadow: 0 10px 25px -5px rgba(0,0,0,0.05); }
+    .auth-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+    .auth-tag { font-size: 11px; font-weight: 800; color: #2563eb; letter-spacing: 0.5px; }
+    .auth-title { font-size: 20px; font-weight: 800; color: #0f172a; margin-top: 2px; }
+    .auth-icon-badge { background: #dbeafe; width: 40px; height: 40px; border-radius: 12px; display: flex; align-items: center; justify-content: center; color: #2563eb; font-size: 18px; }
+
+    .form-group { margin-bottom: 16px; }
+    .form-label { font-size: 11px; font-weight: 800; color: #475569; letter-spacing: 0.5px; margin-bottom: 6px; display: block; }
+    .input-box { width: 100%; background: #f1f5f9; border: 1px solid #e2e8f0; border-radius: 14px; padding: 14px 16px; font-size: 14px; color: #0f172a; outline: none; transition: 0.2s; }
+    .input-box:focus { border-color: #2563eb; background: #fff; }
+
+    .btn-main { width: 100%; background: #1d4ed8; color: white; border: none; padding: 16px; border-radius: 14px; font-size: 16px; font-weight: 700; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; margin-top: 10px; }
+    .btn-main:active { opacity: 0.9; }
+
+    .features-row { display: flex; justify-content: space-around; background: #eff6ff; padding: 12px; border-radius: 14px; margin-top: 20px; }
+    .feature-item { text-align: center; font-size: 11px; font-weight: 700; color: #1e40af; }
+
+    .switch-auth { text-align: center; font-size: 13px; color: #64748b; margin-top: 18px; }
+    .switch-auth a { color: #1d4ed8; font-weight: 700; text-decoration: none; }
+
+    /* Modal / Popup */
+    .modal-overlay { position: fixed; inset: 0; background: rgba(15, 23, 42, 0.6); display: flex; align-items: center; justify-content: center; z-index: 100; padding: 20px; }
+    .modal-card { background: white; width: 100%; max-width: 360px; border-radius: 24px; padding: 24px; text-align: center; animation: popUp 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+    @keyframes popUp { from { transform: scale(0.8); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+    .badge-success { background: #dcfce7; color: #15803d; font-size: 11px; font-weight: 800; padding: 4px 12px; border-radius: 20px; display: inline-block; margin-bottom: 8px; }
+    .bonus-box { background: #f8fafc; border-radius: 16px; padding: 16px; margin: 15px 0; display: flex; justify-content: space-between; align-items: center; }
+    .bonus-amount { font-size: 22px; font-weight: 900; color: #1d4ed8; }
+
+    /* Dashboard Layout */
+    .dash-header { background: #1d4ed8; color: white; padding: 20px 20px 60px; border-bottom-left-radius: 24px; border-bottom-right-radius: 24px; }
+    .dash-user { display: flex; justify-content: space-between; align-items: center; }
+    .user-name { font-size: 18px; font-weight: 800; }
+    .user-phone { font-size: 12px; opacity: 0.8; }
+
+    .balance-card { background: white; margin: -40px 16px 15px; border-radius: 20px; padding: 20px; box-shadow: 0 10px 20px rgba(0,0,0,0.05); }
+    .balance-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; border-bottom: 1px solid #f1f5f9; padding-bottom: 15px; }
+    .bal-title { font-size: 11px; color: #64748b; font-weight: 700; }
+    .bal-num { font-size: 20px; font-weight: 900; color: #0f172a; margin-top: 4px; }
+    .bal-num span { font-size: 11px; color: #2563eb; }
+
+    .action-btns { display: flex; gap: 10px; margin-top: 15px; }
+    .btn-act { flex: 1; background: #eff6ff; border: none; padding: 10px; border-radius: 12px; font-weight: 700; color: #1d4ed8; font-size: 13px; cursor: pointer; }
+
+    /* Quick Menu 8 Items */
+    .grid-menu { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin: 0 16px 20px; }
+    .menu-item { background: white; padding: 15px 8px; border-radius: 16px; text-align: center; box-shadow: 0 2px 8px rgba(0,0,0,0.02); }
+    .menu-icon { font-size: 22px; margin-bottom: 6px; }
+    .menu-label { font-size: 11px; font-weight: 700; color: #334155; }
+
+    /* Tesla Vehicles Banner / Investment Products */
+    .tesla-section { margin: 0 16px 20px; }
+    .sec-title { font-size: 15px; font-weight: 800; margin-bottom: 12px; color: #0f172a; }
+    .tesla-card { background: white; border-radius: 18px; overflow: hidden; margin-bottom: 15px; box-shadow: 0 4px 12px rgba(0,0,0,0.03); }
+    .tesla-img { width: 100%; height: 160px; object-fit: cover; }
+    .tesla-info { padding: 15px; }
+    .tesla-name { font-size: 16px; font-weight: 800; color: #0f172a; }
+    .tesla-price { font-size: 18px; font-weight: 900; color: #1d4ed8; margin: 6px 0; }
+    .tesla-details { display: flex; justify-content: space-between; font-size: 12px; color: #64748b; font-weight: 600; margin-bottom: 12px; }
+
+    /* Bottom Navigation Bar */
+    .bottom-nav { position: fixed; bottom: 0; left: 50%; transform: translateX(-50%); width: 100%; max-width: 480px; background: white; border-top: 1px solid #e2e8f0; display: flex; justify-content: space-around; padding: 10px 0; z-index: 90; }
+    .nav-item { text-align: center; color: #94a3b8; font-size: 10px; font-weight: 700; text-decoration: none; }
+    .nav-item.active { color: #1d4ed8; }
+    .nav-icon { font-size: 20px; display: block; margin-bottom: 2px; }
   </style>
 </head>
 <body>
 
-  <header>
-    <div class="logo">Alain Investment</div>
-    <div>
-      <a href="#" class="btn btn-outline">Kwinjira</a>
+<div class="app-container">
+
+  <!-- PAGE 1: REGISTER (FUNGURA KONTI) -->
+  <div id="registerPage">
+    <div class="brand-header">
+      <div class="brand-logo">⚡ TESLA MOTORS</div>
+      <div class="brand-sub">Fungura Konti</div>
     </div>
-  </header>
 
-  <section class="hero">
-    <h1>Wubaka Ejo Hazaza Hwawe Mu By'Umutungo</h1>
-    <p>Urubuga rwa kijyambere rwo gushora imari mu buryo bwizeza umutekano no gukurikirana inyungu zawe munsi ku munsi.</p>
-    <a href="#" class="btn btn-primary">Tanga Tangira Ubu</a>
-  </section>
-
-  <!-- Igice cy'Impamvu zo gutangira -->
-  <section class="section">
-    <h2 class="section-title">Kuki Wahitamo Platform Yacu?</h2>
-    <div class="cards">
-      <div class="card">
-        <div class="icon">📊</div>
-        <h3>Kurikirana Inyungu</h3>
-        <p>Gukurikirana imari yawe n'inyungu ibyara buri munsi ukoresheje dashboard yoroshye.</p>
-      </div>
-      <div class="card">
-        <div class="icon">🔐</div>
-        <h3>Umutekano Wuzuye</h3>
-        <p>Ibitshorwa byawe n'amakuru yawe bibarizwa mu bubiko burinzwe mu buryo buhanitse.</p>
-      </div>
-      <div class="card">
-        <div class="icon">📈</div>
-        <h3>Gukuza Umutungo</h3>
-        <p>Panga ingamba z'imari yawe kandi ukurikire uko inyungutsira ku gihe giteganijwe.</p>
-      </div>
-    </div>
-  </section>
-
-  <!-- Igice cy'Ibyiciro by'Imari (Investment Plans) -->
-  <section class="section">
-    <h2 class="section-title">Ibyiciro zo Gushora Imari</h2>
-    <div class="cards">
-      <div class="plan-card">
-        <h3>Igice cy'Ibanze</h3>
-        <div class="price">10,000 RWF</div>
-        <p>Inyungu: 5% ku cyumweru</p>
-        <p>Ikipimo: Iminsi 30</p>
-        <br>
-        <a href="#" class="btn btn-primary">Shora Imari</a>
+    <div class="auth-card">
+      <div class="auth-header">
+        <div>
+          <div class="auth-tag">IYANDIKISHE</div>
+          <div class="auth-title">Kora Konti Nshya</div>
+        </div>
+        <div class="auth-icon-badge">👤</div>
       </div>
 
-      <div class="plan-card popular">
-        <h3>Igice cy'Akarusho</h3>
-        <div class="price">50,000 RWF</div>
-        <p>Inyungu: 12% ku cyumweru</p>
-        <p>Ikipimo: Iminsi 60</p>
-        <br>
-        <a href="#" class="btn btn-primary">Shora Imari</a>
+      <div class="form-group">
+        <label class="form-label">AMAZINA YOSE</label>
+        <input type="text" id="regName" class="input-box" placeholder="Amazina yose">
       </div>
 
-      <div class="plan-card">
-        <h3>Igice cy'Aba-VIP</h3>
-        <div class="price">200,000 RWF</div>
-        <p>Inyungu: 25% ku cyumweru</p>
-        <p>Ikipimo: Iminsi 90</p>
-        <br>
-        <a href="#" class="btn btn-primary">Shora Imari</a>
+      <div class="form-group">
+        <label class="form-label">TELEFONI</label>
+        <input type="tel" id="regPhone" class="input-box" placeholder="078X XXX XXX">
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">IJAMBOBANGA</label>
+        <input type="password" class="input-box" placeholder="Ijambobanga">
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">EMEZA IJAMBOBANGA</label>
+        <input type="password" class="input-box" placeholder="Emeza Ijambobanga">
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">KODE YO GUTUMIRWA (ITEGETSWE)</label>
+        <input type="text" class="input-box" value="TESLA2026" readonly>
+      </div>
+
+      <button class="btn-main" onclick="handleRegister()">Fungura ➔</button>
+
+      <div class="features-row">
+        <div class="feature-item">🛡️<br>Umutekano</div>
+        <div class="feature-item">⚡<br>Byihuse</div>
+        <div class="feature-item">👥<br>10K+</div>
       </div>
     </div>
-  </section>
 
-  <!-- Kwishyura no Kubikuza -->
-  <section class="section">
-    <div class="payments">
-      <h3>Uburyo bwo Kwishyura no Kubikuza Buza Bwihuta</h3>
-      <p>Twikorana n'uburyo buzwi bwa Mobile Money (MTN MoMo & Airtel Money) hamwe n'Amonde ya Banki.</p>
+    <div class="switch-auth">
+      Usanzwe ufite konti? <a href="#" onclick="showLogin()">Injira</a>
     </div>
-  </section>
+  </div>
 
-  <footer>
-    <p>© 2026 Alain Investment – Urubuga rwo Gushora Imari. Uburenganzira bwose buragumanwa.</p>
-  </footer>
+  <!-- PAGE 2: LOGIN (INJIRA) -->
+  <div id="loginPage" style="display: none;">
+    <div class="brand-header">
+      <div class="brand-logo">⚡ TESLA MOTORS</div>
+      <div class="brand-sub">Murakaza Neza</div>
+    </div>
+
+    <div class="auth-card">
+      <div class="auth-header">
+        <div>
+          <div class="auth-tag">INJIRA</div>
+          <div class="auth-title">Injira muri Konti</div>
+        </div>
+        <div class="auth-icon-badge">🔒</div>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">TELEFONI</label>
+        <input type="tel" class="input-box" placeholder="07XX XXX XXX">
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">IJAMBOBANGA</label>
+        <input type="password" class="input-box" placeholder="Andika Ijambobanga ryawe">
+      </div>
+
+      <button class="btn-main" onclick="showDashboard()">Injira ➔</button>
+
+      <div class="features-row">
+        <div class="feature-item">🛡️<br>Umutekano</div>
+        <div class="feature-item">⚡<br>Byihuse</div>
+        <div class="feature-item">✅<br>Byemejwe</div>
+      </div>
+    </div>
+
+    <div class="switch-auth">
+      Uri mushya? <a href="#" onclick="showRegister()">Fungura Konti</a>
+    </div>
+  </div>
+
+  <!-- PAGE 3: DASHBOARD -->
+  <div id="dashPage" style="display: none;">
+    <div class="dash-header">
+      <div class="dash-user">
+        <div>
+          <div class="user-name" id="dispName">Alain Investor</div>
+          <div class="user-phone" id="dispPhone">Konti - 078XXXXXXX</div>
+        </div>
+        <div>🔔</div>
+      </div>
+    </div>
+
+    <!-- Balance Card -->
+    <div class="balance-card">
+      <div class="balance-grid">
+        <div>
+          <div class="bal-title">Ayo ufiteho</div>
+          <div class="bal-num">1,000 <span>RWF</span></div>
+        </div>
+        <div>
+          <div class="bal-title">Inyungu zose</div>
+          <div class="bal-num">0 <span>RWF</span></div>
+        </div>
+      </div>
+      <div class="action-btns">
+        <button class="btn-act">👑 Gura VIP</button>
+        <button class="btn-act">💵 Bitsa</button>
+      </div>
+    </div>
+
+    <!-- 8 Grid Menu Items -->
+    <div class="grid-menu">
+      <div class="menu-item"><div class="menu-icon">💵</div><div class="menu-label">Bitsa</div></div>
+      <div class="menu-item"><div class="menu-icon">📲</div><div class="menu-label">Bikuza</div></div>
+      <div class="menu-item"><div class="menu-icon">🕒</div><div class="menu-label">Amateka</div></div>
+      <div class="menu-item"><div class="menu-icon">🎁</div><div class="menu-label">Bonus</div></div>
+      <div class="menu-item"><div class="menu-icon">🏆</div><div class="menu-label">Ibihembo</div></div>
+      <div class="menu-item"><div class="menu-icon">🎧</div><div class="menu-label">Ubufasha</div></div>
+      <div class="menu-item"><div class="menu-icon">📈</div><div class="menu-label">Shora</div></div>
+      <div class="menu-item"><div class="menu-icon">🚘</div><div class="menu-label">Ibyaguzwe</div></div>
+    </div>
+
+    <!-- Tesla Investment Showcase -->
+    <div class="tesla-section">
+      <div class="sec-title">Tesla Motors Investment Plans</div>
+
+      <div class="tesla-card">
+        <img src="https://images.unsplash.com/photo-1560958089-b8a1929cea89?auto=format&fit=crop&w=600&q=80" class="tesla-img" alt="Tesla Model 3">
+        <div class="tesla-info">
+          <div class="tesla-name">Tesla Model 3 - Starter Plan</div>
+          <div class="tesla-price">10,000 RWF</div>
+          <div class="tesla-details">
+            <span>Inyungu: 1,200 RWF / ku munsi</span>
+            <span>Igihe: Iminsi 30</span>
+          </div>
+          <button class="btn-main" style="padding:10px; font-size:14px;">Shora Imari</button>
+        </div>
+      </div>
+
+      <div class="tesla-card">
+        <img src="https://images.unsplash.com/photo-1617788138017-80ad40651399?auto=format&fit=crop&w=600&q=80" class="tesla-img" alt="Tesla Model Y">
+        <div class="tesla-info">
+          <div class="tesla-name">Tesla Model Y - Pro Plan</div>
+          <div class="tesla-price">50,000 RWF</div>
+          <div class="tesla-details">
+            <span>Inyungu: 6,500 RWF / ku munsi</span>
+            <span>Igihe: Iminsi 45</span>
+          </div>
+          <button class="btn-main" style="padding:10px; font-size:14px;">Shora Imari</button>
+        </div>
+      </div>
+
+      <div class="tesla-card">
+        <img src="https://images.unsplash.com/photo-1554744512-d6c603f27c54?auto=format&fit=crop&w=600&q=80" class="tesla-img" alt="Tesla Cybertruck">
+        <div class="tesla-info">
+          <div class="tesla-name">Tesla Cybertruck - VIP Fleet</div>
+          <div class="tesla-price">200,000 RWF</div>
+          <div class="tesla-details">
+            <span>Inyungu: 28,000 RWF / ku munsi</span>
+            <span>Igihe: Iminsi 60</span>
+          </div>
+          <button class="btn-main" style="padding:10px; font-size:14px;">Shora Imari</button>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Bottom Navigation -->
+    <div class="bottom-nav">
+      <a href="#" class="nav-item active"><span class="nav-icon">🏠</span>Ahabanza</a>
+      <a href="#" class="nav-item"><span class="nav-icon">📦</span>Imirimo</a>
+      <a href="#" class="nav-item"><span class="nav-icon">👥</span>Tumira</a>
+      <a href="#" class="nav-item"><span class="nav-icon">👤</span>Konti</a>
+    </div>
+  </div>
+
+  <!-- POPUP BONUS MODAL -->
+  <div id="bonusModal" class="modal-overlay" style="display: none;">
+    <div class="modal-card">
+      <div class="badge-success">✓ BYAKUNZE</div>
+      <h3 style="font-size:20px; font-weight:800; color:#0f172a;">Murakaza neza!</h3>
+      
+      <div class="bonus-box">
+        <span style="font-size:13px; font-weight:700; color:#475569;">Bonus wakiriye</span>
+        <span class="bonus-amount">1,000 <small style="font-size:12px;">RWF</small></span>
+      </div>
+
+      <p style="font-size:13px; color:#64748b; margin-bottom:20px;">Konti yawe yashyizweho neza kandi bonus yawe yakiriwe.</p>
+      
+      <button class="btn-main" onclick="closeModalAndGoDash()">Tangira Gushora ➔</button>
+    </div>
+  </div>
+
+</div>
+
+<script>
+  function showLogin() {
+    document.getElementById('registerPage').style.display = 'none';
+    document.getElementById('loginPage').style.display = 'block';
+    document.getElementById('dashPage').style.display = 'none';
+  }
+
+  function showRegister() {
+    document.getElementById('registerPage').style.display = 'block';
+    document.getElementById('loginPage').style.display = 'none';
+    document.getElementById('dashPage').style.display = 'none';
+  }
+
+  function handleRegister() {
+    let name = document.getElementById('regName').value || "Alain Investor";
+    let phone = document.getElementById('regPhone').value || "0788000000";
+    
+    document.getElementById('dispName').innerText = name;
+    document.getElementById('dispPhone').innerText = "Konti - " + phone;
+    
+    document.getElementById('bonusModal').style.display = 'flex';
+  }
+
+  function closeModalAndGoDash() {
+    document.getElementById('bonusModal').style.display = 'none';
+    document.getElementById('registerPage').style.display = 'none';
+    document.getElementById('loginPage').style.display = 'none';
+    document.getElementById('dashPage').style.display = 'block';
+  }
+
+  function showDashboard() {
+    document.getElementById('registerPage').style.display = 'none';
+    document.getElementById('loginPage').style.display = 'none';
+    document.getElementById('dashPage').style.display = 'block';
+  }
+</script>
 
 </body>
 </html>
