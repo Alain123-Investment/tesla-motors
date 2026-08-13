@@ -94,6 +94,10 @@
     .pay-row-val { font-size: 18px; font-weight: 900; color: #d97706; margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center; }
     .copy-icon { cursor: pointer; color: #64748b; font-size: 16px; }
 
+    /* Green Pay Confirmation Button */
+    .btn-confirm-payment { width: 100%; background: #22c55e; color: #ffffff; border: none; padding: 14px; border-radius: 14px; font-size: 15px; font-weight: 800; cursor: pointer; margin-top: 12px; display: flex; align-items: center; justify-content: center; gap: 6px; box-shadow: 0 4px 12px rgba(34, 197, 94, 0.3); }
+    .btn-confirm-payment.done { background: #16a34a; cursor: default; }
+
     /* Bottom Nav */
     .bottom-nav { position: fixed; bottom: 0; left: 50%; transform: translateX(-50%); width: 100%; max-width: 480px; background: #0f172a; border-top: 1px solid #334155; display: flex; justify-content: space-around; padding: 10px 0; z-index: 90; }
     .nav-item { text-align: center; color: #64748b; font-size: 10px; font-weight: 700; cursor: pointer; flex: 1; }
@@ -212,7 +216,7 @@
         </marquee>
       </div>
 
-      <!-- AUTOMATIC TESLA CAR SLIDER (CHANGES EVERY 3 SECONDS) -->
+      <!-- AUTOMATIC TESLA CAR SLIDER -->
       <div class="car-slider-card">
         <div class="car-slide active" style="background-image: url('https://images.unsplash.com/photo-1560958089-b8a1929cea89?auto=format&fit=crop&w=600&q=80');">
           <div class="banner-overlay"></div>
@@ -250,7 +254,7 @@
       </div>
     </div>
 
-    <!-- TAB 2: IMIRIMO / SHORA (ALL PLANS INDIVIDUALLY) -->
+    <!-- TAB 2: IMIRIMO / SHORA -->
     <div id="tabImirimo" style="display: none;">
       <div id="plansContainer"></div>
     </div>
@@ -311,7 +315,7 @@
   let tabHistory = ['ahabanza'];
   let selectedDepositAmount = 0;
 
-  // IMIGABANE YOSE
+  // IMIGABANE YOSE (M0 - M10 VIP)
   const plans = [
     { id: 'M0', name: 'M0 Level', price: 500, daily: 300, monthly: 600, annual: 600, validity: 2 },
     { id: 'M1', name: 'M1 Level', price: 20000, daily: 675, monthly: 20250, annual: 246375, validity: 365 },
@@ -353,7 +357,7 @@
       slides[currentSlide].classList.remove('active');
       currentSlide = (currentSlide + 1) % slides.length;
       slides[currentSlide].classList.add('active');
-    }, 3000); // 3 Seconds
+    }, 3000);
   }
 
   /* REFERRAL LINK GENERATOR FOR VERCEL */
@@ -612,7 +616,7 @@
     content.innerHTML = `
       <div class="pay-card-modal">
         <div class="modal-nav-btns" style="border-color: #334155;">
-          <button class="btn-modal-nav" style="background:#262626; color:#fff;" onclick="openDepositFlow()">⬅ Subira inyuma</button>
+          <button class="btn-modal-nav" style="background:#262626; color:#fff;" onclick="openDepositFlow(${selectedDepositAmount})">⬅ Subira inyuma</button>
           <button class="btn-modal-nav" style="background:#262626; color:#fff;" onclick="closeModal(); switchTab('ahabanza');">🏠 Subira ahabanza</button>
         </div>
 
@@ -643,12 +647,42 @@
           </div>
         </div>
 
-        <div style="text-align: center; margin: 15px 0;">
-          <span style="color: #d97706; font-size: 14px; font-weight: 800; letter-spacing: 0.5px;">*182*8*1*000564#</span>
+        <div style="text-align: center; margin: 15px 0 10px;">
+          <span style="color: #d97706; font-size: 14px; font-weight: 800; letter-spacing: 0.5px;">Kanda *182*8*1*000564#</span>
           <span class="copy-icon" style="color: #fff; margin-left: 6px;" onclick="copyText('*182*8*1*000564#')">📋</span>
         </div>
+
+        <!-- BUTONI Y'ICYATSI YA EMEZA KO WISHYURE -->
+        <button id="btnEmezaPayment" class="btn-confirm-payment" onclick="confirmPaymentAction()">
+          Emeza ko wishyure
+        </button>
+
+        <!-- BUTONI YO SUBIRA AHABANZA -->
+        <button class="btn-back" onclick="closeModal(); switchTab('ahabanza');" style="margin-top: 12px; border-radius: 14px;">
+          🏠 Subira ahabanza
+        </button>
       </div>
     `;
+  }
+
+  /* FUNCTION YO KUBITSA AMAFARANGA NO GUKANDA EMEZA */
+  function confirmPaymentAction() {
+    const btn = document.getElementById('btnEmezaPayment');
+    
+    // Ongeza amafaranga kuri user balance
+    user.balance = (user.balance || 0) + selectedDepositAmount;
+    localStorage.setItem('tesla_user', JSON.stringify(user));
+    
+    // Hindura Butoni
+    btn.innerHTML = "✓ Byemejwe";
+    btn.classList.add('done');
+    btn.onclick = null; // Yipfunge kugira ngo atayikanda kabiri
+
+    showDashboard();
+    
+    setTimeout(() => {
+      alert("Kwizera kwarangiye! Wongeye RWF " + selectedDepositAmount.toLocaleString() + " kuri konti yawe.");
+    }, 300);
   }
 
   /* BIKUZA MODAL */
