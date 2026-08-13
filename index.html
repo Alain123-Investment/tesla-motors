@@ -10,10 +10,14 @@
     .app-container { width: 100%; max-width: 480px; background: #1e293b; min-height: 100vh; position: relative; padding-bottom: 85px; }
 
     /* Header */
-    .dash-header { background: #1d4ed8; color: white; padding: 20px 20px 50px; border-bottom-left-radius: 20px; border-bottom-right-radius: 20px; }
+    .dash-header { background: #1d4ed8; color: white; padding: 15px 20px 45px; border-bottom-left-radius: 20px; border-bottom-right-radius: 20px; }
     .dash-user { display: flex; justify-content: space-between; align-items: center; }
     .user-name { font-size: 18px; font-weight: 800; }
     .user-phone { font-size: 12px; opacity: 0.8; }
+
+    /* Back Button Header Style */
+    .btn-step-back { background: rgba(255, 255, 255, 0.2); border: none; color: white; padding: 6px 12px; border-radius: 8px; font-size: 13px; font-weight: 700; cursor: pointer; display: flex; align-items: center; gap: 4px; }
+    .btn-step-back:hover { background: rgba(255, 255, 255, 0.3); }
 
     /* Balance Card */
     .balance-card { background: #0f172a; margin: -35px 16px 15px; border-radius: 20px; padding: 18px; border: 1px solid #334155; box-shadow: 0 10px 20px rgba(0,0,0,0.3); }
@@ -28,9 +32,11 @@
     /* Notice */
     .notice-bar { background: #1e293b; margin: 0 16px 15px; padding: 10px 14px; border-radius: 12px; font-size: 12px; color: #e2e8f0; display: flex; align-items: center; gap: 8px; border: 1px solid #334155; }
 
-    /* Banner Card */
-    .banner-card { margin: 0 16px 15px; height: 160px; background: url('https://images.unsplash.com/photo-1560958089-b8a1929cea89?auto=format&fit=crop&w=600&q=80') center/cover; border-radius: 16px; position: relative; overflow: hidden; display: flex; align-items: flex-end; padding: 15px; }
-    .banner-overlay { position: absolute; inset: 0; background: linear-gradient(to top, rgba(0,0,0,0.8), transparent); }
+    /* TESLA CARS SLIDER / ANIMATION (BURI MASEGONDA 3) */
+    .car-slider-card { margin: 0 16px 15px; height: 180px; border-radius: 16px; position: relative; overflow: hidden; border: 1px solid #334155; }
+    .car-slide { position: absolute; inset: 0; background-size: cover; background-position: center; transition: opacity 0.8s ease-in-out; opacity: 0; display: flex; align-items: flex-end; padding: 15px; }
+    .car-slide.active { opacity: 1; }
+    .banner-overlay { position: absolute; inset: 0; background: linear-gradient(to top, rgba(0,0,0,0.85), transparent); }
     .banner-text { position: relative; z-index: 2; font-size: 14px; font-weight: 800; color: white; }
 
     /* Grid Menu */
@@ -149,6 +155,10 @@
 
     <!-- HEADER -->
     <div class="dash-header">
+      <div style="margin-bottom: 8px;">
+        <!-- AKABUTO KA BACK BUTTON KANAGUHATIRA GUSUBIRA AHO UVUYE -->
+        <button class="btn-step-back" onclick="goBackStep()">⬅ Subira inyuma</button>
+      </div>
       <div class="dash-user">
         <div>
           <div class="user-name" id="dispName">Bruno Alain</div>
@@ -185,9 +195,24 @@
         </marquee>
       </div>
 
-      <div class="banner-card">
-        <div class="banner-overlay"></div>
-        <div class="banner-text">Tesla Model S & Cybertruck Shares Available</div>
+      <!-- TESLA CARS SLIDER (BURI MASEGONDA 3) -->
+      <div class="car-slider-card">
+        <div class="car-slide active" style="background-image: url('https://images.unsplash.com/photo-1560958089-b8a1929cea89?auto=format&fit=crop&w=600&q=80');">
+          <div class="banner-overlay"></div>
+          <div class="banner-text">⚡ Tesla Model S - Performance & Speed</div>
+        </div>
+        <div class="car-slide" style="background-image: url('https://images.unsplash.com/photo-1536700503339-1e4b06520771?auto=format&fit=crop&w=600&q=80');">
+          <div class="banner-overlay"></div>
+          <div class="banner-text">⚡ Tesla Model 3 - Innovation & Future</div>
+        </div>
+        <div class="car-slide" style="background-image: url('https://images.unsplash.com/photo-1571127236794-81c0171d87a6?auto=format&fit=crop&w=600&q=80');">
+          <div class="banner-overlay"></div>
+          <div class="banner-text">⚡ Tesla Cybertruck - Ultimate Electric Truck</div>
+        </div>
+        <div class="car-slide" style="background-image: url('https://images.unsplash.com/photo-1617788138017-80ad40651399?auto=format&fit=crop&w=600&q=80');">
+          <div class="banner-overlay"></div>
+          <div class="banner-text">⚡ Tesla Model X - Falcon Wings Design</div>
+        </div>
       </div>
 
       <div style="margin: 0 16px 10px; font-size: 11px; font-weight: 800; color: #94a3b8; text-transform: uppercase; text-align:left;">IBIKORWA</div>
@@ -282,6 +307,10 @@
   let user = JSON.parse(localStorage.getItem('tesla_user')) || null;
   let currentTab = localStorage.getItem('tesla_tab') || 'ahabanza';
 
+  /* NAVIGATION HISTORY STACK (IBIKA STEPS ZOSE) */
+  let pageHistory = [];
+  let isModalOpen = false;
+
   const plans = [
     { id: 'M0', price: 500, daily: 300, validity: 2 },
     { id: 'M1', price: 20000, daily: 675, validity: 365 },
@@ -306,12 +335,25 @@
   ];
 
   window.onload = function() {
+    startCarSlider();
     if (user) {
       startApp();
     } else {
       showRegisterSection();
     }
   };
+
+  /* CAR SLIDER FUNCTION (BURI MASEGONDA 3 / 3000ms) */
+  let currentSlide = 0;
+  function startCarSlider() {
+    const slides = document.querySelectorAll('.car-slide');
+    if (!slides.length) return;
+    setInterval(() => {
+      slides[currentSlide].classList.remove('active');
+      currentSlide = (currentSlide + 1) % slides.length;
+      slides[currentSlide].classList.add('active');
+    }, 3000);
+  }
 
   function saveUserData() {
     localStorage.setItem('tesla_user', JSON.stringify(user));
@@ -410,6 +452,7 @@
   function handleLogout() {
     localStorage.removeItem('tesla_user');
     user = null;
+    pageHistory = [];
     showLoginSection();
   }
 
@@ -424,7 +467,7 @@
 
     renderPlans();
     updateUI();
-    switchTab(currentTab);
+    switchTab(currentTab, false);
   }
 
   function updateUI() {
@@ -466,7 +509,7 @@
         <h3 style="color:#10b981; margin:10px 0;">Byakunze Neza!</h3>
         <p style="font-size:13px; color:#cbd5e1; margin-bottom:15px;">Washoye neza muri <b>Tesla ${planId}</b>.</p>
         <button class="btn-main" onclick="closeModal()">Emeza ➔</button>
-        <button class="btn-back" onclick="closeModal()">← Subira inyuma</button>
+        <button class="btn-back" onclick="goBackStep()">← Subira inyuma</button>
       `);
     } else {
       openDepositModal(`Balance yawe ntabwo ihagije yo kugura ${planId} (${price.toLocaleString()} RWF). Mbere na mbere bitsa amafaranga!`);
@@ -474,12 +517,36 @@
   }
 
   function openModal(htmlContent) {
+    if (isModalOpen) pageHistory.push('modal');
+    isModalOpen = true;
     document.getElementById('modalCardContent').innerHTML = htmlContent;
     document.getElementById('generalModal').style.display = 'flex';
   }
 
   function closeModal() {
+    isModalOpen = false;
     document.getElementById('generalModal').style.display = 'none';
+  }
+
+  /* SUBIRA INYUMA FUNCTION (GO BACK STEP) */
+  function goBackStep() {
+    if (isModalOpen) {
+      closeModal();
+      return;
+    }
+    
+    if (pageHistory.length > 0) {
+      let lastTab = pageHistory.pop();
+      if (lastTab !== currentTab) {
+        switchTab(lastTab, false);
+      } else if (pageHistory.length > 0) {
+        switchTab(pageHistory.pop(), false);
+      } else {
+        switchTab('ahabanza', false);
+      }
+    } else {
+      switchTab('ahabanza', false);
+    }
   }
 
   function openDepositModal(msg = "") {
@@ -494,7 +561,7 @@
         2. Fata <b>Screenshot</b> uyoherereze admin kuri Telegram akubitsire ku konti!
       </div>
       <a href="https://t.me/+250789681391" target="_blank" class="btn-main" style="margin-bottom:8px; background:#0284c7;">💬 Ohereza Screenshot kuri Telegram</a>
-      <button class="btn-back" onclick="closeModal()">← Subira inyuma / Funga</button>
+      <button class="btn-back" onclick="goBackStep()">← Subira inyuma / Funga</button>
     `);
   }
 
@@ -509,10 +576,10 @@
       </div>
       <div style="text-align:left; margin-bottom:15px;">
         <label class="form-label">NIMERO YA MOBILE MONEY</label>
-        <input type="tel" id="withdrawPhone" class="input-box-normal" value="${user.phone}">
+        <input type="tel" id="withdrawPhone" class="input-box-normal" value="${user ? user.phone : ''}">
       </div>
       <button class="btn-main" onclick="processWithdrawal()">EMEZA ➔</button>
-      <button class="btn-back" onclick="closeModal()">← Subira inyuma / Funga</button>
+      <button class="btn-back" onclick="goBackStep()">← Subira inyuma / Funga</button>
     `);
   }
 
@@ -534,7 +601,7 @@
       <h3 style="color:#f59e0b; margin:10px 0;">BITEGEREREJWE...</h3>
       <p style="font-size:13px; color:#cbd5e1; margin-bottom:15px;">Ubusabe bwo kubikuza <b>${amt.toLocaleString()} RWF</b> bwoherejwe neza!</p>
       <button class="btn-main" onclick="closeModal()">Emeza ➔</button>
-      <button class="btn-back" onclick="closeModal()">← Subira inyuma</button>
+      <button class="btn-back" onclick="goBackStep()">← Subira inyuma</button>
     `);
   }
 
@@ -544,7 +611,7 @@
       <div style="text-align:left; font-size:12px; color:#cbd5e1; line-height:1.6; background:#0f172a; padding:12px; border-radius:12px; border:1px solid #334155; margin-bottom:15px;">
         Tesla, Inc. yashinzwe muri Nyakanga 2003 na Martin Eberhard na Marc Tarpenning. Elon Musk yinjiye mu company muri 2004 maze abera Umuyobozi Mukuru (CEO).
       </div>
-      <button class="btn-back" onclick="closeModal()">← Subira inyuma / Funga</button>
+      <button class="btn-back" onclick="goBackStep()">← Subira inyuma / Funga</button>
     `);
   }
 
@@ -556,7 +623,7 @@
         Ngo ufashe <b>20,000 RWF</b> za Bonus, usabwa kuba ufite umugabane waguzwe ugeze kuri nibura <b>200,000 RWF</b>.
       </p>
       <button class="btn-main" onclick="switchTab('imirimo'); closeModal();">Shora Ubu ➔</button>
-      <button class="btn-back" onclick="closeModal()">← Subira inyuma</button>
+      <button class="btn-back" onclick="goBackStep()">← Subira inyuma</button>
     `);
   }
 
@@ -568,7 +635,7 @@
         Shora mu migabane nibura 3 ubone kubona ibihembo bya <b>5,000 RWF</b>.
       </p>
       <button class="btn-main" onclick="switchTab('imirimo'); closeModal();">Gura VIP ➔</button>
-      <button class="btn-back" onclick="closeModal()">← Subira inyuma</button>
+      <button class="btn-back" onclick="goBackStep()">← Subira inyuma</button>
     `);
   }
 
@@ -577,7 +644,7 @@
       <h3 style="font-size:18px; font-weight:800; color:white; margin-bottom:10px;">🎧 UBUFASHA (CUSTOMER CARE)</h3>
       <p style="font-size:13px; color:#94a3b8; margin-bottom:15px;">Ufite ikibazo cyangwa ushaka ubufasha? Twandikire kuri Telegram:</p>
       <a href="https://t.me/+250789681391" target="_blank" class="btn-main" style="background:#0284c7; margin-bottom:8px;">📱 Telegram: 0789681391</a>
-      <button class="btn-back" onclick="closeModal()">← Subira inyuma / Funga</button>
+      <button class="btn-back" onclick="goBackStep()">← Subira inyuma / Funga</button>
     `);
   }
 
@@ -587,7 +654,11 @@
     alert("Referral Link yakopewe neza!");
   }
 
-  function switchTab(tabName) {
+  function switchTab(tabName, trackHistory = true) {
+    if (trackHistory && currentTab !== tabName) {
+      pageHistory.push(currentTab);
+    }
+
     currentTab = tabName;
     localStorage.setItem('tesla_tab', currentTab);
 
