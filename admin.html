@@ -1,1 +1,179 @@
 
+<!DOCTYPE html>
+<html lang="rw">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TESLA MOTORS - All-In-One Platform</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
+    body { background-color: #0b0f19; color: #f8fafc; padding-bottom: 80px; }
+
+    /* Top Bar */
+    .top-nav { background: #111827; padding: 15px 20px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #1f2937; position: sticky; top: 0; z-index: 100; }
+    .brand { font-weight: 900; font-size: 18px; color: #2563eb; letter-spacing: 1px; }
+    .btn-switch-admin { background: #ef4444; color: white; border: none; padding: 6px 12px; border-radius: 8px; font-weight: 800; font-size: 11px; cursor: pointer; }
+
+    .container { padding: 15px; max-width: 500px; margin: 0 auto; }
+
+    /* Views toggle */
+    .view-section { display: none; }
+    .view-section.active { display: block; }
+
+    /* USER STYLES */
+    .card { background: #111827; border: 1px solid #1f2937; border-radius: 16px; padding: 20px; margin-bottom: 15px; }
+    .balance-title { font-size: 12px; color: #9ca3af; font-weight: 700; text-transform: uppercase; }
+    .balance-amount { font-size: 28px; font-weight: 900; color: #3b82f6; margin-top: 5px; }
+    
+    .btn-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-top: 15px; }
+    .action-btn { background: #1f2937; border: 1px solid #374151; border-radius: 12px; padding: 12px 5px; text-align: center; color: white; text-decoration: none; font-size: 11px; font-weight: 700; cursor: pointer; }
+    .action-btn span { display: block; font-size: 20px; margin-bottom: 4px; }
+
+    /* ADMIN STYLES */
+    .admin-title { font-size: 18px; font-weight: 900; color: #ef4444; margin-bottom: 15px; }
+    .stat-card { background: #1f2937; padding: 12px; border-radius: 10px; border: 1px solid #374151; margin-bottom: 10px; }
+    .admin-btn { background: #22c55e; color: white; border: none; padding: 8px 12px; border-radius: 6px; font-weight: 800; font-size: 11px; cursor: pointer; margin-top: 5px; }
+
+    /* Bottom Nav */
+    .bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; background: #111827; border-top: 1px solid #1f2937; display: flex; justify-content: space-around; padding: 10px 0; z-index: 100; }
+    .nav-item { color: #9ca3af; text-decoration: none; font-size: 10px; text-align: center; font-weight: 700; cursor: pointer; }
+    .nav-item.active { color: #2563eb; }
+    .nav-item span { display: block; font-size: 18px; }
+  </style>
+</head>
+<body>
+
+  <!-- TOP BAR -->
+  <div class="top-nav">
+    <div class="brand">⚡ TESLA MOTORS</div>
+    <button class="btn-switch-admin" onclick="toggleView()">⚙️ Switch Mode (User/Admin)</button>
+  </div>
+
+  <div class="container">
+
+    <!-- ==================== USER VIEW ==================== -->
+    <div id="userView" class="view-section active">
+      <div class="card">
+        <div class="balance-title">Ayo ufiteho (User Balance)</div>
+        <div class="balance-amount" id="userBalanceDisplay">1,000 RWF</div>
+      </div>
+
+      <div class="card">
+        <div style="font-weight: 800; font-size: 14px; margin-bottom: 10px;">Ibikorwa</div>
+        <div class="btn-grid">
+          <div class="action-btn" onclick="userDeposit()"><span>💵</span>Bitsa</div>
+          <div class="action-btn" onclick="userWithdraw()"><span>📲</span>Bikuza</div>
+          <div class="action-btn" onclick="alert('Link yawe: https://tesla.app/ref=123')"><span>👥</span>Itsinda</div>
+          <div class="action-btn" onclick="alert('Ubufasha: Contact @support')"><span>🎧</span>Ubufasha</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ==================== ADMIN VIEW ==================== -->
+    <div id="adminView" class="view-section">
+      <div class="admin-title">⚙️ ADMIN CONTROL PANEL</div>
+      
+      <div class="card">
+        <div style="font-weight: 800; margin-bottom: 10px;">Gukontrola User Balance</div>
+        <div class="stat-card">
+          <div>Umu-user: <b>Bruno Alain (0789681391)</b></div>
+          <div>Balance ariho: <b id="adminUserBal">1,000 RWF</b></div>
+          <button class="admin-btn" onclick="changeUserBalance()">✏️ Ongeza/Gabanya Balance</button>
+        </div>
+      </div>
+
+      <div class="card">
+        <div style="font-weight: 800; margin-bottom: 10px;">Ibusabe bwo Kubitsa (Pending Deposits)</div>
+        <div id="depositList" style="font-size: 12px; color: #9ca3af;">Nta busabe buhari muri iki gihe.</div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- BOTTOM NAVIGATION -->
+  <div class="bottom-nav">
+    <div class="nav-item active" onclick="showUserTab()"><span>🏠</span>Ahabanza</div>
+    <div class="nav-item" onclick="toggleView()"><span>⚙️</span>Admin Panel</div>
+  </div>
+
+<script>
+  let userData = JSON.parse(localStorage.getItem('tesla_user')) || {
+    balance: 1000
+  };
+
+  function updateUI() {
+    document.getElementById('userBalanceDisplay').innerText = userData.balance.toLocaleString() + " RWF";
+    document.getElementById('adminUserBal').innerText = userData.balance.toLocaleString() + " RWF";
+  }
+
+  // Switch between User & Admin Dashboard
+  function toggleView() {
+    const userV = document.getElementById('userView');
+    const adminV = document.getElementById('adminView');
+
+    if (userV.classList.contains('active')) {
+      userV.classList.remove('active');
+      adminV.classList.add('active');
+    } else {
+      adminV.classList.remove('active');
+      userV.classList.add('active');
+    }
+  }
+
+  function showUserTab() {
+    document.getElementById('adminView').classList.remove('active');
+    document.getElementById('userView').classList.add('active');
+  }
+
+  // Admin Actions
+  function changeUserBalance() {
+    let newBal = prompt("Shyiramo amafaranga masha ya User:", userData.balance);
+    if (newBal !== null && !isNaN(newBal)) {
+      userData.balance = Number(newBal);
+      localStorage.setItem('tesla_user', JSON.stringify(userData));
+      updateUI();
+      alert("Balance yahinduwe neza!");
+    }
+  }
+
+  // User Actions
+  function userDeposit() {
+    let amount = prompt("Shyiramo amafaranga ushaka kubitsa:");
+    if (amount) {
+      document.getElementById('depositList').innerHTML = `
+        <div style="background:#1f2937; padding:8px; border-radius:6px; margin-top:5px; color:white;">
+          User ashaka kubitsa: <b>${Number(amount).toLocaleString()} RWF</b>
+          <br><button class="admin-btn" onclick="approveDep(${amount})">✓ Approve Deposit</button>
+        </div>
+      `;
+      alert("Ibusabe bwo kubitsa bwoherejwe kuri Admin!");
+    }
+  }
+
+  function approveDep(amt) {
+    userData.balance += Number(amt);
+    localStorage.setItem('tesla_user', JSON.stringify(userData));
+    updateUI();
+    document.getElementById('depositList').innerHTML = "Nta busabe buhari muri iki gihe.";
+    alert("Wemeje kubitsa!");
+  }
+
+  function userWithdraw() {
+    let amount = prompt("Shyiramo amafaranga ushaka kubikuza:");
+    if (amount) {
+      if (Number(amount) > userData.balance) {
+        alert("Amafaranga ufiteho ntabwo ahagije!");
+      } else {
+        userData.balance -= Number(amount);
+        localStorage.setItem('tesla_user', JSON.stringify(userData));
+        updateUI();
+        alert("Ibusabe bwo kubikuza bwoherejwe!");
+      }
+    }
+  }
+
+  // Init
+  updateUI();
+</script>
+</body>
+</html>
