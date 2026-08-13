@@ -32,7 +32,7 @@
     /* Notice */
     .notice-bar { background: #1e293b; margin: 0 16px 15px; padding: 10px 14px; border-radius: 12px; font-size: 12px; color: #e2e8f0; display: flex; align-items: center; gap: 8px; border: 1px solid #334155; }
 
-    /* TESLA CARS SLIDER / ANIMATION (BURI MASEGONDA 3) */
+    /* CAR SLIDER */
     .car-slider-card { margin: 0 16px 15px; height: 180px; border-radius: 16px; position: relative; overflow: hidden; border: 1px solid #334155; }
     .car-slide { position: absolute; inset: 0; background-size: cover; background-position: center; transition: opacity 0.8s ease-in-out; opacity: 0; display: flex; align-items: flex-end; padding: 15px; }
     .car-slide.active { opacity: 1; }
@@ -63,17 +63,30 @@
     .eye-btn { position: absolute; right: 15px; top: 50%; transform: translateY(-50%); background: none; border: none; cursor: pointer; font-size: 16px; color: #94a3b8; }
 
     .btn-main { width: 100%; background: #2563eb; color: white; border: none; padding: 14px; border-radius: 14px; font-size: 15px; font-weight: 700; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; margin-top: 10px; text-decoration: none; }
+    .btn-confirm-green { width: 100%; background: #10b981; color: white; border: none; padding: 14px; border-radius: 14px; font-size: 15px; font-weight: 800; cursor: pointer; margin-top: 15px; }
     .btn-back { width: 100%; background: #1e293b; color: #3b82f6; border: 1px solid #334155; padding: 12px; border-radius: 14px; font-size: 13px; font-weight: 700; cursor: pointer; margin-top: 8px; text-align: center; }
 
     /* Plans Card */
     .plan-card { background: #0f172a; border-radius: 16px; padding: 16px; margin: 0 16px 12px; border: 1px solid #334155; }
-    .plan-header { display: flex; justify-content: space-between; font-weight: 800; font-size: 16px; color: #f8fafc; margin-bottom: 8px; }
+    .plan-header { display: flex; justify-content: space-between; font-weight: 800; font-size: 15px; color: #f8fafc; margin-bottom: 8px; }
     .plan-badge { background: #1e3a8a; color: #60a5fa; font-size: 11px; padding: 4px 10px; border-radius: 8px; }
     .plan-details { font-size: 12px; color: #94a3b8; line-height: 1.6; margin-bottom: 12px; text-align: left; }
 
-    /* Modal */
-    .modal-overlay { position: fixed; inset: 0; background: rgba(0, 0, 0, 0.75); backdrop-filter: blur(4px); display: flex; align-items: center; justify-content: center; z-index: 100; padding: 20px; }
-    .modal-card { background: #1e293b; width: 100%; max-width: 380px; border-radius: 24px; padding: 20px; text-align: center; border: 1px solid #334155; color: white; }
+    /* Modal Styles */
+    .modal-overlay { position: fixed; inset: 0; background: rgba(0, 0, 0, 0.8); backdrop-filter: blur(4px); display: flex; align-items: center; justify-content: center; z-index: 100; padding: 15px; }
+    .modal-card { background: #1e293b; width: 100%; max-width: 420px; border-radius: 20px; padding: 20px; border: 1px solid #334155; color: white; max-height: 90vh; overflow-y: auto; }
+
+    /* Deposit Screen UI Elements */
+    .amount-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-top: 10px; }
+    .amount-btn { background: #0f172a; border: 1px solid #334155; color: white; padding: 12px 5px; border-radius: 10px; font-weight: 700; font-size: 13px; cursor: pointer; text-align: center; }
+    .amount-btn.selected { border: 2px solid #10b981; background: rgba(16, 185, 129, 0.1); color: #10b981; }
+
+    .deposit-details-box { background: #0f172a; border-radius: 16px; padding: 16px; margin-top: 12px; border: 1px solid #334155; text-align: left; }
+    .dep-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; font-size: 13px; }
+    .dep-label { color: #94a3b8; font-size: 12px; }
+    .dep-value { font-weight: 800; color: #f59e0b; font-size: 15px; }
+    .dep-copy-val { font-weight: 800; color: #f8fafc; display: flex; align-items: center; gap: 8px; }
+    .copy-icon { cursor: pointer; font-size: 14px; background: #1e293b; padding: 3px 6px; border-radius: 6px; border: 1px solid #334155; }
 
     /* Bottom Nav */
     .bottom-nav { position: fixed; bottom: 0; left: 50%; transform: translateX(-50%); width: 100%; max-width: 480px; background: #0f172a; border-top: 1px solid #334155; display: flex; justify-content: space-around; padding: 10px 0; z-index: 90; }
@@ -86,9 +99,8 @@
 
 <div class="app-container">
 
-  <!-- AUTH SECTION (REGISTER / LOGIN) -->
+  <!-- AUTH SECTION -->
   <div id="authContainer">
-    
     <!-- REGISTER PAGE -->
     <div id="registerPage">
       <div style="text-align: center; padding: 35px 15px 10px;">
@@ -147,7 +159,6 @@
         </div>
       </div>
     </div>
-
   </div>
 
   <!-- MAIN APP CONTAINER -->
@@ -156,7 +167,6 @@
     <!-- HEADER -->
     <div class="dash-header">
       <div style="margin-bottom: 8px;">
-        <!-- AKABUTO KA BACK BUTTON KANAGUHATIRA GUSUBIRA AHO UVUYE -->
         <button class="btn-step-back" onclick="goBackStep()">⬅ Subira inyuma</button>
       </div>
       <div class="dash-user">
@@ -164,7 +174,7 @@
           <div class="user-name" id="dispName">Bruno Alain</div>
           <div class="user-phone" id="dispPhone">Konti - 0789681391</div>
         </div>
-        <div style="cursor:pointer; font-size:20px;" onclick="openDepositModal()">🔔</div>
+        <div style="cursor:pointer; font-size:20px;" onclick="openDepositFlow()">🔔</div>
       </div>
     </div>
 
@@ -182,7 +192,7 @@
       </div>
       <div class="action-btns">
         <button class="btn-act" onclick="switchTab('imirimo')">👑 Gura VIP</button>
-        <button class="btn-act" onclick="openDepositModal()">💵 Bitsa</button>
+        <button class="btn-act" onclick="openDepositFlow()">💵 Bitsa</button>
       </div>
     </div>
 
@@ -195,7 +205,6 @@
         </marquee>
       </div>
 
-      <!-- TESLA CARS SLIDER (BURI MASEGONDA 3) -->
       <div class="car-slider-card">
         <div class="car-slide active" style="background-image: url('https://images.unsplash.com/photo-1560958089-b8a1929cea89?auto=format&fit=crop&w=600&q=80');">
           <div class="banner-overlay"></div>
@@ -218,7 +227,7 @@
       <div style="margin: 0 16px 10px; font-size: 11px; font-weight: 800; color: #94a3b8; text-transform: uppercase; text-align:left;">IBIKORWA</div>
       
       <div class="grid-menu">
-        <div class="menu-item" onclick="openDepositModal()"><div class="menu-icon">💵</div><div class="menu-label">Bitsa</div></div>
+        <div class="menu-item" onclick="openDepositFlow()"><div class="menu-icon">💵</div><div class="menu-label">Bitsa</div></div>
         <div class="menu-item" onclick="openWithdrawModal()"><div class="menu-icon">📲</div><div class="menu-label">Bikuza</div></div>
         <div class="menu-item" onclick="openHistoryModal()"><div class="menu-icon">🕒</div><div class="menu-label">Amateka</div></div>
         <div class="menu-item" onclick="openBonusModal()"><div class="menu-icon">🎁</div><div class="menu-label">Bonus</div></div>
@@ -245,7 +254,7 @@
 
     <!-- TAB 2: IMIRIMO / VIP PLANS -->
     <div id="tabImirimo" style="display: none;">
-      <div style="margin: 0 16px 12px; font-size: 13px; font-weight: 800; color: #3b82f6; text-align:left;">HITAMO UMUGABANE (VIP) UGOZA:</div>
+      <div style="margin: 0 16px 12px; font-size: 13px; font-weight: 800; color: #3b82f6; text-align:left;">HITAMO UMUGABANE (VIP) W'IKIGEGA UGOZA:</div>
       <div id="plansContainer"></div>
     </div>
 
@@ -307,9 +316,9 @@
   let user = JSON.parse(localStorage.getItem('tesla_user')) || null;
   let currentTab = localStorage.getItem('tesla_tab') || 'ahabanza';
 
-  /* NAVIGATION HISTORY STACK (IBIKA STEPS ZOSE) */
   let pageHistory = [];
   let isModalOpen = false;
+  let selectedDepositAmount = 50000;
 
   const plans = [
     { id: 'M0', price: 500, daily: 300, validity: 2 },
@@ -343,7 +352,6 @@
     }
   };
 
-  /* CAR SLIDER FUNCTION (BURI MASEGONDA 3 / 3000ms) */
   let currentSlide = 0;
   function startCarSlider() {
     const slides = document.querySelectorAll('.car-slide');
@@ -416,7 +424,7 @@
       btn.innerText = "Iyandikishe ➔";
       btn.disabled = false;
       startApp();
-    }, 2000);
+    }, 1500);
   }
 
   function handleLogin() {
@@ -443,7 +451,7 @@
         btn.innerText = "Injira ➔";
         btn.disabled = false;
         startApp();
-      }, 2000);
+      }, 1500);
     } else {
       alert("Nta konti ufite cyangwa ijambobanga si ryo!");
     }
@@ -486,7 +494,7 @@
       container.innerHTML += `
         <div class="plan-card">
           <div class="plan-header">
-            <span>⚡ Tesla ${plan.id}</span>
+            <span>⚡ Shora mu kigega cya Tesla ${plan.id}</span>
             <span class="plan-badge">${plan.price.toLocaleString()} RWF</span>
           </div>
           <div class="plan-details">
@@ -505,14 +513,14 @@
       user.investments.push({ planId, price, daily });
       updateUI();
       openModal(`
-        <div style="font-size:35px;">✅</div>
-        <h3 style="color:#10b981; margin:10px 0;">Byakunze Neza!</h3>
-        <p style="font-size:13px; color:#cbd5e1; margin-bottom:15px;">Washoye neza muri <b>Tesla ${planId}</b>.</p>
+        <div style="font-size:35px; text-align:center;">✅</div>
+        <h3 style="color:#10b981; margin:10px 0; text-align:center;">Byakunze Neza!</h3>
+        <p style="font-size:13px; color:#cbd5e1; margin-bottom:15px; text-align:center;">Washoye neza muri <b>Tesla ${planId}</b>.</p>
         <button class="btn-main" onclick="closeModal()">Emeza ➔</button>
         <button class="btn-back" onclick="goBackStep()">← Subira inyuma</button>
       `);
     } else {
-      openDepositModal(`Balance yawe ntabwo ihagije yo kugura ${planId} (${price.toLocaleString()} RWF). Mbere na mbere bitsa amafaranga!`);
+      openDepositFlow();
     }
   }
 
@@ -528,7 +536,6 @@
     document.getElementById('generalModal').style.display = 'none';
   }
 
-  /* SUBIRA INYUMA FUNCTION (GO BACK STEP) */
   function goBackStep() {
     if (isModalOpen) {
       closeModal();
@@ -549,25 +556,137 @@
     }
   }
 
-  function openDepositModal(msg = "") {
+  /* KUBITSA (RECHARGE/DEPOSIT FLOW) */
+  function openDepositFlow() {
+    selectedDepositAmount = 50000;
+    renderDepositAmountStep();
+  }
+
+  function renderDepositAmountStep() {
     openModal(`
-      <h3 style="font-size:18px; font-weight:800; color:white; margin-bottom:10px;">💵 KUBITSA AMAFARANGA</h3>
-      ${msg ? `<p style="color:#f43f5e; font-size:12px; margin-bottom:10px;"><b>${msg}</b></p>` : ''}
-      <div style="background:#0f172a; padding:15px; border-radius:14px; text-align:left; font-size:13px; color:#cbd5e1; margin-bottom:15px; line-height:1.6; border:1px solid #334155;">
-        <b>Amabwiriza yo Kubitsa:</b><br>
-        1. Yohereze amafaranga kuri <b>MoMo Pay Code:</b><br>
-        <span style="font-size:22px; font-weight:900; color:#3b82f6; display:block; margin:6px 0;">000564</span>
-        (Ibaruye kuri: <b>N AND M SHOP LTD</b>)<br>
-        2. Fata <b>Screenshot</b> uyoherereze admin kuri Telegram akubitsire ku konti!
+      <div style="text-align:left;">
+        <h3 style="font-size:16px; font-weight:800; color:white; margin-bottom:12px;">Hitamo amafaranga ushaka kubitsa</h3>
+        
+        <div class="amount-grid">
+          <div class="amount-btn ${selectedDepositAmount === 5000 ? 'selected' : ''}" onclick="selectAmount(5000, this)">5,000</div>
+          <div class="amount-btn ${selectedDepositAmount === 10000 ? 'selected' : ''}" onclick="selectAmount(10000, this)">10,000</div>
+          <div class="amount-btn ${selectedDepositAmount === 20000 ? 'selected' : ''}" onclick="selectAmount(20000, this)">20,000</div>
+          <div class="amount-btn ${selectedDepositAmount === 30000 ? 'selected' : ''}" onclick="selectAmount(30000, this)">30,000</div>
+          <div class="amount-btn ${selectedDepositAmount === 50000 ? 'selected' : ''}" onclick="selectAmount(50000, this)">50,000</div>
+          <div class="amount-btn ${selectedDepositAmount === 100000 ? 'selected' : ''}" onclick="selectAmount(100000, this)">100,000</div>
+          <div class="amount-btn ${selectedDepositAmount === 200000 ? 'selected' : ''}" onclick="selectAmount(200000, this)">200,000</div>
+          <div class="amount-btn ${selectedDepositAmount === 300000 ? 'selected' : ''}" onclick="selectAmount(300000, this)">300,000</div>
+          <div class="amount-btn ${selectedDepositAmount === 500000 ? 'selected' : ''}" onclick="selectAmount(500000, this)">500,000</div>
+        </div>
+
+        <div style="margin-top:15px;">
+          <label class="form-label">Cyangwa wandikemo undi mubare</label>
+          <div style="display:flex; align-items:center; background:#0f172a; border:1px solid #334155; border-radius:12px; padding:0 12px;">
+            <span style="font-weight:800; color:#94a3b8; font-size:13px;">RWF</span>
+            <input type="number" id="customDepAmt" class="input-box-normal" value="${selectedDepositAmount}" oninput="updateCustomAmount(this.value)" style="border:none; background:transparent;">
+          </div>
+        </div>
+
+        <div style="margin-top:15px; background:#0f172a; padding:12px; border-radius:12px; border:1px solid #334155;">
+          <label class="form-label">Uburyo bwo kubitsa</label>
+          <div style="display:flex; align-items:center; justify-content:space-between; font-weight:700; font-size:13px; color:white;">
+            <span>💳 Deposit Bank / Mobile Money</span>
+            <span style="color:#10b981;">✓</span>
+          </div>
+        </div>
+
+        <button class="btn-confirm-green" onclick="goToPaymentDetailsStep()">Emeza Kubitsa (Confirm)</button>
+        <button class="btn-back" onclick="goBackStep()">← Subira inyuma / Funga</button>
+
+        <div style="margin-top:15px; font-size:11px; color:#94a3b8; line-height:1.5;">
+          1. Amafaranga yo kubitsa ari munsi ya RWF 5,000 ntabwo ajya ku konti.<br>
+          2. Nyamuneka koresha nimero yawe nyayo yo kwishyuraho.<br>
+          3. Soma neza amabwiriza yo kwishyura ubundi ukurikize intambwe zose.
+        </div>
       </div>
-      <a href="https://t.me/+250789681391" target="_blank" class="btn-main" style="margin-bottom:8px; background:#0284c7;">💬 Ohereza Screenshot kuri Telegram</a>
-      <button class="btn-back" onclick="goBackStep()">← Subira inyuma / Funga</button>
     `);
+  }
+
+  function selectAmount(amt, el) {
+    selectedDepositAmount = amt;
+    document.getElementById('customDepAmt').value = amt;
+    document.querySelectorAll('.amount-btn').forEach(btn => btn.classList.remove('selected'));
+    el.classList.add('selected');
+  }
+
+  function updateCustomAmount(val) {
+    selectedDepositAmount = parseFloat(val) || 0;
+    document.querySelectorAll('.amount-btn').forEach(btn => btn.classList.remove('selected'));
+  }
+
+  function goToPaymentDetailsStep() {
+    if (!selectedDepositAmount || selectedDepositAmount < 5000) {
+      alert("Nyamuneka shyiramo amafaranga atari munsi ya 5,000 RWF!");
+      return;
+    }
+
+    let ussdCode = `*182*8*1*000564#`;
+
+    openModal(`
+      <div style="text-align:left;">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px; border-bottom:1px solid #334155; padding-bottom:10px;">
+          <span style="font-weight:900; color:#3b82f6; font-size:15px;">⚡ TESLA MOTORS PAY</span>
+          <span style="font-size:11px; color:#cbd5e1; background:#0f172a; padding:4px 8px; border-radius:6px;">⏱ 14:53</span>
+        </div>
+
+        <div style="font-size:12px; font-weight:800; color:#94a3b8; margin-bottom:10px;">
+          KOPERA UBUMYI BUHAMYE WISHYURE:
+        </div>
+
+        <div class="deposit-details-box">
+          <div class="dep-row">
+            <span class="dep-label">Total Amount:</span>
+            <span class="dep-value">RWF ${selectedDepositAmount.toLocaleString()}</span>
+          </div>
+
+          <div class="dep-row">
+            <span class="dep-label">MOMO PAY:</span>
+            <span class="dep-copy-val">
+              000564 
+              <span class="copy-icon" onclick="copyText('000564')">📋</span>
+            </span>
+          </div>
+
+          <div class="dep-row">
+            <span class="dep-label">Account Name:</span>
+            <span class="dep-copy-val">
+              N AND M SHOP LTD 
+              <span class="copy-icon" onclick="copyText('N AND M SHOP LTD')">📋</span>
+            </span>
+          </div>
+
+          <div style="text-align:center; margin:15px 0 10px; background:#1e293b; padding:10px; border-radius:10px; border:1px dashed #3b82f6;">
+            <div style="font-size:11px; color:#94a3b8; margin-bottom:4px;">Kanda hano ukopere kode yo kwishyura:</div>
+            <div style="font-size:14px; font-weight:900; color:#f59e0b; display:flex; align-items:center; justify-content:center; gap:8px;">
+              ${ussdCode}
+              <span class="copy-icon" onclick="copyText('${ussdCode}')">📋</span>
+            </div>
+          </div>
+        </div>
+
+        <div style="margin-top:15px; background:#0f172a; padding:12px; border-radius:12px; border:1px solid #334155;">
+          <div style="font-size:12px; color:#94a3b8;">Your payment account:</div>
+          <div style="font-size:14px; font-weight:800; color:white; margin-top:2px;">${user ? user.phone : '0789681391'}</div>
+        </div>
+
+        <button class="btn-back" onclick="goBackStep()" style="margin-top:15px;">← Subira inyuma / Funga</button>
+      </div>
+    `);
+  }
+
+  function copyText(text) {
+    navigator.clipboard.writeText(text);
+    alert("Byakopewe neza: " + text);
   }
 
   function openWithdrawModal() {
     openModal(`
-      <h3 style="font-size:18px; font-weight:800; color:white; margin-bottom:10px;">📲 KUBIKUZA INYUNGU</h3>
+      <h3 style="font-size:18px; font-weight:800; color:white; margin-bottom:10px; text-align:center;">📲 KUBIKUZA INYUNGU</h3>
       <p style="font-size:12px; color:#94a3b8; margin-bottom:15px; text-align:left;">Amasaha: 10:00AM - 4:00PM. Amake ni <b>2,000 RWF</b>.</p>
       
       <div style="text-align:left; margin-bottom:12px;">
@@ -597,9 +716,9 @@
     user.earnings -= amt;
     updateUI();
     openModal(`
-      <div style="font-size:35px;">⏳</div>
-      <h3 style="color:#f59e0b; margin:10px 0;">BITEGEREREJWE...</h3>
-      <p style="font-size:13px; color:#cbd5e1; margin-bottom:15px;">Ubusabe bwo kubikuza <b>${amt.toLocaleString()} RWF</b> bwoherejwe neza!</p>
+      <div style="font-size:35px; text-align:center;">⏳</div>
+      <h3 style="color:#f59e0b; margin:10px 0; text-align:center;">BITEGEREREJWE...</h3>
+      <p style="font-size:13px; color:#cbd5e1; margin-bottom:15px; text-align:center;">Ubusabe bwo kubikuza <b>${amt.toLocaleString()} RWF</b> bwoherejwe neza!</p>
       <button class="btn-main" onclick="closeModal()">Emeza ➔</button>
       <button class="btn-back" onclick="goBackStep()">← Subira inyuma</button>
     `);
@@ -607,7 +726,7 @@
 
   function openHistoryModal() {
     openModal(`
-      <h3 style="font-size:18px; font-weight:800; color:white; margin-bottom:10px;">🕒 AMATEKA YA TESLA MOTORS</h3>
+      <h3 style="font-size:18px; font-weight:800; color:white; margin-bottom:10px; text-align:center;">🕒 AMATEKA YA TESLA MOTORS</h3>
       <div style="text-align:left; font-size:12px; color:#cbd5e1; line-height:1.6; background:#0f172a; padding:12px; border-radius:12px; border:1px solid #334155; margin-bottom:15px;">
         Tesla, Inc. yashinzwe muri Nyakanga 2003 na Martin Eberhard na Marc Tarpenning. Elon Musk yinjiye mu company muri 2004 maze abera Umuyobozi Mukuru (CEO).
       </div>
@@ -617,9 +736,9 @@
 
   function openBonusModal() {
     openModal(`
-      <div style="font-size:40px;">🎁📦</div>
-      <h3 style="color:white; margin:10px 0;">AGASEKE GAPFUNDIKIYE</h3>
-      <p style="font-size:12px; color:#94a3b8; line-height:1.5; margin-bottom:15px;">
+      <div style="font-size:40px; text-align:center;">🎁📦</div>
+      <h3 style="color:white; margin:10px 0; text-align:center;">AGASEKE GAPFUNDIKIYE</h3>
+      <p style="font-size:12px; color:#94a3b8; line-height:1.5; margin-bottom:15px; text-align:center;">
         Ngo ufashe <b>20,000 RWF</b> za Bonus, usabwa kuba ufite umugabane waguzwe ugeze kuri nibura <b>200,000 RWF</b>.
       </p>
       <button class="btn-main" onclick="switchTab('imirimo'); closeModal();">Shora Ubu ➔</button>
@@ -629,9 +748,9 @@
 
   function openRewardsModal() {
     openModal(`
-      <div style="font-size:40px;">🏆</div>
-      <h3 style="color:white; margin:10px 0;">SHAKA IBIHEMBO</h3>
-      <p style="font-size:12px; color:#94a3b8; line-height:1.5; margin-bottom:15px;">
+      <div style="font-size:40px; text-align:center;">🏆</div>
+      <h3 style="color:white; margin:10px 0; text-align:center;">SHAKA IBIHEMBO</h3>
+      <p style="font-size:12px; color:#94a3b8; line-height:1.5; margin-bottom:15px; text-align:center;">
         Shora mu migabane nibura 3 ubone kubona ibihembo bya <b>5,000 RWF</b>.
       </p>
       <button class="btn-main" onclick="switchTab('imirimo'); closeModal();">Gura VIP ➔</button>
@@ -641,8 +760,8 @@
 
   function openSupport() {
     openModal(`
-      <h3 style="font-size:18px; font-weight:800; color:white; margin-bottom:10px;">🎧 UBUFASHA (CUSTOMER CARE)</h3>
-      <p style="font-size:13px; color:#94a3b8; margin-bottom:15px;">Ufite ikibazo cyangwa ushaka ubufasha? Twandikire kuri Telegram:</p>
+      <h3 style="font-size:18px; font-weight:800; color:white; margin-bottom:10px; text-align:center;">🎧 UBUFASHA (CUSTOMER CARE)</h3>
+      <p style="font-size:13px; color:#94a3b8; margin-bottom:15px; text-align:center;">Ufite ikibazo cyangwa ushaka ubufasha? Twandikire kuri Telegram:</p>
       <a href="https://t.me/+250789681391" target="_blank" class="btn-main" style="background:#0284c7; margin-bottom:8px;">📱 Telegram: 0789681391</a>
       <button class="btn-back" onclick="goBackStep()">← Subira inyuma / Funga</button>
     `);
