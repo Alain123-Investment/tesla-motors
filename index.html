@@ -1,169 +1,657 @@
 <!DOCTYPE html>
 <html lang="rw">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sistemu yo Kubitsa</title>
-    <style>
-        /* CSS Y'URUPAPURO (Ibireke uko biri) */
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #f4f6f9;
-            margin: 0;
-            padding: 20px;
-        }
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TESLA MOTORS - Investment Platform</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
+    body { background-color: #0f172a; color: #f8fafc; display: flex; justify-content: center; }
+    .app-container { width: 100%; max-width: 480px; background: #1e293b; min-height: 100vh; position: relative; padding-bottom: 85px; }
 
-        .deposit-card {
-            max-width: 450px;
-            margin: 0 auto;
-            background: #ffffff;
-            border-radius: 10px;
-            padding: 20px;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-        }
+    /* Header */
+    .dash-header { background: #1d4ed8; color: white; padding: 15px 20px 45px; border-bottom-left-radius: 20px; border-bottom-right-radius: 20px; }
+    .dash-user { display: flex; justify-content: space-between; align-items: center; }
+    .user-name { font-size: 18px; font-weight: 800; }
+    .user-phone { font-size: 12px; opacity: 0.8; }
 
-        .preset-buttons {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 10px;
-            margin-bottom: 15px;
-        }
+    /* Back Button Header Style */
+    .btn-step-back { background: rgba(255, 255, 255, 0.2); border: none; color: white; padding: 6px 12px; border-radius: 8px; font-size: 13px; font-weight: 700; cursor: pointer; display: flex; align-items: center; gap: 4px; }
+    .btn-step-back:hover { background: rgba(255, 255, 255, 0.3); }
 
-        .preset-btn {
-            padding: 10px;
-            background-color: #eef2f5;
-            border: 2px solid transparent;
-            border-radius: 6px;
-            font-weight: bold;
-            cursor: pointer;
-            transition: all 0.2s ease;
-        }
+    /* Balance Card */
+    .balance-card { background: #0f172a; margin: -35px 16px 15px; border-radius: 20px; padding: 18px; border: 1px solid #334155; box-shadow: 0 10px 20px rgba(0,0,0,0.3); }
+    .balance-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; border-bottom: 1px solid #1e293b; padding-bottom: 12px; }
+    .bal-title { font-size: 11px; color: #94a3b8; font-weight: 700; }
+    .bal-num { font-size: 20px; font-weight: 900; color: #ffffff; margin-top: 4px; }
+    .bal-num span { font-size: 11px; color: #3b82f6; }
 
-        /* Uburyo ibutoni igaragaza ko yaselectinnwe */
-        .preset-btn.active-selected {
-            border-color: #007bff;
-            background-color: #e6f0ff;
-            color: #007bff;
-        }
+    .action-btns { display: flex; gap: 10px; margin-top: 12px; }
+    .btn-act { flex: 1; background: #1e293b; border: 1px solid #334155; padding: 10px; border-radius: 12px; font-weight: 700; color: #3b82f6; font-size: 13px; cursor: pointer; text-align: center; }
 
-        .input-group {
-            margin-bottom: 20px;
-        }
+    /* Notice */
+    .notice-bar { background: #1e293b; margin: 0 16px 15px; padding: 10px 14px; border-radius: 12px; font-size: 12px; color: #e2e8f0; display: flex; align-items: center; gap: 8px; border: 1px solid #334155; }
 
-        .input-group label {
-            display: block;
-            margin-bottom: 8px;
-            font-weight: bold;
-            color: #333;
-        }
+    /* CAR SLIDER */
+    .car-slider-card { margin: 0 16px 15px; height: 180px; border-radius: 16px; position: relative; overflow: hidden; border: 1px solid #334155; }
+    .car-slide { position: absolute; inset: 0; background-size: cover; background-position: center; transition: opacity 0.8s ease-in-out; opacity: 0; display: flex; align-items: flex-end; padding: 15px; }
+    .car-slide.active { opacity: 1; }
+    .banner-overlay { position: absolute; inset: 0; background: linear-gradient(to top, rgba(0,0,0,0.85), transparent); }
+    .banner-text { position: relative; z-index: 2; font-size: 14px; font-weight: 800; color: white; }
 
-        .input-group input {
-            width: 100%;
-            padding: 12px;
-            border: 1px solid #ccc;
-            border-radius: 6px;
-            box-sizing: border-box;
-            font-size: 16px;
-        }
+    /* Grid Menu */
+    .grid-menu { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin: 0 16px 20px; }
+    .menu-item { background: #0f172a; padding: 14px 6px; border-radius: 16px; text-align: center; border: 1px solid #334155; cursor: pointer; }
+    .menu-icon { font-size: 22px; margin-bottom: 4px; }
+    .menu-label { font-size: 11px; font-weight: 700; color: #cbd5e1; }
 
-        .btn-submit {
-            width: 100%;
-            padding: 14px;
-            background-color: #28a745;
-            color: white;
-            border: none;
-            border-radius: 6px;
-            font-size: 16px;
-            font-weight: bold;
-            cursor: pointer;
-        }
+    /* Live Activity */
+    .live-activity { margin: 0 16px 20px; background: #0f172a; border-radius: 16px; padding: 15px; border: 1px solid #334155; }
+    .live-header { display: flex; justify-content: space-between; font-size: 12px; font-weight: 800; color: #94a3b8; margin-bottom: 12px; }
+    .live-item { display: flex; align-items: center; gap: 12px; }
+    .avatar { width: 38px; height: 38px; background: #1d4ed8; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 800; }
 
-        .btn-submit:hover {
-            background-color: #218838;
-        }
-    </style>
+    /* Forms & Buttons */
+    .auth-card { background: #0f172a; margin: 20px 16px; padding: 24px 20px; border-radius: 20px; border: 1px solid #334155; }
+    .form-group { margin-bottom: 14px; text-align: left; }
+    .form-label { font-size: 11px; font-weight: 800; color: #94a3b8; letter-spacing: 0.5px; margin-bottom: 6px; display: block; }
+    
+    .input-container { position: relative; width: 100%; }
+    .input-box { width: 100%; background: #1e293b; border: 1px solid #334155; border-radius: 14px; padding: 14px 45px 14px 16px; font-size: 14px; color: white; outline: none; }
+    .input-box-normal { width: 100%; background: #1e293b; border: 1px solid #334155; border-radius: 14px; padding: 14px 16px; font-size: 14px; color: white; outline: none; }
+    
+    .eye-btn { position: absolute; right: 15px; top: 50%; transform: translateY(-50%); background: none; border: none; cursor: pointer; font-size: 16px; color: #94a3b8; }
+
+    .btn-main { width: 100%; background: #2563eb; color: white; border: none; padding: 14px; border-radius: 14px; font-size: 15px; font-weight: 700; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; margin-top: 10px; text-decoration: none; }
+    .btn-confirm-green { width: 100%; background: #10b981; color: white; border: none; padding: 14px; border-radius: 14px; font-size: 15px; font-weight: 800; cursor: pointer; margin-top: 15px; }
+    .btn-back { width: 100%; background: #1e293b; color: #3b82f6; border: 1px solid #334155; padding: 12px; border-radius: 14px; font-size: 13px; font-weight: 700; cursor: pointer; margin-top: 8px; text-align: center; }
+
+    /* Plans Card */
+    .plan-card { background: #0f172a; border-radius: 16px; padding: 16px; margin: 0 16px 12px; border: 1px solid #334155; }
+    .plan-header { display: flex; justify-content: space-between; font-weight: 800; font-size: 15px; color: #f8fafc; margin-bottom: 8px; }
+    .plan-badge { background: #1e3a8a; color: #60a5fa; font-size: 11px; padding: 4px 10px; border-radius: 8px; }
+    .plan-details { font-size: 12px; color: #94a3b8; line-height: 1.6; margin-bottom: 12px; text-align: left; }
+
+    /* Modal Styles */
+    .modal-overlay { position: fixed; inset: 0; background: rgba(0, 0, 0, 0.8); backdrop-filter: blur(4px); display: flex; align-items: center; justify-content: center; z-index: 100; padding: 15px; }
+    .modal-card { background: #1e293b; width: 100%; max-width: 420px; border-radius: 20px; padding: 20px; border: 1px solid #334155; color: white; max-height: 90vh; overflow-y: auto; }
+
+    /* Deposit Screen UI Elements */
+    .amount-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-top: 10px; }
+    .amount-btn { background: #0f172a; border: 1px solid #334155; color: white; padding: 12px 5px; border-radius: 10px; font-weight: 700; font-size: 13px; cursor: pointer; text-align: center; transition: all 0.2s ease; }
+    .amount-btn.selected { border: 2px solid #10b981; background: rgba(16, 185, 129, 0.1); color: #10b981; }
+
+    .deposit-details-box { background: #0f172a; border-radius: 16px; padding: 16px; margin-top: 12px; border: 1px solid #334155; text-align: left; }
+    .dep-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; font-size: 13px; }
+    .dep-label { color: #94a3b8; font-size: 12px; }
+    .dep-value { font-weight: 800; color: #f59e0b; font-size: 15px; }
+
+    /* Bottom Nav */
+    .bottom-nav { position: fixed; bottom: 0; left: 50%; transform: translateX(-50%); width: 100%; max-width: 480px; background: #0f172a; border-top: 1px solid #334155; display: flex; justify-content: space-around; padding: 10px 0; z-index: 90; }
+    .nav-item { text-align: center; color: #64748b; font-size: 10px; font-weight: 700; cursor: pointer; flex: 1; }
+    .nav-item.active { color: #3b82f6; }
+    .nav-icon { font-size: 18px; display: block; margin-bottom: 2px; }
+  </style>
 </head>
 <body>
 
-<div class="deposit-card">
-    <h2>Gukora ubwishingizi / Kubitsa</h2>
+<div class="app-container">
 
-    <!-- Amahitamo y'imibare yiteguye hejuru -->
-    <div class="preset-buttons">
-        <button type="button" class="preset-btn" data-amount="5000" onclick="selectPreset(5000)">5,000 RWF</button>
-        <button type="button" class="preset-btn" data-amount="10000" onclick="selectPreset(10000)">10,000 RWF</button>
-        <button type="button" class="preset-btn" data-amount="50000" onclick="selectPreset(50000)">50,000 RWF</button>
-        <button type="button" class="preset-btn" data-amount="100000" onclick="selectPreset(100000)">100,000 RWF</button>
+  <!-- AUTH SECTION -->
+  <div id="authContainer">
+    <!-- REGISTER PAGE -->
+    <div id="registerPage">
+      <div style="text-align: center; padding: 35px 15px 10px;">
+        <div style="font-size:24px; font-weight:900; color:#3b82f6;">⚡ TESLA MOTORS</div>
+        <div style="font-size:13px; color:#94a3b8; margin-top:4px;">Fungura Konti Nshya</div>
+      </div>
+      <div class="auth-card">
+        <div class="form-group">
+          <label class="form-label">AMAZINA YOSE</label>
+          <input type="text" id="regName" class="input-box-normal" placeholder="Amazina yawe">
+        </div>
+        <div class="form-group">
+          <label class="form-label">TELEFONI</label>
+          <input type="tel" id="regPhone" class="input-box-normal" placeholder="078xxxxxxxx">
+        </div>
+        <div class="form-group">
+          <label class="form-label">IJAMBOBANGA (PASSWORD)</label>
+          <div class="input-container">
+            <input type="password" id="regPass" class="input-box" placeholder="••••••">
+            <button type="button" class="eye-btn" onclick="togglePassword('regPass', this)">👁️</button>
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">EMEZA IJAMBOBANGA</label>
+          <div class="input-container">
+            <input type="password" id="regPassConfirm" class="input-box" placeholder="••••••">
+            <button type="button" class="eye-btn" onclick="togglePassword('regPassConfirm', this)">👁️</button>
+          </div>
+        </div>
+        <button id="regBtn" class="btn-main" onclick="handleRegister()">Iyandikishe ➔</button>
+        <button class="btn-back" onclick="showLoginSection()">Ufite konti? Injira</button>
+      </div>
     </div>
 
-    <!-- Kwandika umubare (Ubusa mu ntangiriro) -->
-    <div class="input-group">
-        <label for="deposit-amount">Andika umubare wa RWF ugiye kubitsa:</label>
-        <input 
-            type="number" 
-            id="deposit-amount" 
-            value="" 
-            placeholder="Andika umubare..." 
-            oninput="handleAmountInput(this.value)"
-        />
+    <!-- LOGIN PAGE -->
+    <div id="loginPage" style="display: none;">
+      <div style="text-align: center; padding: 35px 15px 10px;">
+        <div style="font-size:24px; font-weight:900; color:#3b82f6;">⚡ TESLA MOTORS</div>
+        <div style="font-size:13px; color:#94a3b8; margin-top:4px;">Injira muri Konti yawe</div>
+      </div>
+      <div class="auth-card">
+        <div class="form-group">
+          <label class="form-label">TELEFONI</label>
+          <input type="tel" id="loginPhone" class="input-box-normal" placeholder="078xxxxxxxx">
+        </div>
+        <div class="form-group">
+          <label class="form-label">IJAMBOBANGA (PASSWORD)</label>
+          <div class="input-container">
+            <input type="password" id="loginPass" class="input-box" placeholder="••••••">
+            <button type="button" class="eye-btn" onclick="togglePassword('loginPass', this)">👁️</button>
+          </div>
+        </div>
+        <button id="loginBtn" class="btn-main" onclick="handleLogin()">Injira ➔</button>
+        <div style="text-align: center; margin-top: 12px;">
+          <span style="font-size: 12px; color: #ef4444; font-weight: 700; cursor: pointer; text-decoration: underline;" onclick="showRegisterSection()">Nta konti? Iyandikishe</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MAIN APP CONTAINER -->
+  <div id="appBody" style="display: none;">
+
+    <!-- HEADER -->
+    <div class="dash-header">
+      <div style="margin-bottom: 8px;">
+        <button class="btn-step-back" onclick="goBackStep()">⬅ Subira inyuma</button>
+      </div>
+      <div class="dash-user">
+        <div>
+          <div class="user-name" id="dispName">Bruno Alain</div>
+          <div class="user-phone" id="dispPhone">Konti - 0789681391</div>
+        </div>
+        <div style="cursor:pointer; font-size:20px;" onclick="openDepositFlow()">🔔</div>
+      </div>
     </div>
 
-    <!-- Ibutoni yo kwemeza no kwishyura -->
-    <button type="button" class="btn-submit" onclick="submitDeposit()">
-        Koporora uburyo buhamye ushore
-    </button>
+    <!-- BALANCE CARD -->
+    <div class="balance-card">
+      <div class="balance-grid">
+        <div>
+          <div class="bal-title">Ayo ufiteho</div>
+          <div class="bal-num"><span id="userBalance">1,000</span> <span>RWF</span></div>
+        </div>
+        <div>
+          <div class="bal-title">Inyungu zose</div>
+          <div class="bal-num"><span id="userEarnings">0</span> <span>RWF</span></div>
+        </div>
+      </div>
+      <div class="action-btns">
+        <button class="btn-act" onclick="switchTab('imirimo')">👑 Gura VIP</button>
+        <button class="btn-act" onclick="openDepositFlow()">💵 Bitsa</button>
+      </div>
+    </div>
+
+    <!-- TAB 1: AHABANZA -->
+    <div id="tabAhabanza">
+      <div class="notice-bar">
+        <span>🔔</span>
+        <marquee behavior="scroll" direction="left" scrollamount="4">
+          Murakaza neza kuri Tesla Motors Investment Platform! Shora Imari mu migabane ya Tesla ubone inyungu Buri munsi!
+        </marquee>
+      </div>
+
+      <div class="car-slider-card">
+        <div class="car-slide active" style="background-image: url('https://images.unsplash.com/photo-1560958089-b8a1929cea89?auto=format&fit=crop&w=600&q=80');">
+          <div class="banner-overlay"></div>
+          <div class="banner-text">⚡ Tesla Model S - Performance & Speed</div>
+        </div>
+        <div class="car-slide" style="background-image: url('https://images.unsplash.com/photo-1536700503339-1e4b06520771?auto=format&fit=crop&w=600&q=80');">
+          <div class="banner-overlay"></div>
+          <div class="banner-text">⚡ Tesla Model 3 - Innovation & Future</div>
+        </div>
+        <div class="car-slide" style="background-image: url('https://images.unsplash.com/photo-1571127236794-81c0171d87a6?auto=format&fit=crop&w=600&q=80');">
+          <div class="banner-overlay"></div>
+          <div class="banner-text">⚡ Tesla Cybertruck - Ultimate Electric Truck</div>
+        </div>
+        <div class="car-slide" style="background-image: url('https://images.unsplash.com/photo-1617788138017-80ad40651399?auto=format&fit=crop&w=600&q=80');">
+          <div class="banner-overlay"></div>
+          <div class="banner-text">⚡ Tesla Model X - Falcon Wings Design</div>
+        </div>
+      </div>
+
+      <div style="margin: 0 16px 10px; font-size: 11px; font-weight: 800; color: #94a3b8; text-transform: uppercase; text-align:left;">IBIKORWA</div>
+      
+      <div class="grid-menu">
+        <div class="menu-item" onclick="openDepositFlow()"><div class="menu-icon">💵</div><div class="menu-label">Bitsa</div></div>
+        <div class="menu-item" onclick="openWithdrawModal()"><div class="menu-icon">📲</div><div class="menu-label">Bikuza</div></div>
+        <div class="menu-item" onclick="openHistoryModal()"><div class="menu-icon">🕒</div><div class="menu-label">Amateka</div></div>
+        <div class="menu-item" onclick="openBonusModal()"><div class="menu-icon">🎁</div><div class="menu-label">Bonus</div></div>
+        <div class="menu-item" onclick="openRewardsModal()"><div class="menu-icon">🏆</div><div class="menu-label">Ibihembo</div></div>
+        <div class="menu-item" onclick="openSupport()"><div class="menu-icon">🎧</div><div class="menu-label">Ubufasha</div></div>
+        <div class="menu-item" onclick="switchTab('imirimo')"><div class="menu-icon">📈</div><div class="menu-label">Shora</div></div>
+        <div class="menu-item" onclick="handleLogout()"><div class="menu-icon">🚪</div><div class="menu-label">Sohokamo</div></div>
+      </div>
+
+      <div class="live-activity">
+        <div class="live-header">
+          <span>• Live Investor Activity</span>
+          <span>RWANDA</span>
+        </div>
+        <div class="live-item">
+          <div class="avatar">U</div>
+          <div style="text-align:left;">
+            <div style="font-size:13px; font-weight:700; color:white;">Uwitidze M. +250787****09</div>
+            <div style="font-size:11px; color:#10b981;">invested in VIP 10... <span style="color:#64748b;">42s ago ↗</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TAB 2: IMIRIMO / VIP PLANS -->
+    <div id="tabImirimo" style="display: none;">
+      <div style="margin: 0 16px 12px; font-size: 13px; font-weight: 800; color: #3b82f6; text-align:left;">HITAMO UMUGABANE (VIP) W'IKIGEGA UGOZA:</div>
+      <div id="plansContainer"></div>
+    </div>
+
+    <!-- TAB 3: TUMIRA -->
+    <div id="tabTumira" style="display: none; padding: 0 16px;">
+      <div style="background:#0f172a; border-radius:20px; padding:20px; text-align:center; border:1px solid #334155;">
+        <div style="font-size:40px; margin-bottom:10px;">👥</div>
+        <h3 style="font-size:18px; color:white;">Tumira Inshuti Zazane Inyungu!</h3>
+        <p style="font-size:12px; color:#94a3b8; margin: 10px 0; line-height: 1.5;">
+          Umuntu atumiye Level 1 ye, iyo uwo atumiye ashoye umugabane, uwo muntu watumiye afata <b>35%</b> y'inyungu y'umugabane buri munsi!
+        </p>
+        <div style="background:#1e293b; padding:12px; border-radius:12px; font-size:12px; font-weight:700; color:#3b82f6; word-break:break-all; margin-bottom:12px;" id="refLinkText">
+          https://teslamotors.rw/register?ref=TESLA2026
+        </div>
+        <button class="btn-main" onclick="copyRefLink()">📋 Copy Referral Link</button>
+      </div>
+    </div>
+
+    <!-- TAB 4: KONTI -->
+    <div id="tabKonti" style="display: none; padding: 0 16px;">
+      <div style="background:#0f172a; border-radius:20px; padding:20px; border:1px solid #334155;">
+        <div style="text-align:center; margin-bottom:15px;">
+          <div style="width:60px; height:60px; background:#1e3a8a; color:#3b82f6; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:24px; font-weight:800; margin:0 auto 10px;">👤</div>
+          <h3 style="font-size:18px; color:white;" id="profileName">Bruno Alain</h3>
+          <p style="font-size:13px; color:#94a3b8;" id="profilePhone">0789681391</p>
+        </div>
+        <hr style="border:none; border-top:1px solid #334155; margin:15px 0;">
+        <div style="display:flex; justify-content:space-between; margin-bottom:10px;">
+          <span style="font-size:13px; color:#94a3b8;">Balance:</span>
+          <span style="font-size:14px; font-weight:800; color:#3b82f6;"><span id="accBal">1000</span> RWF</span>
+        </div>
+        <div style="display:flex; justify-content:space-between; margin-bottom:15px;">
+          <span style="font-size:13px; color:#94a3b8;">Inyungu yemerewe kubikuzwa:</span>
+          <span style="font-size:14px; font-weight:800; color:#10b981;"><span id="accWithdraw">0</span> RWF</span>
+        </div>
+        <button class="btn-main" onclick="openWithdrawModal()">📲 Bikuza Inyungu</button>
+        <button class="btn-back" onclick="handleLogout()" style="margin-top:15px; background:rgba(239, 68, 68, 0.2); color:#ef4444; border:1px solid #ef4444;">Sohokamo muri Konti</button>
+      </div>
+    </div>
+
+    <!-- BOTTOM NAVIGATION -->
+    <div class="bottom-nav">
+      <div onclick="switchTab('ahabanza')" id="navAhabanza" class="nav-item active"><span class="nav-icon">🏠</span>Ahabanza</div>
+      <div onclick="switchTab('imirimo')" id="navImirimo" class="nav-item"><span class="nav-icon">📦</span>Imirimo</div>
+      <div onclick="switchTab('tumira')" id="navTumira" class="nav-item"><span class="nav-icon">👥</span>Tumira</div>
+      <div onclick="switchTab('konti')" id="navKonti" class="nav-item"><span class="nav-icon">👤</span>Konti</div>
+    </div>
+
+  </div>
+
+  <!-- MODAL CONTAINER -->
+  <div id="generalModal" class="modal-overlay" style="display: none;">
+    <div class="modal-card" id="modalCardContent"></div>
+  </div>
+
 </div>
 
 <script>
-    // Variable ibika umubare watoranyijwe cyangwa wanditswe
-    let finalDepositAmount = 0;
+  let user = JSON.parse(localStorage.getItem('tesla_user')) || null;
+  let currentTab = localStorage.getItem('tesla_tab') || 'ahabanza';
 
-    // Function igihe umukiriya akande ku mabutoni yo hejuru
-    function selectPreset(amount) {
-        finalDepositAmount = amount;
-        document.getElementById('deposit-amount').value = amount;
-        updateButtonHighlight(amount);
+  let pageHistory = [];
+  let isModalOpen = false;
+  let selectedDepositAmount = 0; // Ubusa mu ntangiriro
+
+  const plans = [
+    { id: 'M0', price: 500, daily: 300, validity: 2 },
+    { id: 'M1', price: 20000, daily: 675, validity: 365 },
+    { id: 'M2', price: 100000, daily: 3350, validity: 365 },
+    { id: 'M2-VIP', price: 120000, daily: 8000, validity: 365 },
+    { id: 'M3', price: 250000, daily: 8325, validity: 365 },
+    { id: 'M3-VIP', price: 300000, daily: 20025, validity: 365 },
+    { id: 'M4', price: 500000, daily: 16800, validity: 365 },
+    { id: 'M5', price: 1000000, daily: 34000, validity: 365 }
+  ];
+
+  window.onload = function() {
+    if (user) {
+      showDashboard();
+    } else {
+      showAuthScreen();
+    }
+    renderPlans();
+    startImageSlider();
+  };
+
+  function showAuthScreen() {
+    document.getElementById('authContainer').style.display = 'block';
+    document.getElementById('appBody').style.display = 'none';
+  }
+
+  function showDashboard() {
+    document.getElementById('authContainer').style.display = 'none';
+    document.getElementById('appBody').style.display = 'block';
+    
+    // Update User Stats
+    document.getElementById('dispName').innerText = user.name || 'Bruno Alain';
+    document.getElementById('dispPhone').innerText = 'Konti - ' + (user.phone || '0789681391');
+    document.getElementById('userBalance').innerText = (user.balance || 1000).toLocaleString();
+    document.getElementById('userEarnings').innerText = (user.earnings || 0).toLocaleString();
+    
+    document.getElementById('profileName').innerText = user.name || 'Bruno Alain';
+    document.getElementById('profilePhone').innerText = user.phone || '0789681391';
+    document.getElementById('accBal').innerText = (user.balance || 1000).toLocaleString();
+    document.getElementById('accWithdraw').innerText = (user.earnings || 0).toLocaleString();
+
+    switchTab(currentTab);
+  }
+
+  function togglePassword(inputId, btn) {
+    const el = document.getElementById(inputId);
+    if (el.type === "password") {
+      el.type = "text";
+      btn.innerText = "🙈";
+    } else {
+      el.type = "password";
+      btn.innerText = "👁️";
+    }
+  }
+
+  function showLoginSection() {
+    document.getElementById('registerPage').style.display = 'none';
+    document.getElementById('loginPage').style.display = 'block';
+  }
+
+  function showRegisterSection() {
+    document.getElementById('loginPage').style.display = 'none';
+    document.getElementById('registerPage').style.display = 'block';
+  }
+
+  function handleRegister() {
+    const name = document.getElementById('regName').value;
+    const phone = document.getElementById('regPhone').value;
+    const pass = document.getElementById('regPass').value;
+    const passConfirm = document.getElementById('regPassConfirm').value;
+
+    if (!name || !phone || !pass) {
+      alert('Nyamuneka uzuze imyanya yose!');
+      return;
     }
 
-    // Function igenzura uko arimo kwandika umubare mu kagoni
-    function handleAmountInput(val) {
-        const inputVal = parseFloat(val);
-
-        if (!isNaN(inputVal) && inputVal > 0) {
-            finalDepositAmount = inputVal;
-            // Niba umubare wanditswe uhuye n'umwe mu yo hejuru, uraselectinga
-            updateButtonHighlight(inputVal);
-        } else {
-            finalDepositAmount = 0;
-            updateButtonHighlight(null);
-        }
+    if (pass !== passConfirm) {
+      alert('Amajambobanga ntabwo ahuye!');
+      return;
     }
 
-    // Function ihindura kwiselecta kw'amabutoni
-    function updateButtonHighlight(amount) {
-        const buttons = document.querySelectorAll('.preset-btn');
-        
-        buttons.forEach(btn => {
-            const btnAmount = parseFloat(btn.getAttribute('data-amount'));
-            if (amount && btnAmount === amount) {
-                btn.classList.add('active-selected'); // Biselecta button niba amadorari/RWF bihuye
-            } else {
-                btn.classList.remove('active-selected');
-            }
-        });
+    user = { name, phone, balance: 1000, earnings: 0 };
+    localStorage.setItem('tesla_user', JSON.stringify(user));
+    showDashboard();
+  }
+
+  function handleLogin() {
+    const phone = document.getElementById('loginPhone').value;
+    const pass = document.getElementById('loginPass').value;
+
+    if (!phone || !pass) {
+      alert('Injiza nimero ya telefoni n\'ijambobanga!');
+      return;
     }
 
-    // Function yo gukomeza ibyo kubitsa
-    function submitDeposit() {
-        if (!finalDepositAmount || finalDepositAmount <= 0) {
-            alert("Nyamuneka banza wandike cyangwa uhitemo umubare w'amafaranga ugiye kubitsa.");
-            return;
-        }
+    user = { name: 'Bruno Alain', phone, balance: 1000, earnings: 0 };
+    localStorage.setItem('tesla_user', JSON.stringify(user));
+    showDashboard();
+  }
 
-        // Ayo wanditse/uhitemo abe arayo akomerezamo
-        console.log("Amafaranga yo kubitsa:", finalDepositAmount);
-        alert("Ugiye kubitsa: " + finalDepositAmount + " RWF");
+  function handleLogout() {
+    localStorage.removeItem('tesla_user');
+    user = null;
+    showAuthScreen();
+    closeModal();
+  }
+
+  function switchTab(tab) {
+    currentTab = tab;
+    localStorage.setItem('tesla_tab', tab);
+
+    document.getElementById('tabAhabanza').style.display = 'none';
+    document.getElementById('tabImirimo').style.display = 'none';
+    document.getElementById('tabTumira').style.display = 'none';
+    document.getElementById('tabKonti').style.display = 'none';
+
+    document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
+
+    if (tab === 'ahabanza') {
+      document.getElementById('tabAhabanza').style.display = 'block';
+      document.getElementById('navAhabanza').classList.add('active');
+    } else if (tab === 'imirimo') {
+      document.getElementById('tabImirimo').style.display = 'block';
+      document.getElementById('navImirimo').classList.add('active');
+    } else if (tab === 'tumira') {
+      document.getElementById('tabTumira').style.display = 'block';
+      document.getElementById('navTumira').classList.add('active');
+    } else if (tab === 'konti') {
+      document.getElementById('tabKonti').style.display = 'block';
+      document.getElementById('navKonti').classList.add('active');
     }
+  }
+
+  function renderPlans() {
+    const container = document.getElementById('plansContainer');
+    container.innerHTML = '';
+    plans.forEach(plan => {
+      container.innerHTML += `
+        <div class="plan-card">
+          <div class="plan-header">
+            <span>Tesla Share (${plan.id})</span>
+            <span class="plan-badge">${plan.price.toLocaleString()} RWF</span>
+          </div>
+          <div class="plan-details">
+            • Inyungu ku munsi: <b>${plan.daily.toLocaleString()} RWF</b><br>
+            • Igihe bimarana: <b>${plan.validity} Iminsi</b><br>
+            • Inyungu zose: <b>${(plan.daily * plan.validity).toLocaleString()} RWF</b>
+          </div>
+          <button class="btn-main" onclick="openDepositFlow(${plan.price})">Shora ${plan.price.toLocaleString()} RWF</button>
+        </div>
+      `;
+    });
+  }
+
+  /* --- AGACE KO KUBITSA (DEPOSIT FLOW) AKOSORE --- */
+  function openDepositFlow(initialAmount) {
+    selectedDepositAmount = initialAmount || 0;
+    
+    const modalContent = `
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;">
+        <h3 style="font-size:16px;">💵 Bitsa Amafaranga</h3>
+        <span style="cursor:pointer; font-size:18px;" onclick="closeModal()">✖</span>
+      </div>
+
+      <!-- Preset Buttons -->
+      <div class="amount-grid">
+        <div class="amount-btn ${selectedDepositAmount === 5000 ? 'selected' : ''}" data-amt="5000" onclick="selectDepositPreset(5000)">5,000 RWF</div>
+        <div class="amount-btn ${selectedDepositAmount === 10000 ? 'selected' : ''}" data-amt="10000" onclick="selectDepositPreset(10000)">10,000 RWF</div>
+        <div class="amount-btn ${selectedDepositAmount === 50000 ? 'selected' : ''}" data-amt="50000" onclick="selectDepositPreset(50000)">50,000 RWF</div>
+        <div class="amount-btn ${selectedDepositAmount === 100000 ? 'selected' : ''}" data-amt="100000" onclick="selectDepositPreset(100000)">100,000 RWF</div>
+      </div>
+
+      <!-- Kwandika Umubare (Input Box) -->
+      <div class="form-group" style="margin-top:15px;">
+        <label class="form-label">ANDIKA UMUBARE WA RWF UGIYE KUBITSA:</label>
+        <input 
+          type="number" 
+          id="customDepositInput" 
+          class="input-box-normal" 
+          placeholder="Andika umubare..." 
+          value="${selectedDepositAmount ? selectedDepositAmount : ''}"
+          oninput="handleCustomDepositInput(this.value)"
+        >
+      </div>
+
+      <!-- Ibutoni yanditseho Koporora uburyo buhamye ushore -->
+      <button class="btn-confirm-green" onclick="submitDepositAction()">
+        Koporora uburyo buhamye ushore
+      </button>
+    `;
+
+    openModal(modalContent);
+  }
+
+  function selectDepositPreset(amount) {
+    selectedDepositAmount = amount;
+    const inputEl = document.getElementById('customDepositInput');
+    if (inputEl) inputEl.value = amount;
+    highlightDepositPresetButtons(amount);
+  }
+
+  function handleCustomDepositInput(val) {
+    const inputVal = parseFloat(val);
+    if (!isNaN(inputVal) && inputVal > 0) {
+      selectedDepositAmount = inputVal;
+      highlightDepositPresetButtons(inputVal);
+    } else {
+      selectedDepositAmount = 0;
+      highlightDepositPresetButtons(null);
+    }
+  }
+
+  function highlightDepositPresetButtons(amount) {
+    const buttons = document.querySelectorAll('.amount-btn');
+    buttons.forEach(btn => {
+      const btnAmt = parseFloat(btn.getAttribute('data-amt'));
+      if (amount && btnAmt === amount) {
+        btn.classList.add('selected');
+      } else {
+        btn.classList.remove('selected');
+      }
+    });
+  }
+
+  function submitDepositAction() {
+    if (!selectedDepositAmount || selectedDepositAmount <= 0) {
+      alert("Nyamuneka banza wandike cyangwa uhitemo umubare w'amafaranga ugiye kubitsa.");
+      return;
+    }
+
+    alert("Icyitonderwa: Ugiye kubitsa " + selectedDepositAmount.toLocaleString() + " RWF. Koresha uburyo buhamye bwo kwishyura!");
+    closeModal();
+  }
+
+  /* --- IZINDI FUNCTION ZIBA MURI DASHBOARD --- */
+  function openWithdrawModal() {
+    const modalContent = `
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;">
+        <h3 style="font-size:16px;">📲 Bikuza Inyungu</h3>
+        <span style="cursor:pointer; font-size:18px;" onclick="closeModal()">✖</span>
+      </div>
+      <div class="form-group">
+        <label class="form-label">UMUBARE SHAKO KUBIKUZA (RWF)</label>
+        <input type="number" class="input-box-normal" placeholder="Urugero: 5000">
+      </div>
+      <div class="form-group">
+        <label class="form-label">NIMERO Y'INTORE (MOMO/AIRTEL)</label>
+        <input type="tel" class="input-box-normal" placeholder="078xxxxxxx" value="${user ? user.phone : ''}">
+      </div>
+      <button class="btn-main" onclick="alert('Ubusabe bwawe bwakoze neza, uri mu murongo w\'abategereje!'); closeModal();">Emeza Kubikuza</button>
+    `;
+    openModal(modalContent);
+  }
+
+  function openHistoryModal() {
+    openModal(`
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;">
+        <h3 style="font-size:16px;">🕒 Amateka y'Ibyakozwe</h3>
+        <span style="cursor:pointer; font-size:18px;" onclick="closeModal()">✖</span>
+      </div>
+      <p style="font-size:13px; color:#94a3b8; text-align:center; margin:20px 0;">Nta gikorwa kirakorwa kuri iyi konti.</p>
+    `);
+  }
+
+  function openBonusModal() {
+    openModal(`
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;">
+        <h3 style="font-size:16px;">🎁 Bonus Zanjye</h3>
+        <span style="cursor:pointer; font-size:18px;" onclick="closeModal()">✖</span>
+      </div>
+      <div style="text-align:center; padding:10px;">
+        <div style="font-size:30px;">🎉</div>
+        <p style="font-size:13px; color:#94a3b8; margin-top:10px;">Ufite Bonus y'Iyakirizwa: <b>1,000 RWF</b></p>
+      </div>
+    `);
+  }
+
+  function openRewardsModal() {
+    openModal(`
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;">
+        <h3 style="font-size:16px;">🏆 Ibihembo wahawe</h3>
+        <span style="cursor:pointer; font-size:18px;" onclick="closeModal()">✖</span>
+      </div>
+      <p style="font-size:13px; color:#94a3b8; text-align:center; margin:20px 0;">Komeza utumire inshuti ubone ibihembo bitandukanye!</p>
+    `);
+  }
+
+  function openSupport() {
+    openModal(`
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;">
+        <h3 style="font-size:16px;">🎧 Ubufasha (Customer Care)</h3>
+        <span style="cursor:pointer; font-size:18px;" onclick="closeModal()">✖</span>
+      </div>
+      <p style="font-size:13px; color:#cbd5e1; margin-bottom:15px;">Niba ufite ikibazo hamagara cyangwa wandikire ubuyobozi bwa Tesla Motors RW:</p>
+      <a href="https://wa.me/250789681391" target="_blank" class="btn-confirm-green" style="text-decoration:none; text-align:center; display:block;">💬 Wandikire WhatsApp Support</a>
+    `);
+  }
+
+  function copyRefLink() {
+    const text = document.getElementById('refLinkText').innerText;
+    navigator.clipboard.writeText(text);
+    alert('Link yo kutumira yakoporowe!');
+  }
+
+  function openModal(contentHtml) {
+    document.getElementById('modalCardContent').innerHTML = contentHtml;
+    document.getElementById('generalModal').style.display = 'flex';
+    isModalOpen = true;
+  }
+
+  function closeModal() {
+    document.getElementById('generalModal').style.display = 'none';
+    isModalOpen = false;
+  }
+
+  function goBackStep() {
+    if (isModalOpen) {
+      closeModal();
+    } else if (currentTab !== 'ahabanza') {
+      switchTab('ahabanza');
+    }
+  }
+
+  function startImageSlider() {
+    let slides = document.querySelectorAll('.car-slide');
+    let currentSlide = 0;
+    setInterval(() => {
+      if (slides.length > 0) {
+        slides[currentSlide].classList.remove('active');
+        currentSlide = (currentSlide + 1) % slides.length;
+        slides[currentSlide].classList.add('active');
+      }
+    }, 3500);
+  }
 </script>
 
 </body>
