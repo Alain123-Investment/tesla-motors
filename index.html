@@ -1,11 +1,9 @@
-
-<!DOCTYPE html> 
-<html lang="en">
+<!DOCTYPE html>
+<html lang="rw">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Alain Investment</title>
-
+  <title>Alain Investment – Urubuga rw'Gushora Imari</title>
   <style>
     * {
       box-sizing: border-box;
@@ -13,12 +11,11 @@
       padding: 0;
       font-family: Arial, sans-serif;
     }
-
     body {
       background: #f5f7fb;
       color: #172033;
+      line-height: 1.6;
     }
-
     header {
       background: #0b1736;
       color: white;
@@ -27,143 +24,187 @@
       justify-content: space-between;
       align-items: center;
     }
-
-    .logo {
+    header .logo {
       font-size: 20px;
       font-weight: bold;
     }
-
-    .login {
-      color: white;
+    .btn {
+      padding: 10px 18px;
+      border-radius: 6px;
       text-decoration: none;
-      border: 1px solid #ffffff66;
-      padding: 9px 14px;
-      border-radius: 8px;
+      font-weight: bold;
+      display: inline-block;
+      cursor: pointer;
     }
-
+    .btn-primary {
+      background: #10b981;
+      color: white;
+    }
+    .btn-outline {
+      border: 1px solid white;
+      color: white;
+    }
     .hero {
       background: #0b1736;
       color: white;
-      padding: 45px 22px 55px;
+      padding: 60px 20px;
+      text-align: center;
     }
-
     .hero h1 {
-      font-size: 34px;
-      line-height: 1.15;
-      margin-bottom: 18px;
+      font-size: 32px;
+      margin-bottom: 15px;
     }
-
     .hero p {
-      color: #d6dced;
-      line-height: 1.6;
-      margin-bottom: 25px;
+      font-size: 16px;
+      color: #cbd5e1;
+      max-width: 600px;
+      margin: 0 auto 25px;
     }
-
-    .button {
-      display: inline-block;
-      background: #19a463;
-      color: white;
-      text-decoration: none;
-      padding: 13px 22px;
-      border-radius: 9px;
-      font-weight: bold;
-    }
-
     .section {
-      padding: 30px 20px;
+      padding: 50px 20px;
+      max-width: 1100px;
+      margin: 0 auto;
     }
-
-    .section h2 {
-      margin-bottom: 20px;
+    .section-title {
+      text-align: center;
+      margin-bottom: 35px;
       font-size: 24px;
+      color: #0b1736;
     }
-
     .cards {
       display: grid;
-      gap: 15px;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 20px;
     }
-
     .card {
       background: white;
-      padding: 22px;
-      border-radius: 14px;
-      box-shadow: 0 4px 15px #00000010;
+      padding: 25px;
+      border-radius: 10px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+      text-align: center;
     }
-
-    .card h3 {
+    .card .icon {
+      font-size: 35px;
       margin-bottom: 10px;
     }
-
-    .card p {
-      color: #657087;
-      line-height: 1.5;
+    .card h3 {
+      margin-bottom: 10px;
+      color: #0b1736;
     }
-
-    .icon {
-      font-size: 30px;
-      margin-bottom: 12px;
+    /* Investment Plans Style */
+    .plan-card {
+      background: white;
+      border: 2px solid #e2e8f0;
+      border-radius: 12px;
+      padding: 30px 20px;
+      text-align: center;
+      transition: 0.3s;
     }
-
+    .plan-card.popular {
+      border-color: #10b981;
+      position: relative;
+    }
+    .plan-card .price {
+      font-size: 26px;
+      font-weight: bold;
+      color: #10b981;
+      margin: 15px 0;
+    }
+    .payments {
+      background: #e2e8f0;
+      text-align: center;
+      padding: 25px;
+      border-radius: 8px;
+    }
     footer {
       background: #0b1736;
-      color: #bfc7d8;
+      color: #94a3b8;
       text-align: center;
-      padding: 25px 15px;
-      font-size: 13px;
+      padding: 20px;
+      margin-top: 40px;
     }
   </style>
 </head>
-
 <body>
 
   <header>
     <div class="logo">Alain Investment</div>
-    <a class="login" href="#">Login</a>
+    <div>
+      <a href="#" class="btn btn-outline">Kwinjira</a>
+    </div>
   </header>
 
   <section class="hero">
-    <h1>Build Your Financial Future</h1>
-    <p>
-      A modern investment management platform designed to help users
-      monitor investments, track activity and manage their financial goals.
-    </p>
-    <a class="button" href="#">Get Started</a>
+    <h1>Wubaka Ejo Hazaza Hwawe Mu By'Umutungo</h1>
+    <p>Urubuga rwa kijyambere rwo gushora imari mu buryo bwizeza umutekano no gukurikirana inyungu zawe munsi ku munsi.</p>
+    <a href="#" class="btn btn-primary">Tanga Tangira Ubu</a>
   </section>
 
+  <!-- Igice cy'Impamvu zo gutangira -->
   <section class="section">
-    <h2>Why Choose Our Platform?</h2>
-
+    <h2 class="section-title">Kuki Wahitamo Platform Yacu?</h2>
     <div class="cards">
-
       <div class="card">
         <div class="icon">📊</div>
-        <h3>Track Investments</h3>
-        <p>
-          Monitor your investment activity from one simple dashboard.
-        </p>
+        <h3>Kurikirana Inyungu</h3>
+        <p>Gukurikirana imari yawe n'inyungu ibyara buri munsi ukoresheje dashboard yoroshye.</p>
       </div>
-
       <div class="card">
         <div class="icon">🔐</div>
-        <h3>Secure Access</h3>
-        <p>
-          Keep your account information protected with secure account access.
-        </p>
+        <h3>Umutekano Wuzuye</h3>
+        <p>Ibitshorwa byawe n'amakuru yawe bibarizwa mu bubiko burinzwe mu buryo buhanitse.</p>
       </div>
-
       <div class="card">
         <div class="icon">📈</div>
-        <h3>Financial Goals</h3>
-        <p>
-          Organize your investment goals and follow your progress over time.
-        </p>
+        <h3>Gukuza Umutungo</h3>
+        <p>Panga ingamba z'imari yawe kandi ukurikire uko inyungutsira ku gihe giteganijwe.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Igice cy'Ibyiciro by'Imari (Investment Plans) -->
+  <section class="section">
+    <h2 class="section-title">Ibyiciro zo Gushora Imari</h2>
+    <div class="cards">
+      <div class="plan-card">
+        <h3>Igice cy'Ibanze</h3>
+        <div class="price">10,000 RWF</div>
+        <p>Inyungu: 5% ku cyumweru</p>
+        <p>Ikipimo: Iminsi 30</p>
+        <br>
+        <a href="#" class="btn btn-primary">Shora Imari</a>
       </div>
 
+      <div class="plan-card popular">
+        <h3>Igice cy'Akarusho</h3>
+        <div class="price">50,000 RWF</div>
+        <p>Inyungu: 12% ku cyumweru</p>
+        <p>Ikipimo: Iminsi 60</p>
+        <br>
+        <a href="#" class="btn btn-primary">Shora Imari</a>
+      </div>
+
+      <div class="plan-card">
+        <h3>Igice cy'Aba-VIP</h3>
+        <div class="price">200,000 RWF</div>
+        <p>Inyungu: 25% ku cyumweru</p>
+        <p>Ikipimo: Iminsi 90</p>
+        <br>
+        <a href="#" class="btn btn-primary">Shora Imari</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Kwishyura no Kubikuza -->
+  <section class="section">
+    <div class="payments">
+      <h3>Uburyo bwo Kwishyura no Kubikuza Buza Bwihuta</h3>
+      <p>Twikorana n'uburyo buzwi bwa Mobile Money (MTN MoMo & Airtel Money) hamwe n'Amonde ya Banki.</p>
     </div>
   </section>
 
   <footer>
-    © 2026 Alain Investment — Demo Platform
+    <p>© 2026 Alain Investment – Urubuga rwo Gushora Imari. Uburenganzira bwose buragumanwa.</p>
   </footer>
 
 </body>
