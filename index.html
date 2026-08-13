@@ -59,10 +59,11 @@
     .btn-back { width: 100%; background: #1e293b; color: #3b82f6; border: 1px solid #334155; padding: 12px; border-radius: 14px; font-size: 13px; font-weight: 700; cursor: pointer; margin-top: 8px; text-align: center; }
 
     /* Plans Card */
-    .plan-card { background: #0f172a; border-radius: 16px; padding: 16px; margin: 0 16px 12px; border: 1px solid #334155; }
-    .plan-header { display: flex; justify-content: space-between; font-weight: 800; font-size: 15px; color: #f8fafc; margin-bottom: 8px; }
+    .plan-card { background: #0f172a; border-radius: 16px; padding: 16px; margin: 0 16px 16px; border: 1px solid #334155; box-shadow: 0 4px 12px rgba(0,0,0,0.2); }
+    .plan-header-title { background: #1d4ed8; color: #ffffff; padding: 8px 12px; border-radius: 10px; font-size: 13px; font-weight: 800; margin-bottom: 12px; text-align: center; letter-spacing: 0.5px; }
+    .plan-header { display: flex; justify-content: space-between; align-items: center; font-weight: 800; font-size: 16px; color: #f8fafc; margin-bottom: 10px; }
     .plan-badge { background: #1e3a8a; color: #60a5fa; font-size: 11px; padding: 4px 10px; border-radius: 8px; }
-    .plan-details { font-size: 12px; color: #94a3b8; line-height: 1.6; margin-bottom: 12px; text-align: left; }
+    .plan-details { font-size: 12px; color: #cbd5e1; line-height: 1.8; margin-bottom: 14px; text-align: left; background: #1e293b; padding: 10px 12px; border-radius: 10px; }
 
     /* Modal Styles */
     .modal-overlay { position: fixed; inset: 0; background: rgba(0, 0, 0, 0.85); backdrop-filter: blur(5px); display: flex; align-items: center; justify-content: center; z-index: 100; padding: 15px; }
@@ -227,9 +228,8 @@
       </div>
     </div>
 
-    <!-- TAB 2: IMIRIMO / VIP PLANS -->
+    <!-- TAB 2: IMIRIMO / SHORA (ALL PLANS INDIVIDUALLY) -->
     <div id="tabImirimo" style="display: none;">
-      <div style="margin: 0 16px 12px; font-size: 14px; font-weight: 800; color: #3b82f6; text-align:left;">Shora mu kigega cya Tesla Motors:</div>
       <div id="plansContainer"></div>
     </div>
 
@@ -288,15 +288,28 @@
   let currentTab = localStorage.getItem('tesla_tab') || 'ahabanza';
   let selectedDepositAmount = 0;
 
-  // URUTONDE RW'IMIGABANE N'IMIRIMO (M & VIP)
+  // IMIGABANE YOSE UKWAWO NK'UKO IRI MU MAFOTO
   const plans = [
-    { id: 'M0', name: 'M0 Share', price: 500, daily: 300, validity: 2 },
-    { id: 'M1', name: 'M1 Share', price: 20000, daily: 675, validity: 365 },
-    { id: 'M2', name: 'M2 Share', price: 100000, daily: 3350, validity: 365 },
-    { id: 'M2-VIP', name: 'M2-VIP Share', price: 120000, daily: 8000, validity: 365 },
-    { id: 'M3', name: 'M3 Share', price: 250000, daily: 8325, validity: 365 },
-    { id: 'VIP1', name: 'VIP 1 Share', price: 500000, daily: 18000, validity: 365 },
-    { id: 'VIP2', name: 'VIP 2 Share', price: 1000000, daily: 40000, validity: 365 }
+    { id: 'M0', name: 'M0 Level', price: 500, daily: 300, monthly: 600, annual: 600, validity: 2 },
+    { id: 'M1', name: 'M1 Level', price: 20000, daily: 675, monthly: 20250, annual: 246375, validity: 365 },
+    { id: 'M2', name: 'M2 Level', price: 100000, daily: 3350, monthly: 100500, annual: 1222750, validity: 365 },
+    { id: 'M2-VIP', name: 'M2-VIP Level', price: 120000, daily: 8000, monthly: 240000, annual: 2920000, validity: 365 },
+    { id: 'M3', name: 'M3 Level', price: 250000, daily: 8325, monthly: 249750, annual: 3038625, validity: 365 },
+    { id: 'M3-VIP', name: 'M3-VIP Level', price: 300000, daily: 20025, monthly: 600750, annual: 7309125, validity: 365 },
+    { id: 'M4', name: 'M4 Level', price: 550000, daily: 18400, monthly: 552000, annual: 6716000, validity: 365 },
+    { id: 'M4-VIP', name: 'M4-VIP Level', price: 600000, daily: 40000, monthly: 1200000, annual: 14600000, validity: 365 },
+    { id: 'M5', name: 'M5 Level', price: 1200000, daily: 40000, monthly: 1200000, annual: 14600000, validity: 365 },
+    { id: 'M5-VIP', name: 'M5-VIP Level', price: 1500000, daily: 100000, monthly: 3000000, annual: 36500000, validity: 365 },
+    { id: 'M6', name: 'M6 Level', price: 2400000, daily: 81000, monthly: 2430000, annual: 29565000, validity: 365 },
+    { id: 'M6-VIP', name: 'M6-VIP Level', price: 2800000, daily: 187500, monthly: 5625000, annual: 68437500, validity: 365 },
+    { id: 'M7', name: 'M7 Level', price: 4000000, daily: 134750, monthly: 4042500, annual: 49183750, validity: 365 },
+    { id: 'M7-VIP', name: 'M7-VIP Level', price: 5000000, daily: 334250, monthly: 10027500, annual: 122001250, validity: 365 },
+    { id: 'M8', name: 'M8 Level', price: 6000000, daily: 200000, monthly: 6000000, annual: 73000000, validity: 365 },
+    { id: 'M8-VIP', name: 'M8-VIP Level', price: 7000000, daily: 468000, monthly: 14040000, annual: 170820000, validity: 365 },
+    { id: 'M9', name: 'M9 Level', price: 8000000, daily: 267750, monthly: 8032500, annual: 97728750, validity: 365 },
+    { id: 'M9-VIP', name: 'M9-VIP Level', price: 9000000, daily: 600750, monthly: 18022500, annual: 219273750, validity: 365 },
+    { id: 'M10', name: 'M10 Level', price: 10000000, daily: 335000, monthly: 10050000, annual: 122275000, validity: 365 },
+    { id: 'M10-VIP', name: 'M10-VIP Level', price: 11000000, daily: 735000, monthly: 22050000, annual: 268275000, validity: 365 }
   ];
 
   window.onload = function() {
@@ -419,20 +432,22 @@
     }
   }
 
-  // RENDER PLANS (SHORA NI IMIRIMO)
+  // RENDER PLANS (BURI MUGABANE UKWAWO HAMWE N'ICYAPA CYO SHORA MU KIGEGA CYA TESLA MOTORS)
   function renderPlans() {
     const container = document.getElementById('plansContainer');
     if (!container) return;
     container.innerHTML = plans.map(p => `
       <div class="plan-card">
+        <div class="plan-header-title">Shora mu kigega cya Tesla Motors</div>
         <div class="plan-header">
-          <span>${p.name}</span>
+          <span>⚡ ${p.name}</span>
           <span class="plan-badge">${p.validity} Iminsi</span>
         </div>
         <div class="plan-details">
-          <div>• Igiciro: <b>${p.price.toLocaleString()} RWF</b></div>
-          <div>• Inyungu ku munsi: <b>${p.daily.toLocaleString()} RWF</b></div>
-          <div>• Inyungu yose: <b>${(p.daily * p.validity).toLocaleString()} RWF</b></div>
+          <div>• Igiciro (Price): <b>${p.price.toLocaleString()} RWF</b></div>
+          <div>• Inyungu ku munsi (Daily): <b>${p.daily.toLocaleString()} RWF</b></div>
+          <div>• Inyungu ku kwezi (Monthly): <b>${p.monthly.toLocaleString()} RWF</b></div>
+          <div>• Inyungu ku mwaka (Annual): <b>${p.annual.toLocaleString()} RWF</b></div>
         </div>
         <button class="btn-main" onclick="buyInvestment('${p.id}', ${p.price})">Shora (${p.name})</button>
       </div>
@@ -446,17 +461,14 @@
       user.totalInvestments = (user.totalInvestments || 0) + 1;
       localStorage.setItem('tesla_user', JSON.stringify(user));
       showDashboard();
-      alert("Ushoye neza mu umugabane wa " + planId + "!");
+      alert("Ushoye neza mu mugabane wa " + planId + "!");
     } else {
-      alert("Ntabwo amacye yo gushora ahagije! Banza ubitse amafaranga.");
+      alert("Ntabwo amafaranga yo gushora ahagije! Banza ubitse amafaranga.");
       openDepositFlow(price);
     }
   }
 
-  /* -------------------------------------------------------------
-     DEPOSIT FLOW (BITSA) IN KINYARWANDA
-     ------------------------------------------------------------- */
-
+  /* DEPOSIT FLOW (BITSA) */
   function openDepositFlow(initialAmount = 0) {
     selectedDepositAmount = initialAmount;
     const modal = document.getElementById('generalModal');
@@ -469,7 +481,6 @@
         <span onclick="closeModal()" style="position: absolute; right: 0; top: -5px; font-size: 20px; font-weight: bold; cursor: pointer; color: #64748b;">✕</span>
         <h4 style="font-size: 15px; font-weight: 800; color: #0f172a; margin-bottom: 12px; text-align: left;">Hitamo umubare w'amafaranga ubitsa</h4>
         
-        <!-- Preset Amounts Grid -->
         <div class="recharge-grid">
           <button class="recharge-btn ${initialAmount === 5000 ? 'active' : ''}" onclick="setDepositAmount(5000, this)">5,000</button>
           <button class="recharge-btn ${initialAmount === 10000 ? 'active' : ''}" onclick="setDepositAmount(10000, this)">10,000</button>
@@ -542,7 +553,7 @@
     }
   }
 
-  /* INTAMBWE YA 2: MOMO PAY MODAL (TESLA MOTORS PAY) */
+  /* TESLA MOTORS PAY MODAL */
   function proceedToPayModal() {
     if (!selectedDepositAmount || selectedDepositAmount <= 0) return;
 
@@ -581,13 +592,11 @@
           </div>
         </div>
 
-        <!-- USSD CODE WITH COPY -->
         <div style="text-align: center; margin: 15px 0;">
           <span style="color: #d97706; font-size: 14px; font-weight: 800; letter-spacing: 0.5px;">*182*8*1*000564#</span>
           <span class="copy-icon" style="color: #fff; margin-left: 6px;" onclick="copyText('*182*8*1*000564#')">📋</span>
         </div>
 
-        <!-- YOUR PAYMENT ACCOUNT -->
         <div style="margin-top: 20px; display: flex; align-items: center; gap: 10px; border-top: 1px solid #262626; padding-top: 15px;">
           <div style="background: #262626; width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 14px;">👤</div>
           <div>
@@ -599,9 +608,7 @@
     `;
   }
 
-  /* -------------------------------------------------------------
-     BIKUZA MODAL (WITHDRAW)
-     ------------------------------------------------------------- */
+  /* BIKUZA MODAL */
   function openWithdrawModal() {
     const modal = document.getElementById('generalModal');
     const content = document.getElementById('modalCardContent');
@@ -636,7 +643,6 @@
 
   function submitWithdrawal() {
     const amt = Number(document.getElementById('withdrawAmount').value);
-    const phone = document.getElementById('withdrawPhone').value;
 
     if (!amt || amt < 2000) {
       alert("Amafaranga ya make yo kubikuza ni 2,000 RWF.");
@@ -658,9 +664,7 @@
     alert("Ibusabe bwawe bwo kubikuza RWF " + amt.toLocaleString() + " bwoherejwe! Buri mu buryo bwa PENDING kuri Admin Dashboard.");
   }
 
-  /* -------------------------------------------------------------
-     AMATEKA MODAL
-     ------------------------------------------------------------- */
+  /* AMATEKA MODAL */
   function openHistoryModal() {
     const modal = document.getElementById('generalModal');
     const content = document.getElementById('modalCardContent');
@@ -681,9 +685,7 @@
     `;
   }
 
-  /* -------------------------------------------------------------
-     BONUS MODAL
-     ------------------------------------------------------------- */
+  /* BONUS MODAL */
   function openBonusModal() {
     const modal = document.getElementById('generalModal');
     const content = document.getElementById('modalCardContent');
@@ -715,9 +717,7 @@
     }
   }
 
-  /* -------------------------------------------------------------
-     IBIHEMBO MODAL
-     ------------------------------------------------------------- */
+  /* IBIHEMBO MODAL */
   function openRewardsModal() {
     const modal = document.getElementById('generalModal');
     const content = document.getElementById('modalCardContent');
@@ -749,9 +749,7 @@
     }
   }
 
-  /* -------------------------------------------------------------
-     UBUFASHA MODAL (CUSTOMER CARE - TELEGRAM)
-     ------------------------------------------------------------- */
+  /* UBUFASHA MODAL */
   function openSupport() {
     const modal = document.getElementById('generalModal');
     const content = document.getElementById('modalCardContent');
