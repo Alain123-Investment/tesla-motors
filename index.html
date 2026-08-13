@@ -96,13 +96,17 @@
 
     /* Green Pay Confirmation Button */
     .btn-confirm-payment { width: 100%; background: #22c55e; color: #ffffff; border: none; padding: 14px; border-radius: 14px; font-size: 15px; font-weight: 800; cursor: pointer; margin-top: 12px; display: flex; align-items: center; justify-content: center; gap: 6px; box-shadow: 0 4px 12px rgba(34, 197, 94, 0.3); }
-    .btn-confirm-payment.done { background: #16a34a; cursor: default; }
+    .btn-confirm-payment.done { background: #eab308; cursor: default; }
 
     /* Bottom Nav */
     .bottom-nav { position: fixed; bottom: 0; left: 50%; transform: translateX(-50%); width: 100%; max-width: 480px; background: #0f172a; border-top: 1px solid #334155; display: flex; justify-content: space-around; padding: 10px 0; z-index: 90; }
     .nav-item { text-align: center; color: #64748b; font-size: 10px; font-weight: 700; cursor: pointer; flex: 1; }
     .nav-item.active { color: #3b82f6; }
     .nav-icon { font-size: 18px; display: block; margin-bottom: 2px; }
+    
+    /* Team list styles */
+    .team-card { background: #1e293b; padding: 12px; border-radius: 12px; margin-top: 10px; border: 1px solid #334155; text-align: left; }
+    .team-member { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid #334155; font-size: 12px; }
   </style>
 </head>
 <body>
@@ -245,11 +249,11 @@
       <div class="grid-menu">
         <div class="menu-item" onclick="openDepositFlow()"><div class="menu-icon">💵</div><div class="menu-label">Bitsa</div></div>
         <div class="menu-item" onclick="openWithdrawModal()"><div class="menu-icon">📲</div><div class="menu-label">Bikuza</div></div>
+        <div class="menu-item" onclick="switchTab('itsinda')"><div class="menu-icon">👥</div><div class="menu-label">Itsinda</div></div>
         <div class="menu-item" onclick="openHistoryModal()"><div class="menu-icon">🕒</div><div class="menu-label">Amateka</div></div>
         <div class="menu-item" onclick="openBonusModal()"><div class="menu-icon">🎁</div><div class="menu-label">Bonus</div></div>
         <div class="menu-item" onclick="openRewardsModal()"><div class="menu-icon">🏆</div><div class="menu-label">Ibihembo</div></div>
         <div class="menu-item" onclick="openSupport()"><div class="menu-icon">🎧</div><div class="menu-label">Ubufasha</div></div>
-        <div class="menu-item" onclick="switchTab('imirimo')"><div class="menu-icon">📈</div><div class="menu-label">Shora</div></div>
         <div class="menu-item" onclick="handleLogout()"><div class="menu-icon">🚪</div><div class="menu-label">Sohokamo</div></div>
       </div>
     </div>
@@ -259,18 +263,37 @@
       <div id="plansContainer"></div>
     </div>
 
-    <!-- TAB 3: TUMIRA -->
-    <div id="tabTumira" style="display: none; padding: 0 16px;">
+    <!-- TAB 3: ITSINDA (TEAM) -->
+    <div id="tabItsinda" style="display: none; padding: 0 16px;">
       <div style="background:#0f172a; border-radius:20px; padding:20px; text-align:center; border:1px solid #334155;">
-        <div style="font-size:40px; margin-bottom:10px;">👥</div>
-        <h3 style="font-size:18px; color:white;">Tumira Inshuti Zazane Inyungu!</h3>
-        <p style="font-size:12px; color:#94a3b8; margin: 10px 0; line-height: 1.5;">
-          Umuntu atumiye Level 1 ye, iyo uwo atumiye ashoye umugabane, uwo muntu watumiye afata <b>35%</b> y'inyungu y'umugabane buri munsi!
-        </p>
-        <div style="background:#1e293b; padding:12px; border-radius:12px; font-size:12px; font-weight:700; color:#3b82f6; word-break:break-all; margin-bottom:12px;" id="refLinkText">
-          Loading link...
+        <div style="font-size:36px; margin-bottom:6px;">👥</div>
+        <h3 style="font-size:18px; color:white;">Itsinda Ryange (Team)</h3>
+        
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px; margin: 15px 0;">
+          <div style="background:#1e293b; padding:10px; border-radius:12px; border:1px solid #334155;">
+            <div style="font-size:11px; color:#94a3b8;">Level 1 Yanjye</div>
+            <div style="font-size:16px; font-weight:800; color:#22c55e;" id="teamL1Count">0 People</div>
+          </div>
+          <div style="background:#1e293b; padding:10px; border-radius:12px; border:1px solid #334155;">
+            <div style="font-size:11px; color:#94a3b8;">Inyungu za Level 1</div>
+            <div style="font-size:16px; font-weight:800; color:#eab308;" id="teamL1Earnings">0 RWF</div>
+          </div>
         </div>
-        <button class="btn-main" onclick="copyRefLink()">📋 Copy Referral Link</button>
+
+        <p style="font-size:12px; color:#cbd5e1; margin: 10px 0; line-height: 1.5; text-align: left;" id="teamStatusText">
+          Nta muntu uraza muri level 1 yawe. Tumira abantu uyu munsi ukomeze kongera inyungu!
+        </p>
+
+        <!-- Referral Link Box -->
+        <div style="margin-top:15px; text-align:left;">
+          <label style="font-size:11px; font-weight:800; color:#94a3b8; display:block; margin-bottom:4px;">REFERRAL LINK YAWE (UNIQUE)</label>
+          <div style="background:#1e293b; padding:10px 12px; border-radius:12px; font-size:12px; font-weight:700; color:#3b82f6; display:flex; justify-content:space-between; align-items:center; border:1px solid #334155;">
+            <span id="refLinkText" style="word-break:break-all; margin-right:8px;">Loading link...</span>
+            <span style="cursor:pointer; font-size:18px;" onclick="copyRefLink()">📋</span>
+          </div>
+        </div>
+
+        <button class="btn-main" onclick="copyRefLink()" style="margin-top:15px;">📋 Koporora Referral Link</button>
       </div>
     </div>
 
@@ -281,11 +304,16 @@
           <div style="width:60px; height:60px; background:#1e3a8a; color:#3b82f6; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:24px; font-weight:800; margin:0 auto 10px;">👤</div>
           <h3 style="font-size:18px; color:white;" id="profileName">Bruno Alain</h3>
           <p style="font-size:13px; color:#94a3b8;" id="profilePhone">0789681391</p>
+          <span style="font-size:11px; background:#1e293b; color:#3b82f6; padding:2px 8px; border-radius:6px; margin-top:4px; display:inline-block;" id="profileRefCode">Ref Code: ...</span>
         </div>
         <hr style="border:none; border-top:1px solid #334155; margin:15px 0;">
         <div style="display:flex; justify-content:space-between; margin-bottom:10px;">
-          <span style="font-size:13px; color:#94a3b8;">Balance:</span>
+          <span style="font-size:13px; color:#94a3b8;">Balance yose:</span>
           <span style="font-size:14px; font-weight:800; color:#3b82f6;"><span id="accBal">1000</span> RWF</span>
+        </div>
+        <div style="display:flex; justify-content:space-between; margin-bottom:10px;">
+          <span style="font-size:13px; color:#94a3b8;">Inyungu z'Itsinda (Level 1):</span>
+          <span style="font-size:14px; font-weight:800; color:#22c55e;"><span id="accTeamEarnings">0</span> RWF</span>
         </div>
         <button class="btn-main" onclick="openWithdrawModal()">📲 Bikuza Inyungu</button>
         <button class="btn-back" onclick="handleLogout()" style="margin-top:15px; background:rgba(239, 68, 68, 0.2); color:#ef4444; border:1px solid #ef4444;">Sohokamo muri Konti</button>
@@ -296,7 +324,7 @@
     <div class="bottom-nav">
       <div onclick="switchTab('ahabanza')" id="navAhabanza" class="nav-item active"><span class="nav-icon">🏠</span>Ahabanza</div>
       <div onclick="switchTab('imirimo')" id="navImirimo" class="nav-item"><span class="nav-icon">📦</span>Imirimo</div>
-      <div onclick="switchTab('tumira')" id="navTumira" class="nav-item"><span class="nav-icon">👥</span>Tumira</div>
+      <div onclick="switchTab('itsinda')" id="navItsinda" class="nav-item"><span class="nav-icon">👥</span>Itsinda</div>
       <div onclick="switchTab('konti')" id="navKonti" class="nav-item"><span class="nav-icon">👤</span>Konti</div>
     </div>
 
@@ -310,7 +338,29 @@
 </div>
 
 <script>
-  let user = JSON.parse(localStorage.getItem('tesla_user')) || { name: 'Bruno Alain', phone: '0789681391', balance: 1000, earnings: 0, investedAmount: 0, totalInvestments: 0 };
+  // Helper to generate unique referral code (Random alphanumeric)
+  function generateUniqueRefCode() {
+    return 'TSL-' + Math.random().toString(36).substring(2, 8).toUpperCase();
+  }
+
+  let user = JSON.parse(localStorage.getItem('tesla_user')) || { 
+    name: 'Bruno Alain', 
+    phone: '0789681391', 
+    balance: 1000, 
+    earnings: 0, 
+    investedAmount: 0, 
+    totalInvestments: 0,
+    refCode: generateUniqueRefCode(),
+    level1Members: [],
+    level1Earnings: 0
+  };
+
+  // Ensure refCode exists for old users
+  if (!user.refCode) {
+    user.refCode = generateUniqueRefCode();
+    localStorage.setItem('tesla_user', JSON.stringify(user));
+  }
+
   let currentTab = localStorage.getItem('tesla_tab') || 'ahabanza';
   let tabHistory = ['ahabanza'];
   let selectedDepositAmount = 0;
@@ -360,11 +410,11 @@
     }, 3000);
   }
 
-  /* REFERRAL LINK GENERATOR FOR VERCEL */
+  /* UNIQUE REFERRAL LINK GENERATOR FOR VERCEL */
   function getReferralLink() {
-    const baseUrl = window.location.origin;
-    const phone = (user && user.phone) ? user.phone : '0789681391';
-    return `${baseUrl}/?ref=${phone}`;
+    const baseUrl = "https://tesla-motors-orcin.vercel.app";
+    const code = (user && user.refCode) ? user.refCode : 'TSL-8A2F9B';
+    return `${baseUrl}/?ref=${code}`;
   }
 
   function togglePassword(inputId, btn) {
@@ -386,9 +436,32 @@
       document.getElementById('dispPhone').innerText = "Konti - " + (user.phone || "0789681391");
       document.getElementById('profileName').innerText = user.name || "User";
       document.getElementById('profilePhone').innerText = user.phone || "0789681391";
+      document.getElementById('profileRefCode').innerText = "Ref Code: " + (user.refCode || "TSL-8A2F9B");
       document.getElementById('userBalance').innerText = (user.balance || 0).toLocaleString();
       document.getElementById('userEarnings').innerText = (user.earnings || 0).toLocaleString();
       document.getElementById('accBal').innerText = (user.balance || 0).toLocaleString();
+      document.getElementById('accTeamEarnings').innerText = (user.level1Earnings || 0).toLocaleString();
+
+      // Team section updates
+      const members = user.level1Members || [];
+      document.getElementById('teamL1Count').innerText = members.length + " People";
+      document.getElementById('teamL1Earnings').innerText = (user.level1Earnings || 0).toLocaleString() + " RWF";
+
+      if (members.length === 0) {
+        document.getElementById('teamStatusText').innerHTML = "Nta muntu uraza muri level 1 yawe. Tumira abantu uyu munsi ukomeze kongera inyungu!";
+      } else {
+        let memberHtml = `<div class="team-card"><b>Abari muri Level 1 yawe:</b>`;
+        members.forEach(m => {
+          memberHtml += `
+            <div class="team-member">
+              <span>👤 ${m.phone}</span>
+              <span style="color:#22c55e;">+${(m.commission || 0).toLocaleString()} RWF</span>
+            </div>
+          `;
+        });
+        memberHtml += `</div>`;
+        document.getElementById('teamStatusText').innerHTML = memberHtml;
+      }
     }
     
     document.getElementById('refLinkText').innerText = getReferralLink();
@@ -425,7 +498,17 @@
       return;
     }
 
-    user = { name, phone, balance: 1000, earnings: 0, investedAmount: 0, totalInvestments: 0 };
+    user = { 
+      name, 
+      phone, 
+      balance: 1000, 
+      earnings: 0, 
+      investedAmount: 0, 
+      totalInvestments: 0,
+      refCode: generateUniqueRefCode(),
+      level1Members: [],
+      level1Earnings: 0
+    };
     localStorage.setItem('tesla_user', JSON.stringify(user));
     showDashboard();
   }
@@ -439,7 +522,17 @@
       return;
     }
 
-    user = { name: "Bruno Alain", phone: phone, balance: 1000, earnings: 0, investedAmount: 0, totalInvestments: 0 };
+    user = { 
+      name: "Bruno Alain", 
+      phone: phone, 
+      balance: 1000, 
+      earnings: 0, 
+      investedAmount: 0, 
+      totalInvestments: 0,
+      refCode: generateUniqueRefCode(),
+      level1Members: [],
+      level1Earnings: 0
+    };
     localStorage.setItem('tesla_user', JSON.stringify(user));
     showDashboard();
   }
@@ -457,8 +550,8 @@
     currentTab = tabName;
     localStorage.setItem('tesla_tab', tabName);
 
-    const tabs = ['tabAhabanza', 'tabImirimo', 'tabTumira', 'tabKonti'];
-    const navs = ['navAhabanza', 'navImirimo', 'navTumira', 'navKonti'];
+    const tabs = ['tabAhabanza', 'tabImirimo', 'tabItsinda', 'tabKonti'];
+    const navs = ['navAhabanza', 'navImirimo', 'navItsinda', 'navKonti'];
 
     tabs.forEach(t => {
       const el = document.getElementById(t);
@@ -475,9 +568,9 @@
     } else if (tabName === 'imirimo') {
       document.getElementById('tabImirimo').style.display = 'block';
       document.getElementById('navImirimo').classList.add('active');
-    } else if (tabName === 'tumira') {
-      document.getElementById('tabTumira').style.display = 'block';
-      document.getElementById('navTumira').classList.add('active');
+    } else if (tabName === 'itsinda') {
+      document.getElementById('tabItsinda').style.display = 'block';
+      document.getElementById('navItsinda').classList.add('active');
     } else if (tabName === 'konti') {
       document.getElementById('tabKonti').style.display = 'block';
       document.getElementById('navKonti').classList.add('active');
@@ -652,9 +745,9 @@
           <span class="copy-icon" style="color: #fff; margin-left: 6px;" onclick="copyText('*182*8*1*000564#')">📋</span>
         </div>
 
-        <!-- BUTONI Y'ICYATSI YA EMEZA KO WISHYURE -->
+        <!-- BUTONI YA EMEZA KO WISHYUYE (NO AUTO ADD TO BALANCE) -->
         <button id="btnEmezaPayment" class="btn-confirm-payment" onclick="confirmPaymentAction()">
-          Emeza ko wishyure
+          Emeza ko wishyuye
         </button>
 
         <!-- BUTONI YO SUBIRA AHABANZA -->
@@ -665,24 +758,19 @@
     `;
   }
 
-  /* FUNCTION YO KUBITSA AMAFARANGA NO GUKANDA EMEZA */
+  /* FUNCTION YO KOHEREZA IBUSABE BWO KUBITSA (ADMIN NIWE UBYAPROVA) */
   function confirmPaymentAction() {
     const btn = document.getElementById('btnEmezaPayment');
     
-    // Ongeza amafaranga kuri user balance
-    user.balance = (user.balance || 0) + selectedDepositAmount;
-    localStorage.setItem('tesla_user', JSON.stringify(user));
-    
-    // Hindura Butoni
-    btn.innerHTML = "✓ Byemejwe";
+    // Hindura Butoni ikereke ko byoherejwe gutegereza Admin
+    btn.innerHTML = "⏳ Byemejwe! Tegereza Admin Approve";
     btn.classList.add('done');
     btn.onclick = null; // Yipfunge kugira ngo atayikanda kabiri
 
-    showDashboard();
-    
     setTimeout(() => {
-      alert("Kwizera kwarangiye! Wongeye RWF " + selectedDepositAmount.toLocaleString() + " kuri konti yawe.");
-    }, 300);
+      alert("Ibusabe bwawe bwo kubitsa RWF " + selectedDepositAmount.toLocaleString() + " bwoherejwe neza! Tegereza kidogo Admin abyapprovinge kuri account yawe.");
+      closeModal();
+    }, 500);
   }
 
   /* BIKUZA MODAL */
