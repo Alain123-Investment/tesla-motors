@@ -1,15 +1,103 @@
-<!-- AGACE KO KUBITSA (UPDATED DEPOSIT SECTION) -->
-<div id="kubitsa-container">
+<!DOCTYPE html>
+<html lang="rw">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistemu yo Kubitsa</title>
+    <style>
+        /* CSS Y'URUPAPURO (Ibireke uko biri) */
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f6f9;
+            margin: 0;
+            padding: 20px;
+        }
+
+        .deposit-card {
+            max-width: 450px;
+            margin: 0 auto;
+            background: #ffffff;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        }
+
+        .preset-buttons {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .preset-btn {
+            padding: 10px;
+            background-color: #eef2f5;
+            border: 2px solid transparent;
+            border-radius: 6px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        /* Uburyo ibutoni igaragaza ko yaselectinnwe */
+        .preset-btn.active-selected {
+            border-color: #007bff;
+            background-color: #e6f0ff;
+            color: #007bff;
+        }
+
+        .input-group {
+            margin-bottom: 20px;
+        }
+
+        .input-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+            color: #333;
+        }
+
+        .input-group input {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            box-sizing: border-box;
+            font-size: 16px;
+        }
+
+        .btn-submit {
+            width: 100%;
+            padding: 14px;
+            background-color: #28a745;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .btn-submit:hover {
+            background-color: #218838;
+        }
+    </style>
+</head>
+<body>
+
+<div class="deposit-card">
+    <h2>Gukora ubwishingizi / Kubitsa</h2>
+
     <!-- Amahitamo y'imibare yiteguye hejuru -->
-    <div class="amount-presets">
+    <div class="preset-buttons">
         <button type="button" class="preset-btn" data-amount="5000" onclick="selectPreset(5000)">5,000 RWF</button>
         <button type="button" class="preset-btn" data-amount="10000" onclick="selectPreset(10000)">10,000 RWF</button>
         <button type="button" class="preset-btn" data-amount="50000" onclick="selectPreset(50000)">50,000 RWF</button>
         <button type="button" class="preset-btn" data-amount="100000" onclick="selectPreset(100000)">100,000 RWF</button>
     </div>
 
-    <!-- Field yo kwandikamo amafaranga (Ubusa mu ntangiriro) -->
-    <div class="amount-input-group">
+    <!-- Kwandika umubare (Ubusa mu ntangiriro) -->
+    <div class="input-group">
         <label for="deposit-amount">Andika umubare wa RWF ugiye kubitsa:</label>
         <input 
             type="number" 
@@ -20,62 +108,63 @@
         />
     </div>
 
-    <!-- Ibutoni yo kwemeza -->
-    <div class="submit-action">
-        <button type="button" id="btn-submit-deposit" onclick="submitDeposit()">
-            Koporora uburyo buhamye ushore
-        </button>
-    </div>
+    <!-- Ibutoni yo kwemeza no kwishyura -->
+    <button type="button" class="btn-submit" onclick="submitDeposit()">
+        Koporora uburyo buhamye ushore
+    </button>
 </div>
 
 <script>
-// Variable ibika umubare ugiye kubitswa
-let finalDepositAmount = 0;
+    // Variable ibika umubare watoranyijwe cyangwa wanditswe
+    let finalDepositAmount = 0;
 
-// Function igihe umukiriya akandagije ku butoni zo hejuru
-function selectPreset(amount) {
-    finalDepositAmount = amount;
-    document.getElementById('deposit-amount').value = amount;
-    updateButtonHighlight(amount);
-}
-
-// Function igenzura uko umukiriya arimo kwandika umubare
-function handleAmountInput(val) {
-    const inputVal = parseFloat(val);
-
-    if (!isNaN(inputVal) && inputVal > 0) {
-        finalDepositAmount = inputVal;
-        // Check niba umubare wanditswe uhuye n'umwe mu yo hejuru
-        updateButtonHighlight(inputVal);
-    } else {
-        finalDepositAmount = 0;
-        updateButtonHighlight(null);
+    // Function igihe umukiriya akande ku mabutoni yo hejuru
+    function selectPreset(amount) {
+        finalDepositAmount = amount;
+        document.getElementById('deposit-amount').value = amount;
+        updateButtonHighlight(amount);
     }
-}
 
-// Function yo guhita iselecta ibutoni yo hejuru niba umubare uhuye
-function updateButtonHighlight(amount) {
-    const buttons = document.querySelectorAll('.preset-btn');
-    
-    buttons.forEach(btn => {
-        const btnAmount = parseFloat(btn.getAttribute('data-amount'));
-        if (amount && btnAmount === amount) {
-            btn.classList.add('active-selected'); // Iza kwiselecta
+    // Function igenzura uko arimo kwandika umubare mu kagoni
+    function handleAmountInput(val) {
+        const inputVal = parseFloat(val);
+
+        if (!isNaN(inputVal) && inputVal > 0) {
+            finalDepositAmount = inputVal;
+            // Niba umubare wanditswe uhuye n'umwe mu yo hejuru, uraselectinga
+            updateButtonHighlight(inputVal);
         } else {
-            btn.classList.remove('active-selected');
+            finalDepositAmount = 0;
+            updateButtonHighlight(null);
         }
-    });
-}
-
-// Function yo kwemeza igikorwa cyo kubitsa
-function submitDeposit() {
-    if (!finalDepositAmount || finalDepositAmount <= 0) {
-        alert("Nyamuneka banza wandike cyangwa uhitemo umubare w'amafaranga ugiye kubitsa.");
-        return;
     }
 
-    // Ayo ashyizemo abe arayo akomerezamo
-    console.log("Amafaranga agiye kubitswa:", finalDepositAmount);
-    // Hano ukomeza n'uburyo bwo kwishyura/kubitsa muri code zawe z'abazibitsa
-}
+    // Function ihindura kwiselecta kw'amabutoni
+    function updateButtonHighlight(amount) {
+        const buttons = document.querySelectorAll('.preset-btn');
+        
+        buttons.forEach(btn => {
+            const btnAmount = parseFloat(btn.getAttribute('data-amount'));
+            if (amount && btnAmount === amount) {
+                btn.classList.add('active-selected'); // Biselecta button niba amadorari/RWF bihuye
+            } else {
+                btn.classList.remove('active-selected');
+            }
+        });
+    }
+
+    // Function yo gukomeza ibyo kubitsa
+    function submitDeposit() {
+        if (!finalDepositAmount || finalDepositAmount <= 0) {
+            alert("Nyamuneka banza wandike cyangwa uhitemo umubare w'amafaranga ugiye kubitsa.");
+            return;
+        }
+
+        // Ayo wanditse/uhitemo abe arayo akomerezamo
+        console.log("Amafaranga yo kubitsa:", finalDepositAmount);
+        alert("Ugiye kubitsa: " + finalDepositAmount + " RWF");
+    }
 </script>
+
+</body>
+</html>
