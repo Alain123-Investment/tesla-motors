@@ -6,19 +6,26 @@
   <title>TESLA MOTORS - Admin Dashboard</title>
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
-    body { background-color: #060b14; color: #f8fafc; display: flex; justify-content: center; }
+    body { background-color: #060b14; color: #f8fafc; display: flex; justify-content: center; min-height: 100vh; }
     .app-container { width: 100%; max-width: 480px; background: #0b1329; min-height: 100vh; position: relative; padding-bottom: 85px; }
+
+    /* Login Screen Styling */
+    .login-overlay { position: fixed; inset: 0; background: #060b14; z-index: 1000; display: flex; align-items: center; justify-content: center; padding: 20px; }
+    .login-card { background: #0b1329; width: 100%; max-width: 380px; border-radius: 20px; padding: 25px; border: 1px solid #1e2d52; text-align: center; }
+    .login-title { font-size: 20px; font-weight: 900; color: #3b82f6; margin-bottom: 8px; }
+    .login-sub { font-size: 12px; color: #94a3b8; margin-bottom: 20px; }
 
     /* Header Styling */
     .admin-header { background: #0f172a; padding: 15px 16px; border-bottom: 1px solid #1e2d52; display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 80; }
     .header-left { display: flex; align-items: center; gap: 10px; }
     .btn-back-header { background: #1e293b; color: #3b82f6; border: 1px solid #334155; padding: 6px 12px; border-radius: 8px; font-weight: 700; font-size: 12px; cursor: pointer; }
-    .header-title { font-size: 15px; font-weight: 900; color: #3b82f6; letter-spacing: 0.5px; }
+    .header-title { font-size: 14px; font-weight: 900; color: #3b82f6; letter-spacing: 0.5px; }
     .btn-menu-header { background: #1e293b; color: white; border: 1px solid #334155; padding: 6px 10px; border-radius: 8px; font-size: 14px; cursor: pointer; }
 
     /* Overview Stats Section */
     .overview-section { padding: 16px; display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-    .stat-card { border-radius: 14px; padding: 14px; border: 1px solid rgba(255,255,255,0.08); text-align: left; }
+    .stat-card { border-radius: 14px; padding: 14px; border: 1px solid rgba(255,255,255,0.08); text-align: left; cursor: pointer; transition: transform 0.2s; }
+    .stat-card:active { transform: scale(0.97); }
     .stat-card.green { background: linear-gradient(135deg, rgba(16, 185, 129, 0.15), rgba(6, 78, 59, 0.3)); border-color: rgba(16, 185, 129, 0.3); }
     .stat-card.red { background: linear-gradient(135deg, rgba(239, 68, 68, 0.15), rgba(127, 29, 29, 0.3)); border-color: rgba(239, 68, 68, 0.3); }
     .stat-card.blue { background: linear-gradient(135deg, rgba(59, 130, 246, 0.15), rgba(30, 58, 138, 0.3)); border-color: rgba(59, 130, 246, 0.3); }
@@ -39,6 +46,9 @@
     .panel-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
     .panel-title { font-size: 14px; font-weight: 800; color: #f8fafc; }
 
+    /* Search Input */
+    .search-box { width: 100%; background: #111c38; border: 1px solid #1e2d52; border-radius: 10px; padding: 10px 12px; font-size: 12px; color: white; outline: none; margin-bottom: 12px; }
+
     /* Cards UI */
     .item-card { background: #111c38; border-radius: 14px; padding: 14px; border: 1px solid #1e2d52; margin-bottom: 10px; text-align: left; }
     .item-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; }
@@ -52,6 +62,10 @@
     .btn-act-red { flex: 1; background: #ef4444; color: white; border: none; padding: 8px; border-radius: 8px; font-weight: 800; font-size: 11px; cursor: pointer; }
     .btn-act-blue { flex: 1; background: #2563eb; color: white; border: none; padding: 8px; border-radius: 8px; font-weight: 800; font-size: 11px; cursor: pointer; }
 
+    /* Banner Image Preview Container */
+    .banner-preview-box { width: 100%; height: 130px; border-radius: 10px; overflow: hidden; background: #080d1a; border: 1px dashed #334155; margin-bottom: 10px; position: relative; display: flex; align-items: center; justify-content: center; }
+    .banner-preview-box img { width: 100%; height: 100%; object-fit: cover; }
+
     /* Modals & Menus Drawer */
     .modal-overlay { position: fixed; inset: 0; background: rgba(0, 0, 0, 0.85); backdrop-filter: blur(5px); display: flex; align-items: center; justify-content: center; z-index: 100; padding: 15px; }
     .modal-card { background: #111c38; width: 100%; max-width: 420px; border-radius: 20px; padding: 20px; border: 1px solid #1e2d52; color: white; max-height: 85vh; overflow-y: auto; }
@@ -60,11 +74,30 @@
     .form-group { margin-bottom: 12px; text-align: left; }
     .form-label { font-size: 10px; font-weight: 800; color: #94a3b8; text-transform: uppercase; margin-bottom: 4px; display: block; }
     .input-box { width: 100%; background: #0b1329; border: 1px solid #1e2d52; border-radius: 10px; padding: 10px 12px; font-size: 13px; color: white; outline: none; }
+    .file-input { display: none; }
   </style>
 </head>
 <body>
 
-<div class="app-container">
+<!-- ADMIN LOGIN SCREEN -->
+<div id="adminLoginScreen" class="login-overlay">
+  <div class="login-card">
+    <div class="login-title">⚡ TESLA MOTORS</div>
+    <div class="login-sub">Admin Authentication Panel</div>
+    <div class="form-group">
+      <label class="form-label">Phone Number</label>
+      <input type="text" id="loginPhone" class="input-box" placeholder="0729756862" value="0729756862">
+    </div>
+    <div class="form-group">
+      <label class="form-label">Password</label>
+      <input type="password" id="loginPass" class="input-box" placeholder="******" value="123456">
+    </div>
+    <button class="btn-act-blue" style="width:100%; padding:12px; margin-top:10px;" onclick="performAdminLogin()">Login to Dashboard</button>
+  </div>
+</div>
+
+<!-- MAIN DASHBOARD CONTENT -->
+<div class="app-container" id="adminDashboardApp" style="display:none;">
 
   <!-- HEADER -->
   <div class="admin-header">
@@ -77,19 +110,19 @@
 
   <!-- OVERVIEW PLATFORM STATS -->
   <div class="overview-section">
-    <div class="stat-card green">
-      <div class="stat-lbl">Total Approved Deposits</div>
-      <div class="stat-val" id="statDeposits">0 RWF</div>
+    <div class="stat-card green" onclick="switchTool('deposits')">
+      <div class="stat-lbl">Total Pending Deposits</div>
+      <div class="stat-val" id="statPendingDeposits">0 RWF</div>
     </div>
-    <div class="stat-card red">
-      <div class="stat-lbl">Total Approved Withdrawals</div>
-      <div class="stat-val" id="statWithdrawals">0 RWF</div>
+    <div class="stat-card red" onclick="switchTool('withdrawals')">
+      <div class="stat-lbl">Total Pending Withdrawals</div>
+      <div class="stat-val" id="statPendingWithdrawals">0 RWF</div>
     </div>
     <div class="stat-card blue">
       <div class="stat-lbl">Total Platform Earnings</div>
       <div class="stat-val" id="statEarnings">0 RWF</div>
     </div>
-    <div class="stat-card purple">
+    <div class="stat-card purple" onclick="switchTool('users')">
       <div class="stat-lbl">Total Registered Users</div>
       <div class="stat-val" id="statUsers">0</div>
     </div>
@@ -130,6 +163,11 @@
       <button style="background:none; border:none; color:#3b82f6; font-size:11px; font-weight:700; cursor:pointer;" onclick="reloadAdminData()">Refresh 🔄</button>
     </div>
 
+    <!-- Search Input Area (Visible in Users Manager) -->
+    <div id="searchContainer" style="display:none;">
+      <input type="text" id="userSearchInput" class="search-box" placeholder="🔍 Search user by phone or name..." oninput="filterUsersList()">
+    </div>
+
     <div id="dynamicContentArea">
       <!-- Content renders dynamically via Javascript -->
     </div>
@@ -155,7 +193,7 @@
   <div id="editUserModal" class="modal-overlay" style="display: none;">
     <div class="modal-card">
       <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;">
-        <h3 style="font-size:15px;">Edit User Details</h3>
+        <h3 style="font-size:15px;">Edit User Account Details</h3>
         <span style="cursor:pointer; font-size:18px;" onclick="closeEditUserModal()">✖</span>
       </div>
       <input type="hidden" id="editUserId">
@@ -179,10 +217,42 @@
     </div>
   </div>
 
+  <!-- EDIT LIVE INVESTMENT MODAL -->
+  <div id="editInvestmentModal" class="modal-overlay" style="display: none;">
+    <div class="modal-card">
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;">
+        <h3 style="font-size:15px;">Edit Live Investment</h3>
+        <span style="cursor:pointer; font-size:18px;" onclick="closeEditInvestmentModal()">✖</span>
+      </div>
+      <input type="hidden" id="editInvId">
+      <div class="form-group">
+        <label class="form-label">Invested Share Name</label>
+        <input type="text" id="editInvShare" class="input-box">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Invested Amount (RWF)</label>
+        <input type="number" id="editInvAmount" class="input-box">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Daily Return (RWF)</label>
+        <input type="number" id="editInvDaily" class="input-box">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Remaining Seconds</label>
+        <input type="number" id="editInvSeconds" class="input-box">
+      </div>
+      <button class="btn-act-green" style="width:100%; padding:12px; margin-top:10px;" onclick="saveInvestmentData()">Save Investment Changes</button>
+    </div>
+  </div>
+
 </div>
 
 <script>
-  // MOCK DATA STORAGE
+  // LOGIN CREDENTIALS
+  const ADMIN_PHONE = "0729756862";
+  const ADMIN_PASS = "123456";
+
+  // MOCK STORAGE OR LOCAL STORAGE
   let systemUsers = JSON.parse(localStorage.getItem('tesla_all_users')) || [
     { id: 101, name: "Bruno Alain", phone: "0789681391", balance: 1000, earnings: 0, referralsCount: 5, comms: 17500 },
     { id: 102, name: "Eric Manzi", phone: "0788123456", balance: 50000, earnings: 15000, referralsCount: 12, comms: 56000 },
@@ -198,25 +268,49 @@
     { id: 1, userId: 102, user: "Eric Manzi", amount: 12000, status: "pending", date: "25 mins ago", phone: "0788123456" }
   ];
 
-  let liveInvestments = [
-    { id: 1, user: "Eric Manzi", share: "VIP 2", amount: 100000, daily: 3350, progress: "Day 12/365", status: "Active" },
-    { id: 2, user: "Clarisse U.", share: "VIP 2-VIP", amount: 120000, daily: 8000, progress: "Day 5/365", status: "Active" }
+  let dashboardBanners = JSON.parse(localStorage.getItem('tesla_banners')) || [
+    "https://images.unsplash.com/photo-1560958089-b8a1929cea89",
+    "https://images.unsplash.com/photo-1536700503339-1e4b06520771"
+  ];
+
+  let vipShares = JSON.parse(localStorage.getItem('tesla_vip_shares')) || [
+    { id: "vip1", name: "VIP 1 Share", price: 20000, dailyProfit: 675, validityDays: 365 },
+    { id: "vip2", name: "VIP 2 Share", price: 50000, dailyProfit: 1800, validityDays: 365 },
+    { id: "vip3", name: "VIP 3 Share", price: 100000, dailyProfit: 3800, validityDays: 365 },
+    { id: "vip4", name: "VIP 4 Share", price: 250000, dailyProfit: 10000, validityDays: 365 },
+    { id: "vip5", name: "VIP 5 Share", price: 500000, dailyProfit: 22000, validityDays: 365 }
+  ];
+
+  let liveInvestments = JSON.parse(localStorage.getItem('tesla_live_investments')) || [
+    { id: 1, user: "Eric Manzi", share: "VIP 2 Share", amount: 50000, daily: 1800, remainingSeconds: 864000, status: "Active" },
+    { id: 2, user: "Clarisse U.", share: "VIP 3 Share", amount: 100000, daily: 3800, remainingSeconds: 1420000, status: "Active" }
   ];
 
   let currentTool = "deposits";
+  let countdownTimerInterval = null;
 
-  window.onload = function() {
-    calculateTotalStats();
-    switchTool('deposits');
-  };
+  function performAdminLogin() {
+    let phone = document.getElementById('loginPhone').value.trim();
+    let pass = document.getElementById('loginPass').value.trim();
+
+    if (phone === ADMIN_PHONE && pass === ADMIN_PASS) {
+      document.getElementById('adminLoginScreen').style.display = 'none';
+      document.getElementById('adminDashboardApp').style.display = 'block';
+      calculateTotalStats();
+      switchTool('deposits');
+      startLiveCountdown();
+    } else {
+      alert("Invalid Phone number or Password for Admin!");
+    }
+  }
 
   function calculateTotalStats() {
-    let approvedDep = depositRequests.filter(d => d.status === 'approved').reduce((sum, d) => sum + d.amount, 0);
-    let approvedWith = withdrawalRequests.filter(w => w.status === 'approved').reduce((sum, w) => sum + w.amount, 0);
+    let pendingDepCount = depositRequests.filter(d => d.status === 'pending').length;
+    let pendingWithCount = withdrawalRequests.filter(w => w.status === 'pending').length;
     let totalEarnings = systemUsers.reduce((sum, u) => sum + (u.earnings || 0), 0);
 
-    document.getElementById('statDeposits').innerText = approvedDep.toLocaleString() + " RWF";
-    document.getElementById('statWithdrawals').innerText = approvedWith.toLocaleString() + " RWF";
+    document.getElementById('statPendingDeposits').innerText = pendingDepCount > 0 ? pendingDepCount + " Pending" : "0";
+    document.getElementById('statPendingWithdrawals').innerText = pendingWithCount > 0 ? pendingWithCount + " Pending" : "0";
     document.getElementById('statEarnings').innerText = totalEarnings.toLocaleString() + " RWF";
     document.getElementById('statUsers').innerText = systemUsers.length;
   }
@@ -225,16 +319,19 @@
     currentTool = tool;
     const container = document.getElementById('dynamicContentArea');
     const title = document.getElementById('panelTitle');
+    const searchContainer = document.getElementById('searchContainer');
+
+    searchContainer.style.display = (tool === 'users') ? 'block' : 'none';
 
     if (tool === 'deposits') {
-      title.innerText = "Deposits Approval Control";
+      title.innerText = "Pending Deposits Approval Control";
       renderDeposits(container);
     } else if (tool === 'withdrawals') {
-      title.innerText = "Withdrawals Approval Control";
+      title.innerText = "Pending Withdrawals Approval Control";
       renderWithdrawals(container);
     } else if (tool === 'users') {
-      title.innerText = "Registered Users Control Panel";
-      renderUsers(container);
+      title.innerText = "Registered Users Management";
+      renderUsers(container, systemUsers);
     } else if (tool === 'referrals') {
       title.innerText = "Team & Referrals Commissions";
       renderReferrals(container);
@@ -250,25 +347,25 @@
   /* 1. DEPOSITS APPROVAL */
   function renderDeposits(container) {
     container.innerHTML = '';
-    if (depositRequests.length === 0) {
-      container.innerHTML = `<p style="color:#64748b; font-size:12px; text-align:center; padding:20px;">No deposit requests found.</p>`;
+    let pendingList = depositRequests.filter(d => d.status === 'pending');
+
+    if (pendingList.length === 0) {
+      container.innerHTML = `<p style="color:#64748b; font-size:13px; text-align:center; padding:30px;">Nta wubikije amafaranga utarerekanwa (No pending deposits).</p>`;
       return;
     }
-    depositRequests.forEach(req => {
+    pendingList.forEach(req => {
       container.innerHTML += `
         <div class="item-card">
           <div class="item-row">
             <span class="item-name">${req.user}</span>
-            <span class="item-badge ${req.status === 'pending' ? 'badge-pending' : 'badge-approved'}">${req.status}</span>
+            <span class="item-badge badge-pending">PENDING</span>
           </div>
-          <div style="font-size:14px; font-weight:900; color:#10b981; margin-bottom:4px;">+${req.amount.toLocaleString()} RWF</div>
+          <div style="font-size:15px; font-weight:900; color:#10b981; margin-bottom:4px;">+${req.amount.toLocaleString()} RWF</div>
           <div style="font-size:11px; color:#94a3b8;">Ref Code: <b>${req.code}</b> | ${req.date}</div>
-          ${req.status === 'pending' ? `
-            <div class="action-btn-group">
-              <button class="btn-act-green" onclick="approveDeposit(${req.id})">✓ Approve Deposit</button>
-              <button class="btn-act-red" onclick="rejectDeposit(${req.id})">✕ Reject</button>
-            </div>
-          ` : ''}
+          <div class="action-btn-group">
+            <button class="btn-act-green" onclick="approveDeposit(${req.id})">✓ Approve Deposit</button>
+            <button class="btn-act-red" onclick="rejectDeposit(${req.id})">✕ Reject</button>
+          </div>
         </div>
       `;
     });
@@ -295,25 +392,25 @@
   /* 2. WITHDRAWALS APPROVAL */
   function renderWithdrawals(container) {
     container.innerHTML = '';
-    if (withdrawalRequests.length === 0) {
-      container.innerHTML = `<p style="color:#64748b; font-size:12px; text-align:center; padding:20px;">No withdrawal requests found.</p>`;
+    let pendingList = withdrawalRequests.filter(w => w.status === 'pending');
+
+    if (pendingList.length === 0) {
+      container.innerHTML = `<p style="color:#64748b; font-size:13px; text-align:center; padding:30px;">Nta wubikuze amafaranga utarerekanwa (No pending withdrawals).</p>`;
       return;
     }
-    withdrawalRequests.forEach(req => {
+    pendingList.forEach(req => {
       container.innerHTML += `
         <div class="item-card">
           <div class="item-row">
             <span class="item-name">${req.user} (${req.phone})</span>
-            <span class="item-badge ${req.status === 'pending' ? 'badge-pending' : 'badge-approved'}">${req.status}</span>
+            <span class="item-badge badge-pending">PENDING</span>
           </div>
-          <div style="font-size:14px; font-weight:900; color:#ef4444; margin-bottom:4px;">-${req.amount.toLocaleString()} RWF</div>
+          <div style="font-size:15px; font-weight:900; color:#ef4444; margin-bottom:4px;">-${req.amount.toLocaleString()} RWF</div>
           <div style="font-size:11px; color:#94a3b8;">Requested: ${req.date}</div>
-          ${req.status === 'pending' ? `
-            <div class="action-btn-group">
-              <button class="btn-act-green" onclick="approveWithdrawal(${req.id})">✓ Approve Withdrawal</button>
-              <button class="btn-act-red" onclick="rejectWithdrawal(${req.id})">✕ Reject</button>
-            </div>
-          ` : ''}
+          <div class="action-btn-group">
+            <button class="btn-act-green" onclick="approveWithdrawal(${req.id})">✓ Approve Withdrawal</button>
+            <button class="btn-act-red" onclick="rejectWithdrawal(${req.id})">✕ Reject</button>
+          </div>
         </div>
       `;
     });
@@ -339,10 +436,14 @@
     switchTool('withdrawals');
   }
 
-  /* 3. USER MANAGEMENT CONTROL */
-  function renderUsers(container) {
+  /* 3. USER MANAGEMENT CONTROL WITH SEARCH */
+  function renderUsers(container, listToRender) {
     container.innerHTML = '';
-    systemUsers.forEach(u => {
+    if (listToRender.length === 0) {
+      container.innerHTML = `<p style="color:#64748b; font-size:12px; text-align:center; padding:20px;">No matching users found.</p>`;
+      return;
+    }
+    listToRender.forEach(u => {
       container.innerHTML += `
         <div class="item-card">
           <div class="item-row">
@@ -353,11 +454,17 @@
             Balance: <b style="color:#10b981;">${(u.balance || 0).toLocaleString()} RWF</b> | Earnings: <b style="color:#60a5fa;">${(u.earnings || 0).toLocaleString()} RWF</b>
           </div>
           <div class="action-btn-group">
-            <button class="btn-act-blue" onclick="openEditUserModal(${u.id})">✏️ Edit Account Details</button>
+            <button class="btn-act-blue" onclick="openEditUserModal(${u.id})">✏️ Edit Details</button>
           </div>
         </div>
       `;
     });
+  }
+
+  function filterUsersList() {
+    let query = document.getElementById('userSearchInput').value.toLowerCase().trim();
+    let filtered = systemUsers.filter(u => u.name.toLowerCase().includes(query) || u.phone.includes(query));
+    renderUsers(document.getElementById('dynamicContentArea'), filtered);
   }
 
   function openEditUserModal(userId) {
@@ -391,7 +498,7 @@
     document.getElementById('editUserModal').style.display = 'none';
   }
 
-  /* 4. REFERRALS & TEAM CONTROL */
+  /* 4. REFERRALS CONTROL */
   function renderReferrals(container) {
     container.innerHTML = '';
     systemUsers.forEach(u => {
@@ -409,38 +516,106 @@
     });
   }
 
-  /* 5. EDIT SHARES & BANNERS CONTROL */
+  /* 5. EDIT ALL SHARES & DASHBOARD BANNERS WITH GALLERY SELECTION */
   function renderSharesEditor(container) {
-    container.innerHTML = `
-      <div class="item-card">
-        <div class="item-name" style="margin-bottom:8px;">⚡ Update User Dashboard Banner Slider</div>
-        <div class="form-group">
-          <label class="form-label">Image URL 1</label>
-          <input type="text" class="input-box" value="https://images.unsplash.com/photo-1560958089-b8a1929cea89">
+    let html = `
+      <!-- BANNER MANAGERS -->
+      <div class="item-card" style="margin-bottom:20px;">
+        <div class="item-name" style="margin-bottom:12px; color:#3b82f6;">⚡ Dashboard Banner Slider Images</div>
+    `;
+
+    dashboardBanners.forEach((imgUrl, index) => {
+      html += `
+        <div style="background:#0b1329; padding:10px; border-radius:10px; margin-bottom:12px; border:1px solid #1e2d52;">
+          <div style="font-size:11px; font-weight:800; color:#94a3b8; margin-bottom:6px;">Banner ${index + 1} Preview:</div>
+          <div class="banner-preview-box">
+            <img src="${imgUrl}" id="bannerImgPre_${index}" onerror="this.src='https://via.placeholder.com/400x150?text=Invalid+Image+URL'">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Image URL / Selected Path</label>
+            <input type="text" id="bannerUrlInput_${index}" class="input-box" value="${imgUrl}" oninput="updateBannerPreviewFromText(${index})">
+          </div>
+          <div class="action-btn-group">
+            <button class="btn-act-blue" onclick="document.getElementById('bannerFileInput_${index}').click()">📁 Choose Image from Gallery</button>
+            <input type="file" id="bannerFileInput_${index}" class="file-input" accept="image/*" onchange="handleBannerFileSelect(event, ${index})">
+            <button class="btn-act-green" onclick="saveIndividualBanner(${index})">Save Changes</button>
+          </div>
         </div>
-        <div class="form-group">
-          <label class="form-label">Image URL 2</label>
-          <input type="text" class="input-box" value="https://images.unsplash.com/photo-1536700503339">
-        </div>
-        <button class="btn-act-green" style="width:100%; padding:10px;" onclick="alert('Banner images updated!')">Update Banners</button>
+      `;
+    });
+
+    html += `
+        <button class="btn-act-blue" style="width:100%; padding:12px; margin-top:8px;" onclick="addNewBannerField()">➕ Add New Banner Image</button>
       </div>
 
-      <div class="item-card">
-        <div class="item-name" style="margin-bottom:8px;">📦 Modify VIP Plan (VIP 1)</div>
-        <div class="form-group">
-          <label class="form-label">Price (RWF)</label>
-          <input type="number" class="input-box" value="20000">
-        </div>
-        <div class="form-group">
-          <label class="form-label">Daily Profit (RWF)</label>
-          <input type="number" class="input-box" value="675">
-        </div>
-        <button class="btn-act-blue" style="width:100%; padding:10px;" onclick="alert('VIP Share Plan modified!')">Save Share Plan Changes</button>
-      </div>
+      <!-- ALL VIP SHARES EDITING -->
+      <div style="font-size:14px; font-weight:800; color:#ffffff; margin-bottom:10px;">📦 Edit VIP Share Plans (User Dashboard)</div>
     `;
+
+    vipShares.forEach((share, sIdx) => {
+      html += `
+        <div class="item-card">
+          <div class="item-name" style="margin-bottom:8px; color:#10b981;">${share.name}</div>
+          <div class="form-group">
+            <label class="form-label">Price (RWF)</label>
+            <input type="number" id="sharePrice_${sIdx}" class="input-box" value="${share.price}">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Daily Profit (RWF)</label>
+            <input type="number" id="shareDaily_${sIdx}" class="input-box" value="${share.dailyProfit}">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Validity (Days)</label>
+            <input type="number" id="shareValidity_${sIdx}" class="input-box" value="${share.validityDays}">
+          </div>
+          <button class="btn-act-blue" style="width:100%; padding:10px;" onclick="saveSharePlan(${sIdx})">Save ${share.name} Changes</button>
+        </div>
+      `;
+    });
+
+    container.innerHTML = html;
   }
 
-  /* 6. LIVE INVESTMENTS MONITORING */
+  function updateBannerPreviewFromText(index) {
+    let val = document.getElementById(`bannerUrlInput_${index}`).value;
+    document.getElementById(`bannerImgPre_${index}`).src = val;
+  }
+
+  function handleBannerFileSelect(event, index) {
+    const file = event.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        let base64Image = e.target.result;
+        document.getElementById(`bannerUrlInput_${index}`).value = base64Image;
+        document.getElementById(`bannerImgPre_${index}`).src = base64Image;
+      };
+      reader.readAsDataURL(file);
+    }
+  }
+
+  function saveIndividualBanner(index) {
+    let val = document.getElementById(`bannerUrlInput_${index}`).value;
+    dashboardBanners[index] = val;
+    saveAllData();
+    alert(`Banner ${index + 1} updated and saved automatically!`);
+  }
+
+  function addNewBannerField() {
+    dashboardBanners.push("https://images.unsplash.com/photo-1560958089-b8a1929cea89");
+    saveAllData();
+    switchTool('shares');
+  }
+
+  function saveSharePlan(sIdx) {
+    vipShares[sIdx].price = parseFloat(document.getElementById(`sharePrice_${sIdx}`).value) || 0;
+    vipShares[sIdx].dailyProfit = parseFloat(document.getElementById(`shareDaily_${sIdx}`).value) || 0;
+    vipShares[sIdx].validityDays = parseInt(document.getElementById(`shareValidity_${sIdx}`).value) || 365;
+    saveAllData();
+    alert(`${vipShares[sIdx].name} updated successfully!`);
+  }
+
+  /* 6. LIVE INVESTMENTS & COUNTDOWN TICKER */
   function renderInvestments(container) {
     container.innerHTML = '';
     liveInvestments.forEach(inv => {
@@ -450,22 +625,85 @@
             <span class="item-name">${inv.user}</span>
             <span class="item-badge badge-approved">${inv.status}</span>
           </div>
-          <div style="font-size:12px; color:#cbd5e1; margin-top:4px;">
-            Invested in: <b>${inv.share}</b> (${inv.amount.toLocaleString()} RWF)
+          <div style="font-size:12px; color:#cbd5e1; margin-top:2px;">
+            Share: <b>${inv.share}</b> | Amount: <b>${inv.amount.toLocaleString()} RWF</b>
           </div>
-          <div style="font-size:11px; color:#94a3b8; margin-top:4px;">
-            Daily Return: <b style="color:#10b981;">${inv.daily.toLocaleString()} RWF</b> | Duration: <b>${inv.progress}</b>
+          <div style="font-size:12px; color:#cbd5e1; margin-top:2px;">
+            Daily Return: <b style="color:#10b981;">${inv.daily.toLocaleString()} RWF</b>
+          </div>
+          <div style="font-size:13px; font-weight:800; color:#f59e0b; margin-top:6px; background:#0b1329; padding:6px 10px; border-radius:8px; display:inline-block;">
+            ⏳ Remaining Time: <span id="countdown_timer_${inv.id}">${formatTimeLeft(inv.remainingSeconds)}</span>
+          </div>
+          <div class="action-btn-group">
+            <button class="btn-act-blue" onclick="openEditInvestmentModal(${inv.id})">✏️ Edit Live Investment</button>
           </div>
         </div>
       `;
     });
   }
 
-  /* HELPER FUNCTIONS */
+  function startLiveCountdown() {
+    if (countdownTimerInterval) clearInterval(countdownTimerInterval);
+    countdownTimerInterval = setInterval(() => {
+      liveInvestments.forEach(inv => {
+        if (inv.remainingSeconds > 0) {
+          inv.remainingSeconds--;
+          let el = document.getElementById(`countdown_timer_${inv.id}`);
+          if (el) el.innerText = formatTimeLeft(inv.remainingSeconds);
+        }
+      });
+    }, 1000);
+  }
+
+  function formatTimeLeft(totalSeconds) {
+    if (totalSeconds <= 0) return "Expired / Completed";
+    let days = Math.floor(totalSeconds / (3600 * 24));
+    let hours = Math.floor((totalSeconds % (3600 * 24)) / 3600);
+    let minutes = Math.floor((totalSeconds % 3600) / 60);
+    let seconds = Math.floor(totalSeconds % 60);
+
+    return `${days}d ${hours}h ${minutes}m ${seconds}s`;
+  }
+
+  function openEditInvestmentModal(invId) {
+    let inv = liveInvestments.find(i => i.id === invId);
+    if (inv) {
+      document.getElementById('editInvId').value = inv.id;
+      document.getElementById('editInvShare').value = inv.share;
+      document.getElementById('editInvAmount').value = inv.amount;
+      document.getElementById('editInvDaily').value = inv.daily;
+      document.getElementById('editInvSeconds').value = inv.remainingSeconds;
+      document.getElementById('editInvestmentModal').style.display = 'flex';
+    }
+  }
+
+  function saveInvestmentData() {
+    let id = parseInt(document.getElementById('editInvId').value);
+    let inv = liveInvestments.find(i => i.id === id);
+    if (inv) {
+      inv.share = document.getElementById('editInvShare').value;
+      inv.amount = parseFloat(document.getElementById('editInvAmount').value) || 0;
+      inv.daily = parseFloat(document.getElementById('editInvDaily').value) || 0;
+      inv.remainingSeconds = parseInt(document.getElementById('editInvSeconds').value) || 0;
+      saveAllData();
+      closeEditInvestmentModal();
+      switchTool('investments');
+      alert("Live investment details updated successfully!");
+    }
+  }
+
+  function closeEditInvestmentModal() {
+    document.getElementById('editInvestmentModal').style.display = 'none';
+  }
+
+  /* GLOBAL DATA HELPERS */
   function saveAllData() {
     localStorage.setItem('tesla_all_users', JSON.stringify(systemUsers));
     localStorage.setItem('tesla_deposits', JSON.stringify(depositRequests));
     localStorage.setItem('tesla_withdrawals', JSON.stringify(withdrawalRequests));
+    localStorage.setItem('tesla_banners', JSON.stringify(dashboardBanners));
+    localStorage.setItem('tesla_vip_shares', JSON.stringify(vipShares));
+    localStorage.setItem('tesla_live_investments', JSON.stringify(liveInvestments));
     calculateTotalStats();
   }
 
@@ -483,7 +721,7 @@
   }
 
   function goBackToUserApp() {
-    window.location.href = "index.html"; // Kwerekeza kuri dashboard y'abakiriya
+    window.location.href = "index.html";
   }
 </script>
 
