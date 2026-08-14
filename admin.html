@@ -1,231 +1,489 @@
 <!DOCTYPE html>
-<html lang="rw">
+<html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>TESLA MOTORS - Admin Panel</title>
+  <title>TESLA MOTORS - Admin Dashboard</title>
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
-    body { background-color: #080d1a; color: #f8fafc; display: flex; justify-content: center; }
+    body { background-color: #060b14; color: #f8fafc; display: flex; justify-content: center; }
     .app-container { width: 100%; max-width: 480px; background: #0b1329; min-height: 100vh; position: relative; padding-bottom: 85px; }
 
-    /* Top Navigation Header */
-    .top-header { display: flex; justify-content: space-between; align-items: center; padding: 18px 16px; background: #0b1329; border-bottom: 1px solid #1e293b; }
-    .brand-logo { font-size: 18px; font-weight: 900; color: #3b82f6; display: flex; align-items: center; gap: 6px; }
-    .btn-switch { background: #ef4444; color: white; border: none; padding: 7px 12px; border-radius: 8px; font-size: 11px; font-weight: 700; cursor: pointer; display: flex; align-items: center; gap: 4px; }
+    /* Header Styling */
+    .admin-header { background: #0f172a; padding: 15px 16px; border-bottom: 1px solid #1e2d52; display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 80; }
+    .header-left { display: flex; align-items: center; gap: 10px; }
+    .btn-back-header { background: #1e293b; color: #3b82f6; border: 1px solid #334155; padding: 6px 12px; border-radius: 8px; font-weight: 700; font-size: 12px; cursor: pointer; }
+    .header-title { font-size: 15px; font-weight: 900; color: #3b82f6; letter-spacing: 0.5px; }
+    .btn-menu-header { background: #1e293b; color: white; border: 1px solid #334155; padding: 6px 10px; border-radius: 8px; font-size: 14px; cursor: pointer; }
 
-    /* Main Content Wrapper */
-    .content-area { padding: 16px; }
+    /* Overview Stats Section */
+    .overview-section { padding: 16px; display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+    .stat-card { border-radius: 14px; padding: 14px; border: 1px solid rgba(255,255,255,0.08); text-align: left; }
+    .stat-card.green { background: linear-gradient(135deg, rgba(16, 185, 129, 0.15), rgba(6, 78, 59, 0.3)); border-color: rgba(16, 185, 129, 0.3); }
+    .stat-card.red { background: linear-gradient(135deg, rgba(239, 68, 68, 0.15), rgba(127, 29, 29, 0.3)); border-color: rgba(239, 68, 68, 0.3); }
+    .stat-card.blue { background: linear-gradient(135deg, rgba(59, 130, 246, 0.15), rgba(30, 58, 138, 0.3)); border-color: rgba(59, 130, 246, 0.3); }
+    .stat-card.purple { background: linear-gradient(135deg, rgba(168, 85, 247, 0.15), rgba(88, 28, 135, 0.3)); border-color: rgba(168, 85, 247, 0.3); }
+    
+    .stat-lbl { font-size: 10px; font-weight: 800; color: #94a3b8; text-transform: uppercase; margin-bottom: 4px; }
+    .stat-val { font-size: 16px; font-weight: 900; color: #ffffff; }
 
-    /* Stats / Balance Card */
-    .stat-card { background: #111c38; border-radius: 16px; padding: 20px; border: 1px solid #1e2d52; margin-bottom: 20px; }
-    .stat-title { font-size: 11px; color: #94a3b8; font-weight: 800; text-transform: uppercase; letter-spacing: 0.5px; }
-    .stat-value { font-size: 28px; font-weight: 900; color: #2563eb; margin-top: 6px; }
+    /* Quick Tools Navigation Grid */
+    .tools-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; padding: 0 16px 16px; }
+    .tool-btn { background: #111c38; border: 1px solid #1e2d52; padding: 12px 4px; border-radius: 12px; text-align: center; cursor: pointer; transition: 0.2s; }
+    .tool-btn:active { background: #1e2d52; }
+    .tool-icon { font-size: 20px; display: block; margin-bottom: 4px; }
+    .tool-title { font-size: 10px; font-weight: 700; color: #cbd5e1; }
 
-    /* Section Title */
-    .section-title { font-size: 14px; font-weight: 800; color: #ffffff; margin-bottom: 12px; }
+    /* Content Panels */
+    .panel-container { padding: 0 16px 20px; }
+    .panel-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
+    .panel-title { font-size: 14px; font-weight: 800; color: #f8fafc; }
 
-    /* Grid Menu Actions (Bitsa, Bikuza, Itsinda, Ubufasha) */
-    .admin-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-bottom: 24px; }
-    .admin-card { background: #111c38; padding: 16px 8px; border-radius: 14px; text-align: center; border: 1px solid #1e2d52; cursor: pointer; transition: 0.2s; }
-    .admin-card:active { transform: scale(0.96); background: #18284e; }
-    .admin-icon { font-size: 22px; margin-bottom: 6px; display: block; }
-    .admin-label { font-size: 11px; font-weight: 700; color: #cbd5e1; }
+    /* Cards UI */
+    .item-card { background: #111c38; border-radius: 14px; padding: 14px; border: 1px solid #1e2d52; margin-bottom: 10px; text-align: left; }
+    .item-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; }
+    .item-name { font-size: 13px; font-weight: 800; color: #ffffff; }
+    .item-badge { font-size: 10px; font-weight: 800; padding: 3px 8px; border-radius: 6px; text-transform: uppercase; }
+    .badge-pending { background: rgba(245, 158, 11, 0.2); color: #f59e0b; }
+    .badge-approved { background: rgba(16, 185, 129, 0.2); color: #10b981; }
 
-    /* Tables & Request List Cards */
-    .req-card { background: #111c38; border-radius: 14px; padding: 14px; border: 1px solid #1e2d52; margin-bottom: 12px; }
-    .req-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
-    .req-user { font-size: 13px; font-weight: 800; color: #white; }
-    .req-amount { font-size: 14px; font-weight: 900; color: #10b981; }
-    .req-type { font-size: 10px; font-weight: 800; padding: 3px 8px; border-radius: 6px; text-transform: uppercase; }
-    .type-deposit { background: rgba(16, 185, 129, 0.2); color: #10b981; }
-    .type-withdraw { background: rgba(239, 68, 68, 0.2); color: #ef4444; }
+    .action-btn-group { display: flex; gap: 8px; margin-top: 10px; }
+    .btn-act-green { flex: 1; background: #10b981; color: white; border: none; padding: 8px; border-radius: 8px; font-weight: 800; font-size: 11px; cursor: pointer; }
+    .btn-act-red { flex: 1; background: #ef4444; color: white; border: none; padding: 8px; border-radius: 8px; font-weight: 800; font-size: 11px; cursor: pointer; }
+    .btn-act-blue { flex: 1; background: #2563eb; color: white; border: none; padding: 8px; border-radius: 8px; font-weight: 800; font-size: 11px; cursor: pointer; }
 
-    .req-info { font-size: 11px; color: #94a3b8; margin-bottom: 12px; }
+    /* Modals & Menus Drawer */
+    .modal-overlay { position: fixed; inset: 0; background: rgba(0, 0, 0, 0.85); backdrop-filter: blur(5px); display: flex; align-items: center; justify-content: center; z-index: 100; padding: 15px; }
+    .modal-card { background: #111c38; width: 100%; max-width: 420px; border-radius: 20px; padding: 20px; border: 1px solid #1e2d52; color: white; max-height: 85vh; overflow-y: auto; }
 
-    .req-actions { display: flex; gap: 8px; }
-    .btn-approve { flex: 1; background: #10b981; color: white; border: none; padding: 8px; border-radius: 8px; font-weight: 800; font-size: 12px; cursor: pointer; }
-    .btn-reject { flex: 1; background: #ef4444; color: white; border: none; padding: 8px; border-radius: 8px; font-weight: 800; font-size: 12px; cursor: pointer; }
-
-    /* Bottom Navigation Bar */
-    .bottom-nav { position: fixed; bottom: 0; left: 50%; transform: translateX(-50%); width: 100%; max-width: 480px; background: #080d1a; border-top: 1px solid #1e293b; display: flex; justify-content: space-around; padding: 10px 0; z-index: 90; }
-    .nav-item { text-align: center; color: #64748b; font-size: 11px; font-weight: 700; cursor: pointer; flex: 1; }
-    .nav-item.active { color: #3b82f6; }
-    .nav-icon { font-size: 20px; display: block; margin-bottom: 2px; }
+    /* Inputs */
+    .form-group { margin-bottom: 12px; text-align: left; }
+    .form-label { font-size: 10px; font-weight: 800; color: #94a3b8; text-transform: uppercase; margin-bottom: 4px; display: block; }
+    .input-box { width: 100%; background: #0b1329; border: 1px solid #1e2d52; border-radius: 10px; padding: 10px 12px; font-size: 13px; color: white; outline: none; }
   </style>
 </head>
 <body>
 
 <div class="app-container">
 
-  <!-- TOP HEADER -->
-  <div class="top-header">
-    <div class="brand-logo">
-      ⚡ TESLA MOTORS
+  <!-- HEADER -->
+  <div class="admin-header">
+    <div class="header-left">
+      <button class="btn-back-header" onclick="goBackToUserApp()">⬅ Back</button>
+      <div class="header-title">TESLA MOTORS ADMIN</div>
     </div>
-    <button class="btn-switch" onclick="switchMode()">
-      ⚙️ Switch Mode (User/Admin)
-    </button>
+    <button class="btn-menu-header" onclick="toggleQuickMenu()">☰ Menu</button>
   </div>
 
-  <div class="content-area">
-
-    <!-- ADMIN USER BALANCE STAT CARD -->
-    <div class="stat-card">
-      <div class="stat-title">AYO UFITEHO (USER BALANCE)</div>
-      <div class="stat-value" id="totalBalanceDisp">51,000 RWF</div>
+  <!-- OVERVIEW PLATFORM STATS -->
+  <div class="overview-section">
+    <div class="stat-card green">
+      <div class="stat-lbl">Total Approved Deposits</div>
+      <div class="stat-val" id="statDeposits">0 RWF</div>
     </div>
-
-    <!-- MAIN ACTION GRID MENU -->
-    <div class="section-title">Ibikorwa</div>
-    
-    <div class="admin-grid">
-      <div class="admin-card" onclick="filterRequests('deposit')">
-        <span class="admin-icon">💵</span>
-        <span class="admin-label">Bitsa</span>
-      </div>
-      <div class="admin-card" onclick="filterRequests('withdraw')">
-        <span class="admin-icon">📲</span>
-        <span class="admin-label">Bikuza</span>
-      </div>
-      <div class="admin-card" onclick="showTeamList()">
-        <span class="admin-icon">👥</span>
-        <span class="admin-label">Itsinda</span>
-      </div>
-      <div class="admin-card" onclick="showSupportSection()">
-        <span class="admin-icon">🎧</span>
-        <span class="admin-label">Ubufasha</span>
-      </div>
+    <div class="stat-card red">
+      <div class="stat-lbl">Total Approved Withdrawals</div>
+      <div class="stat-val" id="statWithdrawals">0 RWF</div>
     </div>
-
-    <!-- MANAGEMENT LIST SECTION -->
-    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
-      <div class="section-title" style="margin-bottom:0;" id="listSectionTitle">Ubusabe bw'Abakiriya (Pending)</div>
-      <span style="font-size: 11px; color: #3b82f6; cursor: pointer; font-weight: 700;" onclick="loadPendingRequests()">🔄 Refresh</span>
+    <div class="stat-card blue">
+      <div class="stat-lbl">Total Platform Earnings</div>
+      <div class="stat-val" id="statEarnings">0 RWF</div>
     </div>
-
-    <div id="requestsContainer">
-      <!-- Dynamic Request Items loaded via JS -->
+    <div class="stat-card purple">
+      <div class="stat-lbl">Total Registered Users</div>
+      <div class="stat-val" id="statUsers">0</div>
     </div>
-
   </div>
 
-  <!-- BOTTOM NAVIGATION -->
-  <div class="bottom-nav">
-    <div class="nav-item" onclick="goToHome()">
-      <span class="nav-icon">🏠</span>
-      Ahabanza
+  <!-- QUICK TOOLS MENU -->
+  <div class="tools-grid">
+    <div class="tool-btn" onclick="switchTool('deposits')">
+      <span class="tool-icon">💵</span>
+      <span class="tool-title">Deposits</span>
     </div>
-    <div class="nav-item active">
-      <span class="nav-icon">⚙️</span>
-      Admin Panel
+    <div class="tool-btn" onclick="switchTool('withdrawals')">
+      <span class="tool-icon">📲</span>
+      <span class="tool-title">Withdrawals</span>
+    </div>
+    <div class="tool-btn" onclick="switchTool('users')">
+      <span class="tool-icon">👥</span>
+      <span class="tool-title">Users Manager</span>
+    </div>
+    <div class="tool-btn" onclick="switchTool('referrals')">
+      <span class="tool-icon">🏆</span>
+      <span class="tool-title">Referrals</span>
+    </div>
+    <div class="tool-btn" onclick="switchTool('shares')">
+      <span class="tool-icon">⚙️</span>
+      <span class="tool-title">Shares & Banners</span>
+    </div>
+    <div class="tool-btn" onclick="switchTool('investments')">
+      <span class="tool-icon">📈</span>
+      <span class="tool-title">Live Investments</span>
+    </div>
+  </div>
+
+  <!-- DYNAMIC PANELS -->
+  <div class="panel-container">
+    <div class="panel-header">
+      <div class="panel-title" id="panelTitle">Deposits Approval Panel</div>
+      <button style="background:none; border:none; color:#3b82f6; font-size:11px; font-weight:700; cursor:pointer;" onclick="reloadAdminData()">Refresh 🔄</button>
+    </div>
+
+    <div id="dynamicContentArea">
+      <!-- Content renders dynamically via Javascript -->
+    </div>
+  </div>
+
+  <!-- MENU DRAWER MODAL -->
+  <div id="menuModal" class="modal-overlay" style="display: none;">
+    <div class="modal-card">
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;">
+        <h3 style="font-size:16px;">Admin Tools Navigation</h3>
+        <span style="cursor:pointer; font-size:18px;" onclick="closeMenuModal()">✖</span>
+      </div>
+      <button class="btn-act-blue" style="width:100%; margin-bottom:8px; padding:12px;" onclick="switchTool('deposits'); closeMenuModal();">💵 Deposits Approval</button>
+      <button class="btn-act-blue" style="width:100%; margin-bottom:8px; padding:12px;" onclick="switchTool('withdrawals'); closeMenuModal();">📲 Withdrawals Approval</button>
+      <button class="btn-act-blue" style="width:100%; margin-bottom:8px; padding:12px;" onclick="switchTool('users'); closeMenuModal();">👥 Users Management</button>
+      <button class="btn-act-blue" style="width:100%; margin-bottom:8px; padding:12px;" onclick="switchTool('referrals'); closeMenuModal();">🏆 Team & Referrals</button>
+      <button class="btn-act-blue" style="width:100%; margin-bottom:8px; padding:12px;" onclick="switchTool('shares'); closeMenuModal();">⚙️ Shares & Banners Editor</button>
+      <button class="btn-act-blue" style="width:100%; margin-bottom:8px; padding:12px;" onclick="switchTool('investments'); closeMenuModal();">📈 Active Live Investments</button>
+    </div>
+  </div>
+
+  <!-- EDIT USER MODAL -->
+  <div id="editUserModal" class="modal-overlay" style="display: none;">
+    <div class="modal-card">
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;">
+        <h3 style="font-size:15px;">Edit User Details</h3>
+        <span style="cursor:pointer; font-size:18px;" onclick="closeEditUserModal()">✖</span>
+      </div>
+      <input type="hidden" id="editUserId">
+      <div class="form-group">
+        <label class="form-label">Full Name</label>
+        <input type="text" id="editUserName" class="input-box">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Phone Number</label>
+        <input type="text" id="editUserPhone" class="input-box">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Balance (RWF)</label>
+        <input type="number" id="editUserBalance" class="input-box">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Total Earnings (RWF)</label>
+        <input type="number" id="editUserEarnings" class="input-box">
+      </div>
+      <button class="btn-act-green" style="width:100%; padding:12px; margin-top:10px;" onclick="saveUserData()">Save Changes</button>
     </div>
   </div>
 
 </div>
 
 <script>
-  // Sample Pending Requests Data
-  let pendingRequests = [
-    { id: 1, type: 'deposit', user: 'Bruno Alain', phone: '0789681391', amount: 50000, date: '10 mins ago', code: 'TXN-99812' },
-    { id: 2, type: 'withdraw', user: 'Eric Manzi', phone: '0788123456', amount: 12000, date: '25 mins ago', code: 'MOMO-7712' },
-    { id: 3, type: 'deposit', user: 'Clarisse U.', phone: '0731112233', amount: 100000, date: '1 hour ago', code: 'TXN-44102' }
+  // MOCK DATA STORAGE
+  let systemUsers = JSON.parse(localStorage.getItem('tesla_all_users')) || [
+    { id: 101, name: "Bruno Alain", phone: "0789681391", balance: 1000, earnings: 0, referralsCount: 5, comms: 17500 },
+    { id: 102, name: "Eric Manzi", phone: "0788123456", balance: 50000, earnings: 15000, referralsCount: 12, comms: 56000 },
+    { id: 103, name: "Clarisse U.", phone: "0731112233", balance: 120000, earnings: 42000, referralsCount: 2, comms: 8000 }
   ];
 
+  let depositRequests = JSON.parse(localStorage.getItem('tesla_deposits')) || [
+    { id: 1, userId: 101, user: "Bruno Alain", amount: 50000, status: "pending", date: "10 mins ago", code: "TXN-99812" },
+    { id: 2, userId: 103, user: "Clarisse U.", amount: 100000, status: "pending", date: "1 hour ago", code: "TXN-44102" }
+  ];
+
+  let withdrawalRequests = JSON.parse(localStorage.getItem('tesla_withdrawals')) || [
+    { id: 1, userId: 102, user: "Eric Manzi", amount: 12000, status: "pending", date: "25 mins ago", phone: "0788123456" }
+  ];
+
+  let liveInvestments = [
+    { id: 1, user: "Eric Manzi", share: "VIP 2", amount: 100000, daily: 3350, progress: "Day 12/365", status: "Active" },
+    { id: 2, user: "Clarisse U.", share: "VIP 2-VIP", amount: 120000, daily: 8000, progress: "Day 5/365", status: "Active" }
+  ];
+
+  let currentTool = "deposits";
+
   window.onload = function() {
-    renderRequests(pendingRequests);
+    calculateTotalStats();
+    switchTool('deposits');
   };
 
-  function renderRequests(data) {
-    const container = document.getElementById('requestsContainer');
-    container.innerHTML = '';
+  function calculateTotalStats() {
+    let approvedDep = depositRequests.filter(d => d.status === 'approved').reduce((sum, d) => sum + d.amount, 0);
+    let approvedWith = withdrawalRequests.filter(w => w.status === 'approved').reduce((sum, w) => sum + w.amount, 0);
+    let totalEarnings = systemUsers.reduce((sum, u) => sum + (u.earnings || 0), 0);
 
-    if (data.length === 0) {
-      container.innerHTML = '<div style="text-align:center; padding:30px; color:#64748b; font-size:12px;">Nta busabe buhari gukorwaho kuri ubu.</div>';
+    document.getElementById('statDeposits').innerText = approvedDep.toLocaleString() + " RWF";
+    document.getElementById('statWithdrawals').innerText = approvedWith.toLocaleString() + " RWF";
+    document.getElementById('statEarnings').innerText = totalEarnings.toLocaleString() + " RWF";
+    document.getElementById('statUsers').innerText = systemUsers.length;
+  }
+
+  function switchTool(tool) {
+    currentTool = tool;
+    const container = document.getElementById('dynamicContentArea');
+    const title = document.getElementById('panelTitle');
+
+    if (tool === 'deposits') {
+      title.innerText = "Deposits Approval Control";
+      renderDeposits(container);
+    } else if (tool === 'withdrawals') {
+      title.innerText = "Withdrawals Approval Control";
+      renderWithdrawals(container);
+    } else if (tool === 'users') {
+      title.innerText = "Registered Users Control Panel";
+      renderUsers(container);
+    } else if (tool === 'referrals') {
+      title.innerText = "Team & Referrals Commissions";
+      renderReferrals(container);
+    } else if (tool === 'shares') {
+      title.innerText = "Edit Shares & Dashboard Banners";
+      renderSharesEditor(container);
+    } else if (tool === 'investments') {
+      title.innerText = "Live Shares Performance Tracking";
+      renderInvestments(container);
+    }
+  }
+
+  /* 1. DEPOSITS APPROVAL */
+  function renderDeposits(container) {
+    container.innerHTML = '';
+    if (depositRequests.length === 0) {
+      container.innerHTML = `<p style="color:#64748b; font-size:12px; text-align:center; padding:20px;">No deposit requests found.</p>`;
       return;
     }
-
-    data.forEach(req => {
-      const isDep = req.type === 'deposit';
+    depositRequests.forEach(req => {
       container.innerHTML += `
-        <div class="req-card" id="req-${req.id}">
-          <div class="req-header">
-            <span class="req-user">${req.user} (${req.phone})</span>
-            <span class="req-type ${isDep ? 'type-deposit' : 'type-withdraw'}">${req.type}</span>
+        <div class="item-card">
+          <div class="item-row">
+            <span class="item-name">${req.user}</span>
+            <span class="item-badge ${req.status === 'pending' ? 'badge-pending' : 'badge-approved'}">${req.status}</span>
           </div>
-          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
-            <span class="req-amount">${req.amount.toLocaleString()} RWF</span>
-            <span style="font-size:10px; color:#64748b;">${req.date}</span>
+          <div style="font-size:14px; font-weight:900; color:#10b981; margin-bottom:4px;">+${req.amount.toLocaleString()} RWF</div>
+          <div style="font-size:11px; color:#94a3b8;">Ref Code: <b>${req.code}</b> | ${req.date}</div>
+          ${req.status === 'pending' ? `
+            <div class="action-btn-group">
+              <button class="btn-act-green" onclick="approveDeposit(${req.id})">✓ Approve Deposit</button>
+              <button class="btn-act-red" onclick="rejectDeposit(${req.id})">✕ Reject</button>
+            </div>
+          ` : ''}
+        </div>
+      `;
+    });
+  }
+
+  function approveDeposit(id) {
+    let req = depositRequests.find(d => d.id === id);
+    if (req) {
+      req.status = "approved";
+      let u = systemUsers.find(user => user.id === req.userId);
+      if (u) u.balance += req.amount;
+      saveAllData();
+      switchTool('deposits');
+      alert(`Deposit approved! ${req.amount} RWF added to ${req.user}'s balance.`);
+    }
+  }
+
+  function rejectDeposit(id) {
+    depositRequests = depositRequests.filter(d => d.id !== id);
+    saveAllData();
+    switchTool('deposits');
+  }
+
+  /* 2. WITHDRAWALS APPROVAL */
+  function renderWithdrawals(container) {
+    container.innerHTML = '';
+    if (withdrawalRequests.length === 0) {
+      container.innerHTML = `<p style="color:#64748b; font-size:12px; text-align:center; padding:20px;">No withdrawal requests found.</p>`;
+      return;
+    }
+    withdrawalRequests.forEach(req => {
+      container.innerHTML += `
+        <div class="item-card">
+          <div class="item-row">
+            <span class="item-name">${req.user} (${req.phone})</span>
+            <span class="item-badge ${req.status === 'pending' ? 'badge-pending' : 'badge-approved'}">${req.status}</span>
           </div>
-          <div class="req-info">Code/Ref: <b>${req.code}</b></div>
-          <div class="req-actions">
-            <button class="btn-approve" onclick="approveReq(${req.id})">✓ Emeza</button>
-            <button class="btn-reject" onclick="rejectReq(${req.id})">✕ Anga</button>
+          <div style="font-size:14px; font-weight:900; color:#ef4444; margin-bottom:4px;">-${req.amount.toLocaleString()} RWF</div>
+          <div style="font-size:11px; color:#94a3b8;">Requested: ${req.date}</div>
+          ${req.status === 'pending' ? `
+            <div class="action-btn-group">
+              <button class="btn-act-green" onclick="approveWithdrawal(${req.id})">✓ Approve Withdrawal</button>
+              <button class="btn-act-red" onclick="rejectWithdrawal(${req.id})">✕ Reject</button>
+            </div>
+          ` : ''}
+        </div>
+      `;
+    });
+  }
+
+  function approveWithdrawal(id) {
+    let req = withdrawalRequests.find(w => w.id === id);
+    if (req) {
+      req.status = "approved";
+      let u = systemUsers.find(user => user.id === req.userId);
+      if (u && u.balance >= req.amount) {
+        u.balance -= req.amount;
+      }
+      saveAllData();
+      switchTool('withdrawals');
+      alert(`Withdrawal approved! ${req.amount} RWF deducted from ${req.user}'s balance.`);
+    }
+  }
+
+  function rejectWithdrawal(id) {
+    withdrawalRequests = withdrawalRequests.filter(w => w.id !== id);
+    saveAllData();
+    switchTool('withdrawals');
+  }
+
+  /* 3. USER MANAGEMENT CONTROL */
+  function renderUsers(container) {
+    container.innerHTML = '';
+    systemUsers.forEach(u => {
+      container.innerHTML += `
+        <div class="item-card">
+          <div class="item-row">
+            <span class="item-name">${u.name}</span>
+            <span style="font-size:11px; color:#3b82f6; font-weight:800;">${u.phone}</span>
+          </div>
+          <div style="font-size:12px; color:#cbd5e1; margin-top:4px;">
+            Balance: <b style="color:#10b981;">${(u.balance || 0).toLocaleString()} RWF</b> | Earnings: <b style="color:#60a5fa;">${(u.earnings || 0).toLocaleString()} RWF</b>
+          </div>
+          <div class="action-btn-group">
+            <button class="btn-act-blue" onclick="openEditUserModal(${u.id})">✏️ Edit Account Details</button>
           </div>
         </div>
       `;
     });
   }
 
-  function approveReq(id) {
-    if (confirm("Wemeje ubu busabe bw'amafaranga?")) {
-      pendingRequests = pendingRequests.filter(r => r.id !== id);
-      renderRequests(pendingRequests);
-      alert("Ubusabe bwemejwe neza!");
+  function openEditUserModal(userId) {
+    let u = systemUsers.find(user => user.id === userId);
+    if (u) {
+      document.getElementById('editUserId').value = u.id;
+      document.getElementById('editUserName').value = u.name;
+      document.getElementById('editUserPhone').value = u.phone;
+      document.getElementById('editUserBalance').value = u.balance;
+      document.getElementById('editUserEarnings').value = u.earnings;
+      document.getElementById('editUserModal').style.display = 'flex';
     }
   }
 
-  function rejectReq(id) {
-    if (confirm("Wangeze ubu busabe bw'amafaranga?")) {
-      pendingRequests = pendingRequests.filter(r => r.id !== id);
-      renderRequests(pendingRequests);
-      alert("Ubusabe bwanzwe!");
+  function saveUserData() {
+    let id = parseInt(document.getElementById('editUserId').value);
+    let u = systemUsers.find(user => user.id === id);
+    if (u) {
+      u.name = document.getElementById('editUserName').value;
+      u.phone = document.getElementById('editUserPhone').value;
+      u.balance = parseFloat(document.getElementById('editUserBalance').value) || 0;
+      u.earnings = parseFloat(document.getElementById('editUserEarnings').value) || 0;
+      saveAllData();
+      closeEditUserModal();
+      switchTool('users');
+      alert("User details updated successfully!");
     }
   }
 
-  function filterRequests(type) {
-    document.getElementById('listSectionTitle').innerText = "Ubusabe bwa " + type.toUpperCase();
-    const filtered = pendingRequests.filter(r => r.type === type);
-    renderRequests(filtered);
+  function closeEditUserModal() {
+    document.getElementById('editUserModal').style.display = 'none';
   }
 
-  function loadPendingRequests() {
-    document.getElementById('listSectionTitle').innerText = "Ubusabe bw'Abakiriya (Pending)";
-    renderRequests(pendingRequests);
+  /* 4. REFERRALS & TEAM CONTROL */
+  function renderReferrals(container) {
+    container.innerHTML = '';
+    systemUsers.forEach(u => {
+      container.innerHTML += `
+        <div class="item-card">
+          <div class="item-row">
+            <span class="item-name">${u.name} (${u.phone})</span>
+            <span class="item-badge badge-approved">${u.referralsCount || 0} Invites</span>
+          </div>
+          <div style="font-size:12px; color:#94a3b8; margin-top:4px;">
+            Total Commission Earned: <b style="color:#f59e0b;">${(u.comms || 0).toLocaleString()} RWF</b>
+          </div>
+        </div>
+      `;
+    });
   }
 
-  function showTeamList() {
-    document.getElementById('listSectionTitle').innerText = "Itsinda / Referral Level";
-    const container = document.getElementById('requestsContainer');
+  /* 5. EDIT SHARES & BANNERS CONTROL */
+  function renderSharesEditor(container) {
     container.innerHTML = `
-      <div class="req-card">
-        <div style="font-size:13px; font-weight:800; color:white; margin-bottom:6px;">Level 1 Referrals (35% Bonus)</div>
-        <div style="font-size:12px; color:#94a3b8;">Abakiriya bose hamwe: <b>14</b></div>
+      <div class="item-card">
+        <div class="item-name" style="margin-bottom:8px;">⚡ Update User Dashboard Banner Slider</div>
+        <div class="form-group">
+          <label class="form-label">Image URL 1</label>
+          <input type="text" class="input-box" value="https://images.unsplash.com/photo-1560958089-b8a1929cea89">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Image URL 2</label>
+          <input type="text" class="input-box" value="https://images.unsplash.com/photo-1536700503339">
+        </div>
+        <button class="btn-act-green" style="width:100%; padding:10px;" onclick="alert('Banner images updated!')">Update Banners</button>
       </div>
-      <div class="req-card">
-        <div style="font-size:13px; font-weight:800; color:white; margin-bottom:6px;">Total Team Earnings</div>
-        <div style="font-size:14px; font-weight:900; color:#10b981;">185,000 RWF</div>
+
+      <div class="item-card">
+        <div class="item-name" style="margin-bottom:8px;">📦 Modify VIP Plan (VIP 1)</div>
+        <div class="form-group">
+          <label class="form-label">Price (RWF)</label>
+          <input type="number" class="input-box" value="20000">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Daily Profit (RWF)</label>
+          <input type="number" class="input-box" value="675">
+        </div>
+        <button class="btn-act-blue" style="width:100%; padding:10px;" onclick="alert('VIP Share Plan modified!')">Save Share Plan Changes</button>
       </div>
     `;
   }
 
-  function showSupportSection() {
-    document.getElementById('listSectionTitle').innerText = "Ubufasha & Setting";
-    const container = document.getElementById('requestsContainer');
-    container.innerHTML = `
-      <div class="req-card">
-        <div style="font-size:13px; font-weight:800; color:white; margin-bottom:6px;">WhatsApp Support Line</div>
-        <div style="font-size:12px; color:#3b82f6;">+250 789 681 391</div>
-      </div>
-    `;
+  /* 6. LIVE INVESTMENTS MONITORING */
+  function renderInvestments(container) {
+    container.innerHTML = '';
+    liveInvestments.forEach(inv => {
+      container.innerHTML += `
+        <div class="item-card">
+          <div class="item-row">
+            <span class="item-name">${inv.user}</span>
+            <span class="item-badge badge-approved">${inv.status}</span>
+          </div>
+          <div style="font-size:12px; color:#cbd5e1; margin-top:4px;">
+            Invested in: <b>${inv.share}</b> (${inv.amount.toLocaleString()} RWF)
+          </div>
+          <div style="font-size:11px; color:#94a3b8; margin-top:4px;">
+            Daily Return: <b style="color:#10b981;">${inv.daily.toLocaleString()} RWF</b> | Duration: <b>${inv.progress}</b>
+          </div>
+        </div>
+      `;
+    });
   }
 
-  function switchMode() {
-    window.location.href = "index.html"; // Kwerekeza kuri User Dashboard
+  /* HELPER FUNCTIONS */
+  function saveAllData() {
+    localStorage.setItem('tesla_all_users', JSON.stringify(systemUsers));
+    localStorage.setItem('tesla_deposits', JSON.stringify(depositRequests));
+    localStorage.setItem('tesla_withdrawals', JSON.stringify(withdrawalRequests));
+    calculateTotalStats();
   }
 
-  function goToHome() {
-    window.location.href = "index.html";
+  function reloadAdminData() {
+    calculateTotalStats();
+    switchTool(currentTool);
+  }
+
+  function toggleQuickMenu() {
+    document.getElementById('menuModal').style.display = 'flex';
+  }
+
+  function closeMenuModal() {
+    document.getElementById('menuModal').style.display = 'none';
+  }
+
+  function goBackToUserApp() {
+    window.location.href = "index.html"; // Kwerekeza kuri dashboard y'abakiriya
   }
 </script>
 
