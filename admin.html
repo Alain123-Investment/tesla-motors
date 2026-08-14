@@ -56,6 +56,7 @@
     .item-badge { font-size: 10px; font-weight: 800; padding: 3px 8px; border-radius: 6px; text-transform: uppercase; }
     .badge-pending { background: rgba(245, 158, 11, 0.2); color: #f59e0b; }
     .badge-approved { background: rgba(16, 185, 129, 0.2); color: #10b981; }
+    .badge-closed { background: rgba(239, 68, 68, 0.2); color: #ef4444; }
 
     .action-btn-group { display: flex; gap: 8px; margin-top: 10px; }
     .btn-act-green { flex: 1; background: #10b981; color: white; border: none; padding: 8px; border-radius: 8px; font-weight: 800; font-size: 11px; cursor: pointer; }
@@ -86,13 +87,13 @@
     <div class="login-sub">Admin Authentication Panel</div>
     <div class="form-group">
       <label class="form-label">Phone Number</label>
-      <input type="text" id="loginPhone" class="input-box" placeholder="0729756862" value="0729756862">
+      <input type="text" id="loginPhone" class="input-box" placeholder="Kinjiza Numero..." value="">
     </div>
     <div class="form-group">
       <label class="form-label">Password</label>
-      <input type="password" id="loginPass" class="input-box" placeholder="******" value="123456">
+      <input type="password" id="loginPass" class="input-box" placeholder="Kinjiza Password..." value="">
     </div>
-    <button class="btn-act-blue" style="width:100%; padding:12px; margin-top:10px;" onclick="performAdminLogin()">Login to Dashboard</button>
+    <button id="loginBtn" class="btn-act-blue" style="width:100%; padding:12px; margin-top:10px;" onclick="performAdminLogin()">Login to Dashboard</button>
   </div>
 </div>
 
@@ -163,13 +164,13 @@
       <button style="background:none; border:none; color:#3b82f6; font-size:11px; font-weight:700; cursor:pointer;" onclick="reloadAdminData()">Refresh 🔄</button>
     </div>
 
-    <!-- Search Input Area (Visible in Users Manager) -->
+    <!-- Search Input Area -->
     <div id="searchContainer" style="display:none;">
       <input type="text" id="userSearchInput" class="search-box" placeholder="🔍 Search user by phone or name..." oninput="filterUsersList()">
     </div>
 
     <div id="dynamicContentArea">
-      <!-- Content renders dynamically via Javascript -->
+      <!-- Dynamic content -->
     </div>
   </div>
 
@@ -273,17 +274,33 @@
     "https://images.unsplash.com/photo-1536700503339-1e4b06520771"
   ];
 
+  // UPDATED VIP SHARES (BASED ON TABLE DATA)
   let vipShares = JSON.parse(localStorage.getItem('tesla_vip_shares')) || [
-    { id: "vip1", name: "VIP 1 Share", price: 20000, dailyProfit: 675, validityDays: 365 },
-    { id: "vip2", name: "VIP 2 Share", price: 50000, dailyProfit: 1800, validityDays: 365 },
-    { id: "vip3", name: "VIP 3 Share", price: 100000, dailyProfit: 3800, validityDays: 365 },
-    { id: "vip4", name: "VIP 4 Share", price: 250000, dailyProfit: 10000, validityDays: 365 },
-    { id: "vip5", name: "VIP 5 Share", price: 500000, dailyProfit: 22000, validityDays: 365 }
+    { id: "m0", name: "M0 Share", price: 500, dailyProfit: 300, validityDays: 2 },
+    { id: "m1", name: "M1 Share", price: 20000, dailyProfit: 675, validityDays: 365 },
+    { id: "m2", name: "M2 Share", price: 100000, dailyProfit: 3350, validityDays: 365 },
+    { id: "m2vip", name: "M2-VIP Share", price: 120000, dailyProfit: 8000, validityDays: 365 },
+    { id: "m3", name: "M3 Share", price: 250000, dailyProfit: 8325, validityDays: 365 },
+    { id: "m3vip", name: "M3-VIP Share", price: 300000, dailyProfit: 20025, validityDays: 365 },
+    { id: "m4", name: "M4 Share", price: 550000, dailyProfit: 18400, validityDays: 365 },
+    { id: "m4vip", name: "M4-VIP Share", price: 600000, dailyProfit: 40000, validityDays: 365 },
+    { id: "m5", name: "M5 Share", price: 1200000, dailyProfit: 40000, validityDays: 365 },
+    { id: "m5vip", name: "M5-VIP Share", price: 1500000, dailyProfit: 100000, validityDays: 365 },
+    { id: "m6", name: "M6 Share", price: 2400000, dailyProfit: 81000, validityDays: 365 },
+    { id: "m6vip", name: "M6-VIP Share", price: 2800000, dailyProfit: 187500, validityDays: 365 },
+    { id: "m7", name: "M7 Share", price: 4000000, dailyProfit: 134750, validityDays: 365 },
+    { id: "m7vip", name: "M7-VIP Share", price: 5000000, dailyProfit: 334250, validityDays: 365 },
+    { id: "m8", name: "M8 Share", price: 6000000, dailyProfit: 200000, validityDays: 365 },
+    { id: "m8vip", name: "M8-VIP Share", price: 7000000, dailyProfit: 468000, validityDays: 365 },
+    { id: "m9", name: "M9 Share", price: 8000000, dailyProfit: 267750, validityDays: 365 },
+    { id: "m9vip", name: "M9-VIP Share", price: 9000000, dailyProfit: 600750, validityDays: 365 },
+    { id: "m10", name: "M10 Share", price: 10000000, dailyProfit: 335000, validityDays: 365 },
+    { id: "m10vip", name: "M10-VIP Share", price: 11000000, dailyProfit: 735000, validityDays: 365 }
   ];
 
   let liveInvestments = JSON.parse(localStorage.getItem('tesla_live_investments')) || [
-    { id: 1, user: "Eric Manzi", share: "VIP 2 Share", amount: 50000, daily: 1800, remainingSeconds: 864000, status: "Active" },
-    { id: 2, user: "Clarisse U.", share: "VIP 3 Share", amount: 100000, daily: 3800, remainingSeconds: 1420000, status: "Active" }
+    { id: 1, user: "Eric Manzi", share: "M1 Share", amount: 20000, daily: 675, remainingSeconds: 31536000, status: "Active" },
+    { id: 2, user: "Clarisse U.", share: "M2 Share", amount: 100000, daily: 3350, remainingSeconds: 31536000, status: "Active" }
   ];
 
   let currentTool = "deposits";
@@ -293,14 +310,26 @@
     let phone = document.getElementById('loginPhone').value.trim();
     let pass = document.getElementById('loginPass').value.trim();
 
+    if (!phone || !pass) {
+      alert("Nyamuneka uzuze Numero ya phone na Password!");
+      return;
+    }
+
     if (phone === ADMIN_PHONE && pass === ADMIN_PASS) {
-      document.getElementById('adminLoginScreen').style.display = 'none';
-      document.getElementById('adminDashboardApp').style.display = 'block';
-      calculateTotalStats();
-      switchTool('deposits');
-      startLiveCountdown();
+      let btn = document.getElementById('loginBtn');
+      btn.innerText = "⏳ Loading Admin Dashboard...";
+      btn.style.opacity = "0.7";
+      btn.disabled = true;
+
+      setTimeout(() => {
+        document.getElementById('adminLoginScreen').style.display = 'none';
+        document.getElementById('adminDashboardApp').style.display = 'block';
+        calculateTotalStats();
+        switchTool('deposits');
+        startLiveCountdown();
+      }, 2000);
     } else {
-      alert("Invalid Phone number or Password for Admin!");
+      alert("Nomero cyangwa Password winjije si byo! Gerageza tena.");
     }
   }
 
@@ -619,11 +648,15 @@
   function renderInvestments(container) {
     container.innerHTML = '';
     liveInvestments.forEach(inv => {
+      let isExpired = inv.remainingSeconds <= 0;
+      let badgeClass = isExpired ? 'badge-closed' : 'badge-approved';
+      let statusText = isExpired ? 'CLOSED' : inv.status;
+
       container.innerHTML += `
         <div class="item-card">
           <div class="item-row">
             <span class="item-name">${inv.user}</span>
-            <span class="item-badge badge-approved">${inv.status}</span>
+            <span class="item-badge ${badgeClass}">${statusText}</span>
           </div>
           <div style="font-size:12px; color:#cbd5e1; margin-top:2px;">
             Share: <b>${inv.share}</b> | Amount: <b>${inv.amount.toLocaleString()} RWF</b>
@@ -631,7 +664,7 @@
           <div style="font-size:12px; color:#cbd5e1; margin-top:2px;">
             Daily Return: <b style="color:#10b981;">${inv.daily.toLocaleString()} RWF</b>
           </div>
-          <div style="font-size:13px; font-weight:800; color:#f59e0b; margin-top:6px; background:#0b1329; padding:6px 10px; border-radius:8px; display:inline-block;">
+          <div style="font-size:13px; font-weight:800; color:${isExpired ? '#ef4444' : '#f59e0b'}; margin-top:6px; background:#0b1329; padding:6px 10px; border-radius:8px; display:inline-block;">
             ⏳ Remaining Time: <span id="countdown_timer_${inv.id}">${formatTimeLeft(inv.remainingSeconds)}</span>
           </div>
           <div class="action-btn-group">
@@ -650,13 +683,17 @@
           inv.remainingSeconds--;
           let el = document.getElementById(`countdown_timer_${inv.id}`);
           if (el) el.innerText = formatTimeLeft(inv.remainingSeconds);
+        } else {
+          inv.status = "CLOSED";
+          let el = document.getElementById(`countdown_timer_${inv.id}`);
+          if (el) el.innerText = "CLOSED / Expired";
         }
       });
     }, 1000);
   }
 
   function formatTimeLeft(totalSeconds) {
-    if (totalSeconds <= 0) return "Expired / Completed";
+    if (totalSeconds <= 0) return "CLOSED / Expired";
     let days = Math.floor(totalSeconds / (3600 * 24));
     let hours = Math.floor((totalSeconds % (3600 * 24)) / 3600);
     let minutes = Math.floor((totalSeconds % 3600) / 60);
@@ -685,6 +722,7 @@
       inv.amount = parseFloat(document.getElementById('editInvAmount').value) || 0;
       inv.daily = parseFloat(document.getElementById('editInvDaily').value) || 0;
       inv.remainingSeconds = parseInt(document.getElementById('editInvSeconds').value) || 0;
+      if (inv.remainingSeconds > 0) inv.status = "Active";
       saveAllData();
       closeEditInvestmentModal();
       switchTool('investments');
