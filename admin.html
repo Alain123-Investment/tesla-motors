@@ -1,508 +1,729 @@
 <!DOCTYPE html>
-<html lang="rw">
+<html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>WM Investment & Task Platform</title>
-    <style>
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        }
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TESLA MOTORS - Admin Dashboard</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
+    body { background-color: #060b14; color: #f8fafc; display: flex; justify-content: center; min-height: 100vh; }
+    .app-container { width: 100%; max-width: 480px; background: #0b1329; min-height: 100vh; position: relative; padding-bottom: 85px; }
 
-        body {
-            background-color: #f4f6f9;
-            color: #333;
-        }
+    /* Login Screen Styling */
+    .login-overlay { position: fixed; inset: 0; background: #060b14; z-index: 1000; display: flex; align-items: center; justify-content: center; padding: 20px; }
+    .login-card { background: #0b1329; width: 100%; max-width: 380px; border-radius: 20px; padding: 25px; border: 1px solid #1e2d52; text-align: center; }
+    .login-title { font-size: 20px; font-weight: 900; color: #3b82f6; margin-bottom: 8px; }
+    .login-sub { font-size: 12px; color: #94a3b8; margin-bottom: 20px; }
 
-        /* Loading Screen */
-        #loadingOverlay {
-            display: none;
-            position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0, 0, 0, 0.7);
-            z-index: 9999;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            color: #fff;
-        }
+    /* Header Styling */
+    .admin-header { background: #0f172a; padding: 15px 16px; border-bottom: 1px solid #1e2d52; display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 80; }
+    .header-left { display: flex; align-items: center; gap: 10px; }
+    .btn-back-header { background: #1e293b; color: #3b82f6; border: 1px solid #334155; padding: 6px 12px; border-radius: 8px; font-weight: 700; font-size: 12px; cursor: pointer; }
+    .header-title { font-size: 14px; font-weight: 900; color: #3b82f6; letter-spacing: 0.5px; }
+    .btn-menu-header { background: #1e293b; color: white; border: 1px solid #334155; padding: 6px 10px; border-radius: 8px; font-size: 14px; cursor: pointer; }
 
-        .spinner {
-            border: 5px solid #f3f3f3;
-            border-top: 5px solid #007bff;
-            border-radius: 50%;
-            width: 50px;
-            height: 50px;
-            animation: spin 1s linear infinite;
-            margin-bottom: 15px;
-        }
+    /* Overview Stats Section */
+    .overview-section { padding: 16px; display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+    .stat-card { border-radius: 14px; padding: 14px; border: 1px solid rgba(255,255,255,0.08); text-align: left; cursor: pointer; transition: transform 0.2s; }
+    .stat-card:active { transform: scale(0.97); }
+    .stat-card.green { background: linear-gradient(135deg, rgba(16, 185, 129, 0.15), rgba(6, 78, 59, 0.3)); border-color: rgba(16, 185, 129, 0.3); }
+    .stat-card.red { background: linear-gradient(135deg, rgba(239, 68, 68, 0.15), rgba(127, 29, 29, 0.3)); border-color: rgba(239, 68, 68, 0.3); }
+    .stat-card.blue { background: linear-gradient(135deg, rgba(59, 130, 246, 0.15), rgba(30, 58, 138, 0.3)); border-color: rgba(59, 130, 246, 0.3); }
+    .stat-card.purple { background: linear-gradient(135deg, rgba(168, 85, 247, 0.15), rgba(88, 28, 135, 0.3)); border-color: rgba(168, 85, 247, 0.3); }
+    
+    .stat-lbl { font-size: 10px; font-weight: 800; color: #94a3b8; text-transform: uppercase; margin-bottom: 4px; }
+    .stat-val { font-size: 16px; font-weight: 900; color: #ffffff; }
 
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
+    /* Quick Tools Navigation Grid */
+    .tools-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; padding: 0 16px 16px; }
+    .tool-btn { background: #111c38; border: 1px solid #1e2d52; padding: 12px 4px; border-radius: 12px; text-align: center; cursor: pointer; transition: 0.2s; }
+    .tool-btn:active { background: #1e2d52; }
+    .tool-icon { font-size: 20px; display: block; margin-bottom: 4px; }
+    .tool-title { font-size: 10px; font-weight: 700; color: #cbd5e1; }
 
-        /* Container Sections */
-        .section {
-            display: none;
-            padding: 20px;
-            max-width: 1200px;
-            margin: 0 auto;
-        }
+    /* Content Panels */
+    .panel-container { padding: 0 16px 20px; }
+    .panel-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
+    .panel-title { font-size: 14px; font-weight: 800; color: #f8fafc; }
 
-        .active-section {
-            display: block;
-        }
+    /* Search Input */
+    .search-box { width: 100%; background: #111c38; border: 1px solid #1e2d52; border-radius: 10px; padding: 10px 12px; font-size: 12px; color: white; outline: none; margin-bottom: 12px; }
 
-        /* Login Card */
-        .login-card {
-            max-width: 400px;
-            margin: 80px auto;
-            background: #fff;
-            padding: 30px;
-            border-radius: 10px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-            text-align: center;
-        }
+    /* Cards UI */
+    .item-card { background: #111c38; border-radius: 14px; padding: 14px; border: 1px solid #1e2d52; margin-bottom: 10px; text-align: left; }
+    .item-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; }
+    .item-name { font-size: 13px; font-weight: 800; color: #ffffff; }
+    .item-badge { font-size: 10px; font-weight: 800; padding: 3px 8px; border-radius: 6px; text-transform: uppercase; }
+    .badge-pending { background: rgba(245, 158, 11, 0.2); color: #f59e0b; }
+    .badge-approved { background: rgba(16, 185, 129, 0.2); color: #10b981; }
 
-        .login-card h2 {
-            margin-bottom: 20px;
-            color: #007bff;
-        }
+    .action-btn-group { display: flex; gap: 8px; margin-top: 10px; }
+    .btn-act-green { flex: 1; background: #10b981; color: white; border: none; padding: 8px; border-radius: 8px; font-weight: 800; font-size: 11px; cursor: pointer; }
+    .btn-act-red { flex: 1; background: #ef4444; color: white; border: none; padding: 8px; border-radius: 8px; font-weight: 800; font-size: 11px; cursor: pointer; }
+    .btn-act-blue { flex: 1; background: #2563eb; color: white; border: none; padding: 8px; border-radius: 8px; font-weight: 800; font-size: 11px; cursor: pointer; }
 
-        .form-group {
-            margin-bottom: 15px;
-            text-align: left;
-        }
+    /* Banner Image Preview Container */
+    .banner-preview-box { width: 100%; height: 130px; border-radius: 10px; overflow: hidden; background: #080d1a; border: 1px dashed #334155; margin-bottom: 10px; position: relative; display: flex; align-items: center; justify-content: center; }
+    .banner-preview-box img { width: 100%; height: 100%; object-fit: cover; }
 
-        .form-group label {
-            display: block;
-            margin-bottom: 5px;
-            font-size: 0.9em;
-        }
+    /* Modals & Menus Drawer */
+    .modal-overlay { position: fixed; inset: 0; background: rgba(0, 0, 0, 0.85); backdrop-filter: blur(5px); display: flex; align-items: center; justify-content: center; z-index: 100; padding: 15px; }
+    .modal-card { background: #111c38; width: 100%; max-width: 420px; border-radius: 20px; padding: 20px; border: 1px solid #1e2d52; color: white; max-height: 85vh; overflow-y: auto; }
 
-        /* Password Wrapper for Eye Icon */
-        .password-wrapper {
-            position: relative;
-            display: flex;
-            align-items: center;
-        }
-
-        .password-wrapper input {
-            width: 100%;
-            padding: 10px;
-            padding-right: 40px;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-        }
-
-        .toggle-password {
-            position: absolute;
-            right: 10px;
-            cursor: pointer;
-            user-select: none;
-            font-size: 1.2rem;
-        }
-
-        .form-group input[type="text"] {
-            width: 100%;
-            padding: 10px;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-        }
-
-        .btn {
-            width: 100%;
-            padding: 12px;
-            background: #007bff;
-            color: #fff;
-            border: none;
-            border-radius: 5px;
-            font-weight: bold;
-            cursor: pointer;
-            margin-top: 5px;
-        }
-
-        .btn-admin {
-            background: #28a745;
-        }
-
-        .btn:hover {
-            opacity: 0.9;
-        }
-
-        /* Navigation Bar */
-        .navbar {
-            background: #007bff;
-            color: #fff;
-            padding: 15px 20px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            border-radius: 5px;
-        }
-
-        .navbar button {
-            background: #dc3545;
-            color: white;
-            border: none;
-            padding: 8px 15px;
-            border-radius: 5px;
-            cursor: pointer;
-        }
-
-        /* Tables & Content */
-        .card {
-            background: #fff;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
-            margin-bottom: 20px;
-        }
-
-        h3 {
-            margin-bottom: 15px;
-            color: #007bff;
-        }
-
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 10px;
-            font-size: 0.85em;
-        }
-
-        table, th, td {
-            border: 1px solid #ddd;
-        }
-
-        th, td {
-            padding: 8px;
-            text-align: center;
-        }
-
-        th {
-            background-color: #007bff;
-            color: white;
-        }
-
-        tr:nth-child(even) { background-color: #f9f9f9; }
-
-        .timer-badge {
-            background: #28a745;
-            color: white;
-            padding: 4px 8px;
-            border-radius: 4px;
-            font-weight: bold;
-            font-family: monospace;
-        }
-
-        .status-closed {
-            background: #dc3545;
-        }
-
-        .info-box {
-            background: #e9ecef;
-            padding: 10px;
-            border-left: 4px solid #007bff;
-            margin-top: 10px;
-            font-size: 0.9em;
-        }
-
-        /* Responsive Table */
-        .table-responsive {
-            overflow-x: auto;
-        }
-    </style>
+    /* Inputs */
+    .form-group { margin-bottom: 12px; text-align: left; }
+    .form-label { font-size: 10px; font-weight: 800; color: #94a3b8; text-transform: uppercase; margin-bottom: 4px; display: block; }
+    .input-box { width: 100%; background: #0b1329; border: 1px solid #1e2d52; border-radius: 10px; padding: 10px 12px; font-size: 13px; color: white; outline: none; }
+    .file-input { display: none; }
+  </style>
 </head>
 <body>
 
-    <!-- Loading Indicator -->
-    <div id="loadingOverlay">
-        <div class="spinner"></div>
-        <p id="loadingText">Turagutegurira Admin Dashboard... Tegereza amasegonda 2...</p>
+<!-- ADMIN LOGIN SCREEN -->
+<div id="adminLoginScreen" class="login-overlay">
+  <div class="login-card">
+    <div class="login-title">⚡ TESLA MOTORS</div>
+    <div class="login-sub">Admin Authentication Panel</div>
+    <div class="form-group">
+      <label class="form-label">Phone Number</label>
+      <input type="text" id="loginPhone" class="input-box" placeholder="0729756862" value="0729756862">
+    </div>
+    <div class="form-group">
+      <label class="form-label">Password</label>
+      <input type="password" id="loginPass" class="input-box" placeholder="******" value="123456">
+    </div>
+    <button class="btn-act-blue" style="width:100%; padding:12px; margin-top:10px;" onclick="performAdminLogin()">Login to Dashboard</button>
+  </div>
+</div>
+
+<!-- MAIN DASHBOARD CONTENT -->
+<div class="app-container" id="adminDashboardApp" style="display:none;">
+
+  <!-- HEADER -->
+  <div class="admin-header">
+    <div class="header-left">
+      <button class="btn-back-header" onclick="goBackToUserApp()">⬅ Back</button>
+      <div class="header-title">TESLA MOTORS ADMIN</div>
+    </div>
+    <button class="btn-menu-header" onclick="toggleQuickMenu()">☰ Menu</button>
+  </div>
+
+  <!-- OVERVIEW PLATFORM STATS -->
+  <div class="overview-section">
+    <div class="stat-card green" onclick="switchTool('deposits')">
+      <div class="stat-lbl">Total Pending Deposits</div>
+      <div class="stat-val" id="statPendingDeposits">0 RWF</div>
+    </div>
+    <div class="stat-card red" onclick="switchTool('withdrawals')">
+      <div class="stat-lbl">Total Pending Withdrawals</div>
+      <div class="stat-val" id="statPendingWithdrawals">0 RWF</div>
+    </div>
+    <div class="stat-card blue">
+      <div class="stat-lbl">Total Platform Earnings</div>
+      <div class="stat-val" id="statEarnings">0 RWF</div>
+    </div>
+    <div class="stat-card purple" onclick="switchTool('users')">
+      <div class="stat-lbl">Total Registered Users</div>
+      <div class="stat-val" id="statUsers">0</div>
+    </div>
+  </div>
+
+  <!-- QUICK TOOLS MENU -->
+  <div class="tools-grid">
+    <div class="tool-btn" onclick="switchTool('deposits')">
+      <span class="tool-icon">💵</span>
+      <span class="tool-title">Deposits</span>
+    </div>
+    <div class="tool-btn" onclick="switchTool('withdrawals')">
+      <span class="tool-icon">📲</span>
+      <span class="tool-title">Withdrawals</span>
+    </div>
+    <div class="tool-btn" onclick="switchTool('users')">
+      <span class="tool-icon">👥</span>
+      <span class="tool-title">Users Manager</span>
+    </div>
+    <div class="tool-btn" onclick="switchTool('referrals')">
+      <span class="tool-icon">🏆</span>
+      <span class="tool-title">Referrals</span>
+    </div>
+    <div class="tool-btn" onclick="switchTool('shares')">
+      <span class="tool-icon">⚙️</span>
+      <span class="tool-title">Shares & Banners</span>
+    </div>
+    <div class="tool-btn" onclick="switchTool('investments')">
+      <span class="tool-icon">📈</span>
+      <span class="tool-title">Live Investments</span>
+    </div>
+  </div>
+
+  <!-- DYNAMIC PANELS -->
+  <div class="panel-container">
+    <div class="panel-header">
+      <div class="panel-title" id="panelTitle">Deposits Approval Panel</div>
+      <button style="background:none; border:none; color:#3b82f6; font-size:11px; font-weight:700; cursor:pointer;" onclick="reloadAdminData()">Refresh 🔄</button>
     </div>
 
-    <!-- Login Section -->
-    <div id="loginSection" class="section active-section">
-        <div class="login-card">
-            <h2>Kwinjira mu Konti</h2>
-            <form id="loginForm" onsubmit="handleLogin(event)">
-                <div class="form-group">
-                    <label for="phone">Numero ya Telefone / Username</label>
-                    <input type="text" id="phone" placeholder="078XXXXXXX cyangwa admin" required>
-                </div>
-                <div class="form-group">
-                    <label for="password">Ijambo ry'ibanga (Password)</label>
-                    <div class="password-wrapper">
-                        <input type="password" id="password" placeholder="******" required>
-                        <span class="toggle-password" onclick="togglePasswordVisibility()">👁️</span>
-                    </div>
-                </div>
-                <button type="submit" class="btn">Kwinjira nka User</button>
-                <button type="button" onclick="loginAdminDirect()" class="btn btn-admin">Kwinjira nka Admin (Direct Login)</button>
-            </form>
-        </div>
+    <!-- Search Input Area (Visible in Users Manager) -->
+    <div id="searchContainer" style="display:none;">
+      <input type="text" id="userSearchInput" class="search-box" placeholder="🔍 Search user by phone or name..." oninput="filterUsersList()">
     </div>
 
-    <!-- User Dashboard Section -->
-    <div id="userSection" class="section">
-        <div class="navbar">
-            <h2>User Dashboard</h2>
-            <button onclick="logout()">Gusohoka</button>
-        </div>
-        <br>
-        
-        <!-- Active Investments with Countdown -->
-        <div class="card">
-            <h3>Imigabane Yawe Iri Active</h3>
-            <div class="table-responsive">
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Urwego</th>
-                            <th>Igiciro</th>
-                            <th>Igihe gisigaye ( Countdown )</th>
-                            <th>Ikina / Status</th>
-                        </tr>
-                    </thead>
-                    <tbody id="activeInvestmentsTable">
-                        <!-- Dynamically filled by JS -->
-                    </tbody>
-                </table>
-            </div>
-        </div>
-
-        <!-- WM Commission Details Table -->
-        <div class="card">
-            <h3>WM Commission Details (Imigabane Yose)</h3>
-            <div class="table-responsive">
-                <table id="commissionTable">
-                    <thead>
-                        <tr>
-                            <th>Level</th>
-                            <th>Price (RWF)</th>
-                            <th>Daily Task</th>
-                            <th>Commission/Task</th>
-                            <th>Daily Income</th>
-                            <th>Monthly Income</th>
-                            <th>Annual Income</th>
-                            <th>Validity</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <!-- Inserted via JavaScript -->
-                    </tbody>
-                </table>
-            </div>
-            <div class="info-box">
-                <b>Icyitonderwa:</b> Your work deposit will be refunded to you after 365 days. If you upgrade to a higher level, the previous fee will be automatically refunded to your WM account balance.
-            </div>
-        </div>
-
-        <!-- Withdrawal Rules Section -->
-        <div class="card">
-            <h3>Amabwiriza n'Ibipimo yo Kubikuza</h3>
-            <div class="table-responsive">
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Urwego</th>
-                            <th>Kureka Mbere</th>
-                            <th>Kubikuza Bwa Kabiri</th>
-                            <th>Kubikuza Bwa Gatatu</th>
-                        </tr>
-                    </thead>
-                    <tbody id="withdrawalRulesTable">
-                        <!-- Filled by JS -->
-                    </tbody>
-                </table>
-            </div>
-            <div class="info-box">
-                <p>• <b>Amasaha yo kubikuza:</b> Kuva 08:00 AM kugeza 20:00 PM buri munsi (Cyangwa 10:00 AM - 4:00 PM).</p>
-                <p>• <b>Inshuro:</b> Buri muntu ashora kubikuza inshuro 1 ku munsi.</p>
-                <p>• <b>Amafaranga make yo kubikuza:</b> 1,000 RWF | <b>Ay'umurengera:</b> 10,000,000 RWF</p>
-                <p>• <b>Tax/Ayakatwa:</b> 8% (cyangwa 15% biterwa n'amabwiriza ya gahunda).</p>
-                <p>• <b>Igihe bageraho:</b> Nyuma y'iminota 30 kugeza ku masaha 72.</p>
-            </div>
-        </div>
+    <div id="dynamicContentArea">
+      <!-- Content renders dynamically via Javascript -->
     </div>
+  </div>
 
-    <!-- Admin Dashboard Section -->
-    <div id="adminSection" class="section">
-        <div class="navbar" style="background:#28a745;">
-            <h2>Admin Dashboard Panel</h2>
-            <button onclick="logout()">Gusohoka</button>
-        </div>
-        <br>
-        <div class="card">
-            <h3>Ubugenzuzi bwa Admin</h3>
-            <p>Aha ni mu buyobozi bukuru. Ushobora kwemeza amadepo, kubikuza, no guhindura ibipimo by'abakoresha.</p>
-            <br>
-            <div class="info-box">
-                <b>Status:</b> Waziye mu buryo bw'umwihariko bwa Admin (Secured Entry).
-            </div>
-        </div>
+  <!-- MENU DRAWER MODAL -->
+  <div id="menuModal" class="modal-overlay" style="display: none;">
+    <div class="modal-card">
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;">
+        <h3 style="font-size:16px;">Admin Tools Navigation</h3>
+        <span style="cursor:pointer; font-size:18px;" onclick="closeMenuModal()">✖</span>
+      </div>
+      <button class="btn-act-blue" style="width:100%; margin-bottom:8px; padding:12px;" onclick="switchTool('deposits'); closeMenuModal();">💵 Deposits Approval</button>
+      <button class="btn-act-blue" style="width:100%; margin-bottom:8px; padding:12px;" onclick="switchTool('withdrawals'); closeMenuModal();">📲 Withdrawals Approval</button>
+      <button class="btn-act-blue" style="width:100%; margin-bottom:8px; padding:12px;" onclick="switchTool('users'); closeMenuModal();">👥 Users Management</button>
+      <button class="btn-act-blue" style="width:100%; margin-bottom:8px; padding:12px;" onclick="switchTool('referrals'); closeMenuModal();">🏆 Team & Referrals</button>
+      <button class="btn-act-blue" style="width:100%; margin-bottom:8px; padding:12px;" onclick="switchTool('shares'); closeMenuModal();">⚙️ Shares & Banners Editor</button>
+      <button class="btn-act-blue" style="width:100%; margin-bottom:8px; padding:12px;" onclick="switchTool('investments'); closeMenuModal();">📈 Active Live Investments</button>
     </div>
+  </div>
 
-    <script>
-        // --- DATA STRUCTURES ---
-        const commissionData = [
-            { level: 'M0', price: 500, tasks: 3, taskComm: 100, daily: 300, monthly: 600, annual: 600, validity: '2 Days' },
-            { level: 'M1', price: 20000, tasks: 5, taskComm: 135, daily: 675, monthly: 20250, annual: 246375, validity: '365 Days' },
-            { level: 'M2', price: 100000, tasks: 10, taskComm: 335, daily: 3350, monthly: 100500, annual: 1222750, validity: '365 Days' },
-            { level: 'M2-VIP', price: 120000, tasks: 10, taskComm: 800, daily: 8000, monthly: 240000, annual: 2920000, validity: '365 Days' },
-            { level: 'M3', price: 250000, tasks: 15, taskComm: 555, daily: 8325, monthly: 249750, annual: 3038625, validity: '365 Days' },
-            { level: 'M3-VIP', price: 300000, tasks: 15, taskComm: 1335, daily: 20025, monthly: 600750, annual: 7309125, validity: '365 Days' },
-            { level: 'M4', price: 550000, tasks: 20, taskComm: 920, daily: 18400, monthly: 552000, annual: 6716000, validity: '365 Days' },
-            { level: 'M4-VIP', price: 600000, tasks: 20, taskComm: 2000, daily: 40000, monthly: 1200000, annual: 14600000, validity: '365 Days' },
-            { level: 'M5', price: 1200000, tasks: 25, taskComm: 1600, daily: 40000, monthly: 1200000, annual: 14600000, validity: '365 Days' },
-            { level: 'M5-VIP', price: 1500000, tasks: 25, taskComm: 4000, daily: 100000, monthly: 3000000, annual: 36500000, validity: '365 Days' },
-            { level: 'M6', price: 2400000, tasks: 30, taskComm: 2700, daily: 81000, monthly: 2430000, annual: 29565000, validity: '365 Days' },
-            { level: 'M6-VIP', price: 2800000, tasks: 30, taskComm: 6250, daily: 187500, monthly: 5625000, annual: 68437500, validity: '365 Days' },
-            { level: 'M7', price: 4000000, tasks: 35, taskComm: 3850, daily: 134750, monthly: 4042500, annual: 49183750, validity: '365 Days' },
-            { level: 'M7-VIP', price: 5000000, tasks: 35, taskComm: 9550, daily: 334250, monthly: 10027500, annual: 122001250, validity: '365 Days' },
-            { level: 'M8', price: 6000000, tasks: 40, taskComm: 5000, daily: 200000, monthly: 6000000, annual: 73000000, validity: '365 Days' },
-            { level: 'M8-VIP', price: 7000000, tasks: 40, taskComm: 11700, daily: 468000, monthly: 14040000, annual: 170820000, validity: '365 Days' },
-            { level: 'M9', price: 8000000, tasks: 45, taskComm: 5950, daily: 267750, monthly: 8032500, annual: 97728750, validity: '365 Days' },
-            { level: 'M9-VIP', price: 9000000, tasks: 45, taskComm: 13350, daily: 600750, monthly: 18022500, annual: 219273750, validity: '365 Days' },
-            { level: 'M10', price: 10000000, tasks: 50, taskComm: 6700, daily: 335000, monthly: 10050000, annual: 122275000, validity: '365 Days' },
-            { level: 'M10-VIP', price: 11000000, tasks: 50, taskComm: 14700, daily: 735000, monthly: 22050000, annual: 268275000, validity: '365 Days' }
-        ];
+  <!-- EDIT USER MODAL -->
+  <div id="editUserModal" class="modal-overlay" style="display: none;">
+    <div class="modal-card">
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;">
+        <h3 style="font-size:15px;">Edit User Account Details</h3>
+        <span style="cursor:pointer; font-size:18px;" onclick="closeEditUserModal()">✖</span>
+      </div>
+      <input type="hidden" id="editUserId">
+      <div class="form-group">
+        <label class="form-label">Full Name</label>
+        <input type="text" id="editUserName" class="input-box">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Phone Number</label>
+        <input type="text" id="editUserPhone" class="input-box">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Balance (RWF)</label>
+        <input type="number" id="editUserBalance" class="input-box">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Total Earnings (RWF)</label>
+        <input type="number" id="editUserEarnings" class="input-box">
+      </div>
+      <button class="btn-act-green" style="width:100%; padding:12px; margin-top:10px;" onclick="saveUserData()">Save Changes</button>
+    </div>
+  </div>
 
-        const withdrawalRulesData = [
-            { level: 'M1', w1: 1000, w2: 6500, w3: 13000 },
-            { level: 'M2', w1: 1000, w2: 33000, w3: 50000 },
-            { level: 'M2-VIP', w1: 80000, w2: 80000, w3: 80000 },
-            { level: 'M3', w1: 83000, w2: 83000, w3: 83000 },
-            { level: 'M3-VIP', w1: 200000, w2: 200000, w3: 200000 },
-            { level: 'M4', w1: 185000, w2: 185000, w3: 185000 },
-            { level: 'M4-VIP', w1: 400000, w2: 400000, w3: 400000 },
-            { level: 'M5', w1: 400000, w2: 400000, w3: 400000 },
-            { level: 'M5-VIP', w1: 1000000, w2: 1000000, w3: 1000000 }
-        ];
+  <!-- EDIT LIVE INVESTMENT MODAL -->
+  <div id="editInvestmentModal" class="modal-overlay" style="display: none;">
+    <div class="modal-card">
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;">
+        <h3 style="font-size:15px;">Edit Live Investment</h3>
+        <span style="cursor:pointer; font-size:18px;" onclick="closeEditInvestmentModal()">✖</span>
+      </div>
+      <input type="hidden" id="editInvId">
+      <div class="form-group">
+        <label class="form-label">Invested Share Name</label>
+        <input type="text" id="editInvShare" class="input-box">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Invested Amount (RWF)</label>
+        <input type="number" id="editInvAmount" class="input-box">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Daily Return (RWF)</label>
+        <input type="number" id="editInvDaily" class="input-box">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Remaining Seconds</label>
+        <input type="number" id="editInvSeconds" class="input-box">
+      </div>
+      <button class="btn-act-green" style="width:100%; padding:12px; margin-top:10px;" onclick="saveInvestmentData()">Save Investment Changes</button>
+    </div>
+  </div>
 
-        let activeInvestments = [
-            { level: 'M1', price: 20000, endTime: new Date().getTime() + (365 * 24 * 60 * 60 * 1000) },
-            { level: 'M0', price: 500, endTime: new Date().getTime() + (12 * 1000) }
-        ];
+</div>
 
-        window.onload = function() {
-            renderTables();
-            setInterval(updateCountdowns, 1000);
-        };
+<script>
+  // LOGIN CREDENTIALS
+  const ADMIN_PHONE = "0729756862";
+  const ADMIN_PASS = "123456";
 
-        function renderTables() {
-            const commTbody = document.querySelector('#commissionTable tbody');
-            commTbody.innerHTML = '';
-            commissionData.forEach(item => {
-                commTbody.innerHTML += `
-                    <tr>
-                        <td><b>${item.level}</b></td>
-                        <td>${item.price.toLocaleString()}</td>
-                        <td>${item.tasks}</td>
-                        <td>${item.taskComm}</td>
-                        <td>${item.daily.toLocaleString()}</td>
-                        <td>${item.monthly.toLocaleString()}</td>
-                        <td>${item.annual.toLocaleString()}</td>
-                        <td>${item.validity}</td>
-                    </tr>
-                `;
-            });
+  // MOCK STORAGE OR LOCAL STORAGE
+  let systemUsers = JSON.parse(localStorage.getItem('tesla_all_users')) || [
+    { id: 101, name: "Bruno Alain", phone: "0789681391", balance: 1000, earnings: 0, referralsCount: 5, comms: 17500 },
+    { id: 102, name: "Eric Manzi", phone: "0788123456", balance: 50000, earnings: 15000, referralsCount: 12, comms: 56000 },
+    { id: 103, name: "Clarisse U.", phone: "0731112233", balance: 120000, earnings: 42000, referralsCount: 2, comms: 8000 }
+  ];
 
-            const wTbody = document.getElementById('withdrawalRulesTable');
-            wTbody.innerHTML = '';
-            withdrawalRulesData.forEach(item => {
-                wTbody.innerHTML += `
-                    <tr>
-                        <td><b>${item.level}</b></td>
-                        <td>${item.w1.toLocaleString()} RWF</td>
-                        <td>${item.w2.toLocaleString()} RWF</td>
-                        <td>${item.w3.toLocaleString()} RWF</td>
-                    </tr>
-                `;
-            });
+  let depositRequests = JSON.parse(localStorage.getItem('tesla_deposits')) || [
+    { id: 1, userId: 101, user: "Bruno Alain", amount: 50000, status: "pending", date: "10 mins ago", code: "TXN-99812" },
+    { id: 2, userId: 103, user: "Clarisse U.", amount: 100000, status: "pending", date: "1 hour ago", code: "TXN-44102" }
+  ];
+
+  let withdrawalRequests = JSON.parse(localStorage.getItem('tesla_withdrawals')) || [
+    { id: 1, userId: 102, user: "Eric Manzi", amount: 12000, status: "pending", date: "25 mins ago", phone: "0788123456" }
+  ];
+
+  let dashboardBanners = JSON.parse(localStorage.getItem('tesla_banners')) || [
+    "https://images.unsplash.com/photo-1560958089-b8a1929cea89",
+    "https://images.unsplash.com/photo-1536700503339-1e4b06520771"
+  ];
+
+  let vipShares = JSON.parse(localStorage.getItem('tesla_vip_shares')) || [
+    { id: "vip1", name: "VIP 1 Share", price: 20000, dailyProfit: 675, validityDays: 365 },
+    { id: "vip2", name: "VIP 2 Share", price: 50000, dailyProfit: 1800, validityDays: 365 },
+    { id: "vip3", name: "VIP 3 Share", price: 100000, dailyProfit: 3800, validityDays: 365 },
+    { id: "vip4", name: "VIP 4 Share", price: 250000, dailyProfit: 10000, validityDays: 365 },
+    { id: "vip5", name: "VIP 5 Share", price: 500000, dailyProfit: 22000, validityDays: 365 }
+  ];
+
+  let liveInvestments = JSON.parse(localStorage.getItem('tesla_live_investments')) || [
+    { id: 1, user: "Eric Manzi", share: "VIP 2 Share", amount: 50000, daily: 1800, remainingSeconds: 864000, status: "Active" },
+    { id: 2, user: "Clarisse U.", share: "VIP 3 Share", amount: 100000, daily: 3800, remainingSeconds: 1420000, status: "Active" }
+  ];
+
+  let currentTool = "deposits";
+  let countdownTimerInterval = null;
+
+  function performAdminLogin() {
+    let phone = document.getElementById('loginPhone').value.trim();
+    let pass = document.getElementById('loginPass').value.trim();
+
+    if (phone === ADMIN_PHONE && pass === ADMIN_PASS) {
+      document.getElementById('adminLoginScreen').style.display = 'none';
+      document.getElementById('adminDashboardApp').style.display = 'block';
+      calculateTotalStats();
+      switchTool('deposits');
+      startLiveCountdown();
+    } else {
+      alert("Invalid Phone number or Password for Admin!");
+    }
+  }
+
+  function calculateTotalStats() {
+    let pendingDepCount = depositRequests.filter(d => d.status === 'pending').length;
+    let pendingWithCount = withdrawalRequests.filter(w => w.status === 'pending').length;
+    let totalEarnings = systemUsers.reduce((sum, u) => sum + (u.earnings || 0), 0);
+
+    document.getElementById('statPendingDeposits').innerText = pendingDepCount > 0 ? pendingDepCount + " Pending" : "0";
+    document.getElementById('statPendingWithdrawals').innerText = pendingWithCount > 0 ? pendingWithCount + " Pending" : "0";
+    document.getElementById('statEarnings').innerText = totalEarnings.toLocaleString() + " RWF";
+    document.getElementById('statUsers').innerText = systemUsers.length;
+  }
+
+  function switchTool(tool) {
+    currentTool = tool;
+    const container = document.getElementById('dynamicContentArea');
+    const title = document.getElementById('panelTitle');
+    const searchContainer = document.getElementById('searchContainer');
+
+    searchContainer.style.display = (tool === 'users') ? 'block' : 'none';
+
+    if (tool === 'deposits') {
+      title.innerText = "Pending Deposits Approval Control";
+      renderDeposits(container);
+    } else if (tool === 'withdrawals') {
+      title.innerText = "Pending Withdrawals Approval Control";
+      renderWithdrawals(container);
+    } else if (tool === 'users') {
+      title.innerText = "Registered Users Management";
+      renderUsers(container, systemUsers);
+    } else if (tool === 'referrals') {
+      title.innerText = "Team & Referrals Commissions";
+      renderReferrals(container);
+    } else if (tool === 'shares') {
+      title.innerText = "Edit Shares & Dashboard Banners";
+      renderSharesEditor(container);
+    } else if (tool === 'investments') {
+      title.innerText = "Live Shares Performance Tracking";
+      renderInvestments(container);
+    }
+  }
+
+  /* 1. DEPOSITS APPROVAL */
+  function renderDeposits(container) {
+    container.innerHTML = '';
+    let pendingList = depositRequests.filter(d => d.status === 'pending');
+
+    if (pendingList.length === 0) {
+      container.innerHTML = `<p style="color:#64748b; font-size:13px; text-align:center; padding:30px;">Nta wubikije amafaranga utarerekanwa (No pending deposits).</p>`;
+      return;
+    }
+    pendingList.forEach(req => {
+      container.innerHTML += `
+        <div class="item-card">
+          <div class="item-row">
+            <span class="item-name">${req.user}</span>
+            <span class="item-badge badge-pending">PENDING</span>
+          </div>
+          <div style="font-size:15px; font-weight:900; color:#10b981; margin-bottom:4px;">+${req.amount.toLocaleString()} RWF</div>
+          <div style="font-size:11px; color:#94a3b8;">Ref Code: <b>${req.code}</b> | ${req.date}</div>
+          <div class="action-btn-group">
+            <button class="btn-act-green" onclick="approveDeposit(${req.id})">✓ Approve Deposit</button>
+            <button class="btn-act-red" onclick="rejectDeposit(${req.id})">✕ Reject</button>
+          </div>
+        </div>
+      `;
+    });
+  }
+
+  function approveDeposit(id) {
+    let req = depositRequests.find(d => d.id === id);
+    if (req) {
+      req.status = "approved";
+      let u = systemUsers.find(user => user.id === req.userId);
+      if (u) u.balance += req.amount;
+      saveAllData();
+      switchTool('deposits');
+      alert(`Deposit approved! ${req.amount} RWF added to ${req.user}'s balance.`);
+    }
+  }
+
+  function rejectDeposit(id) {
+    depositRequests = depositRequests.filter(d => d.id !== id);
+    saveAllData();
+    switchTool('deposits');
+  }
+
+  /* 2. WITHDRAWALS APPROVAL */
+  function renderWithdrawals(container) {
+    container.innerHTML = '';
+    let pendingList = withdrawalRequests.filter(w => w.status === 'pending');
+
+    if (pendingList.length === 0) {
+      container.innerHTML = `<p style="color:#64748b; font-size:13px; text-align:center; padding:30px;">Nta wubikuze amafaranga utarerekanwa (No pending withdrawals).</p>`;
+      return;
+    }
+    pendingList.forEach(req => {
+      container.innerHTML += `
+        <div class="item-card">
+          <div class="item-row">
+            <span class="item-name">${req.user} (${req.phone})</span>
+            <span class="item-badge badge-pending">PENDING</span>
+          </div>
+          <div style="font-size:15px; font-weight:900; color:#ef4444; margin-bottom:4px;">-${req.amount.toLocaleString()} RWF</div>
+          <div style="font-size:11px; color:#94a3b8;">Requested: ${req.date}</div>
+          <div class="action-btn-group">
+            <button class="btn-act-green" onclick="approveWithdrawal(${req.id})">✓ Approve Withdrawal</button>
+            <button class="btn-act-red" onclick="rejectWithdrawal(${req.id})">✕ Reject</button>
+          </div>
+        </div>
+      `;
+    });
+  }
+
+  function approveWithdrawal(id) {
+    let req = withdrawalRequests.find(w => w.id === id);
+    if (req) {
+      req.status = "approved";
+      let u = systemUsers.find(user => user.id === req.userId);
+      if (u && u.balance >= req.amount) {
+        u.balance -= req.amount;
+      }
+      saveAllData();
+      switchTool('withdrawals');
+      alert(`Withdrawal approved! ${req.amount} RWF deducted from ${req.user}'s balance.`);
+    }
+  }
+
+  function rejectWithdrawal(id) {
+    withdrawalRequests = withdrawalRequests.filter(w => w.id !== id);
+    saveAllData();
+    switchTool('withdrawals');
+  }
+
+  /* 3. USER MANAGEMENT CONTROL WITH SEARCH */
+  function renderUsers(container, listToRender) {
+    container.innerHTML = '';
+    if (listToRender.length === 0) {
+      container.innerHTML = `<p style="color:#64748b; font-size:12px; text-align:center; padding:20px;">No matching users found.</p>`;
+      return;
+    }
+    listToRender.forEach(u => {
+      container.innerHTML += `
+        <div class="item-card">
+          <div class="item-row">
+            <span class="item-name">${u.name}</span>
+            <span style="font-size:11px; color:#3b82f6; font-weight:800;">${u.phone}</span>
+          </div>
+          <div style="font-size:12px; color:#cbd5e1; margin-top:4px;">
+            Balance: <b style="color:#10b981;">${(u.balance || 0).toLocaleString()} RWF</b> | Earnings: <b style="color:#60a5fa;">${(u.earnings || 0).toLocaleString()} RWF</b>
+          </div>
+          <div class="action-btn-group">
+            <button class="btn-act-blue" onclick="openEditUserModal(${u.id})">✏️ Edit Details</button>
+          </div>
+        </div>
+      `;
+    });
+  }
+
+  function filterUsersList() {
+    let query = document.getElementById('userSearchInput').value.toLowerCase().trim();
+    let filtered = systemUsers.filter(u => u.name.toLowerCase().includes(query) || u.phone.includes(query));
+    renderUsers(document.getElementById('dynamicContentArea'), filtered);
+  }
+
+  function openEditUserModal(userId) {
+    let u = systemUsers.find(user => user.id === userId);
+    if (u) {
+      document.getElementById('editUserId').value = u.id;
+      document.getElementById('editUserName').value = u.name;
+      document.getElementById('editUserPhone').value = u.phone;
+      document.getElementById('editUserBalance').value = u.balance;
+      document.getElementById('editUserEarnings').value = u.earnings;
+      document.getElementById('editUserModal').style.display = 'flex';
+    }
+  }
+
+  function saveUserData() {
+    let id = parseInt(document.getElementById('editUserId').value);
+    let u = systemUsers.find(user => user.id === id);
+    if (u) {
+      u.name = document.getElementById('editUserName').value;
+      u.phone = document.getElementById('editUserPhone').value;
+      u.balance = parseFloat(document.getElementById('editUserBalance').value) || 0;
+      u.earnings = parseFloat(document.getElementById('editUserEarnings').value) || 0;
+      saveAllData();
+      closeEditUserModal();
+      switchTool('users');
+      alert("User details updated successfully!");
+    }
+  }
+
+  function closeEditUserModal() {
+    document.getElementById('editUserModal').style.display = 'none';
+  }
+
+  /* 4. REFERRALS CONTROL */
+  function renderReferrals(container) {
+    container.innerHTML = '';
+    systemUsers.forEach(u => {
+      container.innerHTML += `
+        <div class="item-card">
+          <div class="item-row">
+            <span class="item-name">${u.name} (${u.phone})</span>
+            <span class="item-badge badge-approved">${u.referralsCount || 0} Invites</span>
+          </div>
+          <div style="font-size:12px; color:#94a3b8; margin-top:4px;">
+            Total Commission Earned: <b style="color:#f59e0b;">${(u.comms || 0).toLocaleString()} RWF</b>
+          </div>
+        </div>
+      `;
+    });
+  }
+
+  /* 5. EDIT ALL SHARES & DASHBOARD BANNERS WITH GALLERY SELECTION */
+  function renderSharesEditor(container) {
+    let html = `
+      <!-- BANNER MANAGERS -->
+      <div class="item-card" style="margin-bottom:20px;">
+        <div class="item-name" style="margin-bottom:12px; color:#3b82f6;">⚡ Dashboard Banner Slider Images</div>
+    `;
+
+    dashboardBanners.forEach((imgUrl, index) => {
+      html += `
+        <div style="background:#0b1329; padding:10px; border-radius:10px; margin-bottom:12px; border:1px solid #1e2d52;">
+          <div style="font-size:11px; font-weight:800; color:#94a3b8; margin-bottom:6px;">Banner ${index + 1} Preview:</div>
+          <div class="banner-preview-box">
+            <img src="${imgUrl}" id="bannerImgPre_${index}" onerror="this.src='https://via.placeholder.com/400x150?text=Invalid+Image+URL'">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Image URL / Selected Path</label>
+            <input type="text" id="bannerUrlInput_${index}" class="input-box" value="${imgUrl}" oninput="updateBannerPreviewFromText(${index})">
+          </div>
+          <div class="action-btn-group">
+            <button class="btn-act-blue" onclick="document.getElementById('bannerFileInput_${index}').click()">📁 Choose Image from Gallery</button>
+            <input type="file" id="bannerFileInput_${index}" class="file-input" accept="image/*" onchange="handleBannerFileSelect(event, ${index})">
+            <button class="btn-act-green" onclick="saveIndividualBanner(${index})">Save Changes</button>
+          </div>
+        </div>
+      `;
+    });
+
+    html += `
+        <button class="btn-act-blue" style="width:100%; padding:12px; margin-top:8px;" onclick="addNewBannerField()">➕ Add New Banner Image</button>
+      </div>
+
+      <!-- ALL VIP SHARES EDITING -->
+      <div style="font-size:14px; font-weight:800; color:#ffffff; margin-bottom:10px;">📦 Edit VIP Share Plans (User Dashboard)</div>
+    `;
+
+    vipShares.forEach((share, sIdx) => {
+      html += `
+        <div class="item-card">
+          <div class="item-name" style="margin-bottom:8px; color:#10b981;">${share.name}</div>
+          <div class="form-group">
+            <label class="form-label">Price (RWF)</label>
+            <input type="number" id="sharePrice_${sIdx}" class="input-box" value="${share.price}">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Daily Profit (RWF)</label>
+            <input type="number" id="shareDaily_${sIdx}" class="input-box" value="${share.dailyProfit}">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Validity (Days)</label>
+            <input type="number" id="shareValidity_${sIdx}" class="input-box" value="${share.validityDays}">
+          </div>
+          <button class="btn-act-blue" style="width:100%; padding:10px;" onclick="saveSharePlan(${sIdx})">Save ${share.name} Changes</button>
+        </div>
+      `;
+    });
+
+    container.innerHTML = html;
+  }
+
+  function updateBannerPreviewFromText(index) {
+    let val = document.getElementById(`bannerUrlInput_${index}`).value;
+    document.getElementById(`bannerImgPre_${index}`).src = val;
+  }
+
+  function handleBannerFileSelect(event, index) {
+    const file = event.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        let base64Image = e.target.result;
+        document.getElementById(`bannerUrlInput_${index}`).value = base64Image;
+        document.getElementById(`bannerImgPre_${index}`).src = base64Image;
+      };
+      reader.readAsDataURL(file);
+    }
+  }
+
+  function saveIndividualBanner(index) {
+    let val = document.getElementById(`bannerUrlInput_${index}`).value;
+    dashboardBanners[index] = val;
+    saveAllData();
+    alert(`Banner ${index + 1} updated and saved automatically!`);
+  }
+
+  function addNewBannerField() {
+    dashboardBanners.push("https://images.unsplash.com/photo-1560958089-b8a1929cea89");
+    saveAllData();
+    switchTool('shares');
+  }
+
+  function saveSharePlan(sIdx) {
+    vipShares[sIdx].price = parseFloat(document.getElementById(`sharePrice_${sIdx}`).value) || 0;
+    vipShares[sIdx].dailyProfit = parseFloat(document.getElementById(`shareDaily_${sIdx}`).value) || 0;
+    vipShares[sIdx].validityDays = parseInt(document.getElementById(`shareValidity_${sIdx}`).value) || 365;
+    saveAllData();
+    alert(`${vipShares[sIdx].name} updated successfully!`);
+  }
+
+  /* 6. LIVE INVESTMENTS & COUNTDOWN TICKER */
+  function renderInvestments(container) {
+    container.innerHTML = '';
+    liveInvestments.forEach(inv => {
+      container.innerHTML += `
+        <div class="item-card">
+          <div class="item-row">
+            <span class="item-name">${inv.user}</span>
+            <span class="item-badge badge-approved">${inv.status}</span>
+          </div>
+          <div style="font-size:12px; color:#cbd5e1; margin-top:2px;">
+            Share: <b>${inv.share}</b> | Amount: <b>${inv.amount.toLocaleString()} RWF</b>
+          </div>
+          <div style="font-size:12px; color:#cbd5e1; margin-top:2px;">
+            Daily Return: <b style="color:#10b981;">${inv.daily.toLocaleString()} RWF</b>
+          </div>
+          <div style="font-size:13px; font-weight:800; color:#f59e0b; margin-top:6px; background:#0b1329; padding:6px 10px; border-radius:8px; display:inline-block;">
+            ⏳ Remaining Time: <span id="countdown_timer_${inv.id}">${formatTimeLeft(inv.remainingSeconds)}</span>
+          </div>
+          <div class="action-btn-group">
+            <button class="btn-act-blue" onclick="openEditInvestmentModal(${inv.id})">✏️ Edit Live Investment</button>
+          </div>
+        </div>
+      `;
+    });
+  }
+
+  function startLiveCountdown() {
+    if (countdownTimerInterval) clearInterval(countdownTimerInterval);
+    countdownTimerInterval = setInterval(() => {
+      liveInvestments.forEach(inv => {
+        if (inv.remainingSeconds > 0) {
+          inv.remainingSeconds--;
+          let el = document.getElementById(`countdown_timer_${inv.id}`);
+          if (el) el.innerText = formatTimeLeft(inv.remainingSeconds);
         }
+      });
+    }, 1000);
+  }
 
-        function updateCountdowns() {
-            const tbody = document.getElementById('activeInvestmentsTable');
-            tbody.innerHTML = '';
-            const now = new Date().getTime();
+  function formatTimeLeft(totalSeconds) {
+    if (totalSeconds <= 0) return "Expired / Completed";
+    let days = Math.floor(totalSeconds / (3600 * 24));
+    let hours = Math.floor((totalSeconds % (3600 * 24)) / 3600);
+    let minutes = Math.floor((totalSeconds % 3600) / 60);
+    let seconds = Math.floor(totalSeconds % 60);
 
-            activeInvestments.forEach(item => {
-                const distance = item.endTime - now;
+    return `${days}d ${hours}h ${minutes}m ${seconds}s`;
+  }
 
-                if (distance > 0) {
-                    const days = Math.floor(distance / (1000 * 60 * 60 * 24));
-                    const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-                    const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
-                    const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+  function openEditInvestmentModal(invId) {
+    let inv = liveInvestments.find(i => i.id === invId);
+    if (inv) {
+      document.getElementById('editInvId').value = inv.id;
+      document.getElementById('editInvShare').value = inv.share;
+      document.getElementById('editInvAmount').value = inv.amount;
+      document.getElementById('editInvDaily').value = inv.daily;
+      document.getElementById('editInvSeconds').value = inv.remainingSeconds;
+      document.getElementById('editInvestmentModal').style.display = 'flex';
+    }
+  }
 
-                    tbody.innerHTML += `
-                        <tr>
-                            <td><b>${item.level}</b></td>
-                            <td>${item.price.toLocaleString()} RWF</td>
-                            <td><span class="timer-badge">${days}d ${hours}h ${minutes}m ${seconds}s</span></td>
-                            <td style="color:green; font-weight:bold;">ACTIVE</td>
-                        </tr>
-                    `;
-                } else {
-                    tbody.innerHTML += `
-                        <tr>
-                            <td><b>${item.level}</b></td>
-                            <td>${item.price.toLocaleString()} RWF</td>
-                            <td><span class="timer-badge status-closed">EXPIRED</span></td>
-                            <td style="color:red; font-weight:bold;">CLOSED</td>
-                        </tr>
-                    `;
-                }
-            });
-        }
+  function saveInvestmentData() {
+    let id = parseInt(document.getElementById('editInvId').value);
+    let inv = liveInvestments.find(i => i.id === id);
+    if (inv) {
+      inv.share = document.getElementById('editInvShare').value;
+      inv.amount = parseFloat(document.getElementById('editInvAmount').value) || 0;
+      inv.daily = parseFloat(document.getElementById('editInvDaily').value) || 0;
+      inv.remainingSeconds = parseInt(document.getElementById('editInvSeconds').value) || 0;
+      saveAllData();
+      closeEditInvestmentModal();
+      switchTool('investments');
+      alert("Live investment details updated successfully!");
+    }
+  }
 
-        // Toggle Password Visibility (Akajisho)
-        function togglePasswordVisibility() {
-            const passInput = document.getElementById('password');
-            if (passInput.type === 'password') {
-                passInput.type = 'text';
-            } else {
-                passInput.type = 'password';
-            }
-        }
+  function closeEditInvestmentModal() {
+    document.getElementById('editInvestmentModal').style.display = 'none';
+  }
 
-        // Login Logix
-        function handleLogin(e) {
-            e.preventDefault();
-            const phone = document.getElementById('phone').value;
-            const pass = document.getElementById('password').value;
+  /* GLOBAL DATA HELPERS */
+  function saveAllData() {
+    localStorage.setItem('tesla_all_users', JSON.stringify(systemUsers));
+    localStorage.setItem('tesla_deposits', JSON.stringify(depositRequests));
+    localStorage.setItem('tesla_withdrawals', JSON.stringify(withdrawalRequests));
+    localStorage.setItem('tesla_banners', JSON.stringify(dashboardBanners));
+    localStorage.setItem('tesla_vip_shares', JSON.stringify(vipShares));
+    localStorage.setItem('tesla_live_investments', JSON.stringify(liveInvestments));
+    calculateTotalStats();
+  }
 
-            if (phone === "admin" || pass === "admin123") {
-                loginAdminDirect();
-            } else {
-                showSection('userSection');
-            }
-        }
+  function reloadAdminData() {
+    calculateTotalStats();
+    switchTool(currentTool);
+  }
 
-        function loginAdminDirect() {
-            const loader = document.getElementById('loadingOverlay');
-            loader.style.display = 'flex';
-            
-            setTimeout(() => {
-                loader.style.display = 'none';
-                showSection('adminSection');
-            }, 2000);
-        }
+  function toggleQuickMenu() {
+    document.getElementById('menuModal').style.display = 'flex';
+  }
 
-        function showSection(sectionId) {
-            document.querySelectorAll('.section').forEach(sec => sec.classList.remove('active-section'));
-            document.getElementById(sectionId).classList.add('active-section');
-        }
+  function closeMenuModal() {
+    document.getElementById('menuModal').style.display = 'none';
+  }
 
-        function logout() {
-            showSection('loginSection');
-        }
-    </script>
+  function goBackToUserApp() {
+    window.location.href = "index.html";
+  }
+</script>
+
 </body>
 </html>
