@@ -7,33 +7,33 @@
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
     body { background-color: #0b0f19; color: #f8fafc; display: flex; justify-content: center; }
-    .app-container { width: 100%; max-width: 480px; background: #111827; min-height: 100vh; position: relative; padding-bottom: 85px; }
+    .app-container { width: 100%; max-width: 480px; background: #0b0f19; min-height: 100vh; position: relative; padding-bottom: 85px; }
 
-    /* Header */
-    .dash-header { background: linear-gradient(135deg, #0052FF 0%, #1d4ed8 100%); color: white; padding: 18px 20px 45px; border-bottom-left-radius: 24px; border-bottom-right-radius: 24px; box-shadow: 0 4px 20px rgba(0, 82, 255, 0.3); }
+    /* Header Modern Dark */
+    .dash-header { background: #111827; color: white; padding: 18px 20px 45px; border-bottom: 1px solid #1f2937; border-bottom-left-radius: 24px; border-bottom-right-radius: 24px; box-shadow: 0 4px 20px rgba(0,0,0,0.4); }
     .dash-user { display: flex; justify-content: space-between; align-items: center; }
     .user-name { font-size: 18px; font-weight: 800; }
-    .user-phone { font-size: 12px; opacity: 0.85; }
+    .user-phone { font-size: 12px; opacity: 0.85; color: #9ca3af; }
 
     .nav-top-btns { display: flex; gap: 8px; margin-bottom: 12px; }
-    .btn-step-back { background: rgba(255, 255, 255, 0.15); border: 1px solid rgba(255, 255, 255, 0.2); color: white; padding: 6px 12px; border-radius: 8px; font-size: 12px; font-weight: 700; cursor: pointer; backdrop-filter: blur(5px); }
-    .btn-step-back:hover { background: rgba(255, 255, 255, 0.25); }
+    .btn-step-back { background: #1f2937; border: 1px solid #374151; color: white; padding: 6px 12px; border-radius: 8px; font-size: 12px; font-weight: 700; cursor: pointer; }
+    .btn-step-back:hover { background: #374151; }
 
     /* Balance Card Custom */
-    .balance-card { background: #1f2937; margin: -35px 16px 15px; border-radius: 20px; padding: 18px; border: 1px solid #374151; box-shadow: 0 10px 25px rgba(0,0,0,0.5); }
-    .balance-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; border-bottom: 1px solid #374151; padding-bottom: 12px; }
+    .balance-card { background: #111827; margin: -35px 16px 15px; border-radius: 20px; padding: 18px; border: 1px solid #1f2937; box-shadow: 0 10px 25px rgba(0,0,0,0.5); }
+    .balance-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; border-bottom: 1px solid #1f2937; padding-bottom: 12px; }
     .bal-title { font-size: 10px; color: #9ca3af; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; }
     .bal-num { font-size: 16px; font-weight: 900; color: #ffffff; margin-top: 4px; }
     .bal-num span { font-size: 11px; color: #3b82f6; }
 
     .action-btns { display: flex; gap: 10px; margin-top: 12px; }
-    .btn-act { flex: 1; background: #111827; border: 1px solid #374151; padding: 12px; border-radius: 12px; font-weight: 800; color: #60a5fa; font-size: 12px; cursor: pointer; text-align: center; }
+    .btn-act { flex: 1; background: #1f2937; border: 1px solid #374151; padding: 12px; border-radius: 12px; font-weight: 800; color: #60a5fa; font-size: 12px; cursor: pointer; text-align: center; }
 
     /* Notice */
-    .notice-bar { background: #1f2937; margin: 0 16px 15px; padding: 10px 14px; border-radius: 12px; font-size: 12px; color: #f3f4f6; display: flex; align-items: center; gap: 8px; border: 1px solid #374151; }
+    .notice-bar { background: #111827; margin: 0 16px 15px; padding: 10px 14px; border-radius: 12px; font-size: 12px; color: #f3f4f6; display: flex; align-items: center; gap: 8px; border: 1px solid #1f2937; }
 
     /* CAR SLIDER */
-    .car-slider-card { margin: 0 16px 15px; height: 180px; border-radius: 16px; position: relative; overflow: hidden; border: 1px solid #374151; }
+    .car-slider-card { margin: 0 16px 15px; height: 180px; border-radius: 16px; position: relative; overflow: hidden; border: 1px solid #1f2937; }
     .car-slide { position: absolute; inset: 0; background-size: cover; background-position: center; transition: opacity 0.8s ease-in-out; opacity: 0; display: flex; align-items: flex-end; padding: 15px; }
     .car-slide.active { opacity: 1; }
     .banner-overlay { position: absolute; inset: 0; background: linear-gradient(to top, rgba(0,0,0,0.9), transparent); }
@@ -41,48 +41,49 @@
 
     /* Grid Menu */
     .grid-menu { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin: 0 16px 20px; }
-    .menu-item { background: #1f2937; padding: 14px 6px; border-radius: 16px; text-align: center; border: 1px solid #374151; cursor: pointer; }
+    .menu-item { background: #111827; padding: 14px 6px; border-radius: 16px; text-align: center; border: 1px solid #1f2937; cursor: pointer; }
     .menu-item:hover { border-color: #3b82f6; }
     .menu-icon { font-size: 22px; margin-bottom: 4px; }
     .menu-label { font-size: 11px; font-weight: 700; color: #e5e7eb; }
 
     /* Forms & Inputs */
-    .auth-card { background: #1f2937; margin: 15px 16px; padding: 24px 20px; border-radius: 20px; border: 1px solid #374151; box-shadow: 0 10px 20px rgba(0,0,0,0.3); }
+    .auth-card { background: #111827; margin: 15px 16px; padding: 24px 20px; border-radius: 20px; border: 1px solid #1f2937; box-shadow: 0 10px 20px rgba(0,0,0,0.3); }
     .form-group { margin-bottom: 14px; text-align: left; }
     .form-label { font-size: 11px; font-weight: 800; color: #9ca3af; letter-spacing: 0.5px; margin-bottom: 6px; display: block; }
     
     .input-container { position: relative; width: 100%; }
-    .input-box { width: 100%; background: #111827; border: 1px solid #374151; border-radius: 12px; padding: 14px 45px 14px 16px; font-size: 14px; color: white; outline: none; }
+    .input-box { width: 100%; background: #0b0f19; border: 1px solid #1f2937; border-radius: 12px; padding: 14px 45px 14px 16px; font-size: 14px; color: white; outline: none; }
     .input-box:focus { border-color: #0052FF; }
-    .input-box-normal { width: 100%; background: #111827; border: 1px solid #374151; border-radius: 12px; padding: 14px 16px; font-size: 14px; color: white; outline: none; }
+    .input-box-normal { width: 100%; background: #0b0f19; border: 1px solid #1f2937; border-radius: 12px; padding: 14px 16px; font-size: 14px; color: white; outline: none; }
     .input-box-normal:focus { border-color: #0052FF; }
+    .input-box-normal:read-only { background: #161e2e; color: #9ca3af; cursor: not-allowed; }
     
     .eye-btn { position: absolute; right: 15px; top: 50%; transform: translateY(-50%); background: none; border: none; cursor: pointer; font-size: 16px; color: #9ca3af; }
 
     .btn-main { width: 100%; background: #0052FF; color: white; border: none; padding: 14px; border-radius: 12px; font-size: 15px; font-weight: 800; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; margin-top: 10px; }
     .btn-main:hover { background: #0040cc; }
-    .btn-back { width: 100%; background: #111827; color: #60a5fa; border: 1px solid #374151; padding: 12px; border-radius: 12px; font-size: 13px; font-weight: 700; cursor: pointer; margin-top: 8px; text-align: center; }
+    .btn-back { width: 100%; background: #0b0f19; color: #60a5fa; border: 1px solid #1f2937; padding: 12px; border-radius: 12px; font-size: 13px; font-weight: 700; cursor: pointer; margin-top: 8px; text-align: center; }
 
     /* Loading Spinner */
-    .spinner { display: inline-block; width: 20px; height: 20px; border: 3px solid rgba(255,255,255,0.3); border-radius: 50%; border-top-color: #fff; animation: spin 0.8s ease-in-out infinite; }
+    .spinner { display: inline-block; width: 18px; height: 18px; border: 3px solid rgba(255,255,255,0.3); border-radius: 50%; border-top-color: #fff; animation: spin 0.8s ease-in-out infinite; }
     @keyframes spin { to { transform: rotate(360deg); } }
 
     /* Plans Card */
-    .plan-card { background: #1f2937; border-radius: 16px; padding: 16px; margin: 0 16px 16px; border: 1px solid #374151; box-shadow: 0 4px 12px rgba(0,0,0,0.2); }
+    .plan-card { background: #111827; border-radius: 16px; padding: 16px; margin: 0 16px 16px; border: 1px solid #1f2937; box-shadow: 0 4px 12px rgba(0,0,0,0.2); }
     .plan-header-title { background: #0052FF; color: #ffffff; padding: 8px 12px; border-radius: 10px; font-size: 12px; font-weight: 800; margin-bottom: 12px; text-align: center; letter-spacing: 0.5px; }
     .plan-header { display: flex; justify-content: space-between; align-items: center; font-weight: 800; font-size: 16px; color: #f9fafb; margin-bottom: 10px; }
     .plan-badge { background: rgba(0, 82, 255, 0.2); color: #60a5fa; font-size: 11px; padding: 4px 10px; border-radius: 8px; border: 1px solid rgba(0, 82, 255, 0.4); }
-    .plan-details { font-size: 12px; color: #d1d5db; line-height: 1.8; margin-bottom: 14px; text-align: left; background: #111827; padding: 10px 12px; border-radius: 10px; border: 1px solid #374151; }
+    .plan-details { font-size: 12px; color: #d1d5db; line-height: 1.8; margin-bottom: 14px; text-align: left; background: #0b0f19; padding: 10px 12px; border-radius: 10px; border: 1px solid #1f2937; }
 
     /* Active Investment Card */
-    .active-plan-card { background: #1f2937; border-radius: 16px; padding: 16px; margin-bottom: 12px; border: 1px solid #0052FF; text-align: left; }
+    .active-plan-card { background: #111827; border-radius: 16px; padding: 16px; margin-bottom: 12px; border: 1px solid #0052FF; text-align: left; }
     .active-timer { font-size: 14px; font-weight: 800; color: #f59e0b; margin-top: 6px; }
 
     /* Video Task Styles */
-    .video-card { background: #1f2937; border-radius: 16px; padding: 14px; margin-bottom: 15px; border: 1px solid #374151; }
+    .video-card { background: #111827; border-radius: 16px; padding: 14px; margin-bottom: 15px; border: 1px solid #1f2937; }
     .video-card video { width: 100%; border-radius: 12px; max-height: 200px; background: #000; }
     .video-btn { width: 100%; background: #059669; color: white; border: none; padding: 12px; border-radius: 10px; font-size: 13px; font-weight: 800; margin-top: 10px; cursor: pointer; }
-    .video-btn:disabled { background: #4b5563; cursor: not-allowed; }
+    .video-btn:disabled { background: #374151; cursor: not-allowed; }
 
     /* Modal Styles */
     .modal-overlay { position: fixed; inset: 0; background: rgba(0, 0, 0, 0.85); backdrop-filter: blur(6px); display: flex; align-items: center; justify-content: center; z-index: 100; padding: 15px; }
@@ -116,13 +117,13 @@
     .btn-confirm-payment.done { background: #d97706; cursor: default; }
 
     /* Bottom Nav */
-    .bottom-nav { position: fixed; bottom: 0; left: 50%; transform: translateX(-50%); width: 100%; max-width: 480px; background: #1f2937; border-top: 1px solid #374151; display: flex; justify-content: space-around; padding: 10px 0; z-index: 90; }
+    .bottom-nav { position: fixed; bottom: 0; left: 50%; transform: translateX(-50%); width: 100%; max-width: 480px; background: #111827; border-top: 1px solid #1f2937; display: flex; justify-content: space-around; padding: 10px 0; z-index: 90; }
     .nav-item { text-align: center; color: #9ca3af; font-size: 10px; font-weight: 700; cursor: pointer; flex: 1; }
     .nav-item.active { color: #60a5fa; }
     .nav-icon { font-size: 18px; display: block; margin-bottom: 2px; }
     
-    .team-card { background: #111827; padding: 12px; border-radius: 12px; margin-top: 10px; border: 1px solid #374151; text-align: left; }
-    .team-member { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid #374151; font-size: 12px; }
+    .team-card { background: #0b0f19; padding: 12px; border-radius: 12px; margin-top: 10px; border: 1px solid #1f2937; text-align: left; }
+    .team-member { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid #1f2937; font-size: 12px; }
   </style>
 </head>
 <body>
@@ -147,10 +148,6 @@
           <input type="tel" id="regPhone" class="input-box-normal" placeholder="078xxxxxxxx">
         </div>
         <div class="form-group">
-          <label class="form-label">KODE Y'UBUTUMIRE (REF CODE)</label>
-          <input type="text" id="regRefCode" class="input-box-normal" placeholder="Shemas/Invisibble Code" style="text-transform:uppercase;">
-        </div>
-        <div class="form-group">
           <label class="form-label">IJAMBOBANGA (PASSWORD)</label>
           <div class="input-container">
             <input type="password" id="regPass" class="input-box" placeholder="••••••">
@@ -163,6 +160,11 @@
             <input type="password" id="regPassConfirm" class="input-box" placeholder="••••••">
             <button type="button" class="eye-btn" onclick="togglePassword('regPassConfirm', this)">👁️</button>
           </div>
+        </div>
+        <!-- REF CODE ISHYIZWE MUNSI YA EMEZA IJAMBOBANGA -->
+        <div class="form-group">
+          <label class="form-label">KODE Y'UBUTUMIRE (REF CODE)</label>
+          <input type="text" id="regRefCode" class="input-box-normal" placeholder="SHEMAS/INVISIBBLE CODE" style="text-transform:uppercase;">
         </div>
         <button id="regBtn" class="btn-main" onclick="handleRegister()">Iyandikishe ➔</button>
         <button class="btn-back" onclick="showLoginSection()">Ufite konti? Injira</button>
@@ -225,7 +227,7 @@
           <div class="bal-num"><span id="userDepositBalance">0</span> <span>RWF</span></div>
         </div>
       </div>
-      <div style="margin-top: 10px; border-bottom: 1px solid #374151; padding-bottom: 10px;">
+      <div style="margin-top: 10px; border-bottom: 1px solid #1f2937; padding-bottom: 10px;">
         <div class="bal-title">Inyungu Zokubikuza</div>
         <div class="bal-num" style="color:#10b981;"><span id="userWithdrawableEarnings">0</span> <span>RWF</span></div>
       </div>
@@ -290,7 +292,7 @@
 
     <!-- TAB 3: IMIRIMO (41 TESLA VIDEOS) -->
     <div id="tabImirimo" style="display: none; padding: 0 16px;">
-      <div style="margin-bottom: 15px; background:#1f2937; padding:12px; border-radius:12px; border:1px solid #374151; text-align:left;">
+      <div style="margin-bottom: 15px; background:#111827; padding:12px; border-radius:12px; border:1px solid #1f2937; text-align:left;">
         <h3 style="font-size:14px; color:#60a5fa;">🎬 Reba Amavideo Ubone Inyungu</h3>
         <p style="font-size:11px; color:#d1d5db; margin-top:4px;" id="tasksInfoText">Baza gukora ishoramari hanyuma urebe amavideo agenewe umugabane wawe!</p>
       </div>
@@ -308,16 +310,16 @@
 
     <!-- TAB 5: ITSINDA (TEAM) -->
     <div id="tabItsinda" style="display: none; padding: 0 16px;">
-      <div style="background:#1f2937; border-radius:20px; padding:20px; text-align:center; border:1px solid #374151;">
+      <div style="background:#111827; border-radius:20px; padding:20px; text-align:center; border:1px solid #1f2937;">
         <div style="font-size:36px; margin-bottom:6px;">👥</div>
         <h3 style="font-size:18px; color:white;">Itsinda Ryange (Team)</h3>
         
         <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px; margin: 15px 0;">
-          <div style="background:#111827; padding:10px; border-radius:12px; border:1px solid #374151;">
+          <div style="background:#0b0f19; padding:10px; border-radius:12px; border:1px solid #1f2937;">
             <div style="font-size:11px; color:#9ca3af;">Level 1 Yanjye</div>
             <div style="font-size:16px; font-weight:800; color:#10b981;" id="teamL1Count">0 People</div>
           </div>
-          <div style="background:#111827; padding:10px; border-radius:12px; border:1px solid #374151;">
+          <div style="background:#0b0f19; padding:10px; border-radius:12px; border:1px solid #1f2937;">
             <div style="font-size:11px; color:#9ca3af;">Inyungu (35% Commission)</div>
             <div style="font-size:16px; font-weight:800; color:#f59e0b;" id="teamL1Earnings">0 RWF</div>
           </div>
@@ -330,7 +332,7 @@
         <!-- Referral Link Box -->
         <div style="margin-top:15px; text-align:left;">
           <label style="font-size:11px; font-weight:800; color:#9ca3af; display:block; margin-bottom:4px;">REFERRAL LINK YAWE (UNIQUE)</label>
-          <div style="background:#111827; padding:10px 12px; border-radius:12px; font-size:12px; font-weight:700; color:#60a5fa; display:flex; justify-content:space-between; align-items:center; border:1px solid #374151;">
+          <div style="background:#0b0f19; padding:10px 12px; border-radius:12px; font-size:12px; font-weight:700; color:#60a5fa; display:flex; justify-content:space-between; align-items:center; border:1px solid #1f2937;">
             <span id="refLinkText" style="word-break:break-all; margin-right:8px;">Loading link...</span>
             <span style="cursor:pointer; font-size:18px;" onclick="copyRefLink()">📋</span>
           </div>
@@ -342,14 +344,14 @@
 
     <!-- TAB 6: KONTI -->
     <div id="tabKonti" style="display: none; padding: 0 16px;">
-      <div style="background:#1f2937; border-radius:20px; padding:20px; border:1px solid #374151;">
+      <div style="background:#111827; border-radius:20px; padding:20px; border:1px solid #1f2937;">
         <div style="text-align:center; margin-bottom:15px;">
           <div style="width:60px; height:60px; background:rgba(0, 82, 255, 0.2); color:#60a5fa; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:24px; font-weight:800; margin:0 auto 10px; border:1px solid #0052FF;">👤</div>
           <h3 style="font-size:18px; color:white;" id="profileName">User</h3>
           <p style="font-size:13px; color:#9ca3af;" id="profilePhone">078xxxxxxx</p>
-          <span style="font-size:11px; background:#111827; color:#60a5fa; padding:4px 10px; border-radius:6px; margin-top:6px; display:inline-block; border:1px solid #374151;" id="profileRefCode">Ref Code: ...</span>
+          <span style="font-size:11px; background:#0b0f19; color:#60a5fa; padding:4px 10px; border-radius:6px; margin-top:6px; display:inline-block; border:1px solid #1f2937;" id="profileRefCode">Ref Code: ...</span>
         </div>
-        <hr style="border:none; border-top:1px solid #374151; margin:15px 0;">
+        <hr style="border:none; border-top:1px solid #1f2937; margin:15px 0;">
         <div style="display:flex; justify-content:space-between; margin-bottom:10px;">
           <span style="font-size:13px; color:#9ca3af;">Ayo wabikije:</span>
           <span style="font-size:14px; font-weight:800; color:#60a5fa;"><span id="accDepBal">0</span> RWF</span>
@@ -440,8 +442,11 @@
 
   window.onload = function() {
     const refFromUrl = getUrlParameter('ref');
+    const refInput = document.getElementById('regRefCode');
+    
     if (refFromUrl) {
-      document.getElementById('regRefCode').value = refFromUrl;
+      refInput.value = refFromUrl;
+      refInput.readOnly = true; // Readonly niba link iriho ref code
     }
 
     if (user) {
@@ -573,32 +578,42 @@
       return;
     }
 
-    const newUser = { 
-      name, 
-      phone, 
-      pass,
-      practiceBalance: 1500,
-      depositBalance: 0,
-      withdrawableEarnings: 0,
-      investedAmount: 0, 
-      totalInvestments: 0,
-      refCode: generateUniqueRefCode(),
-      referredBy: refCode || null,
-      level1Members: [],
-      level1Earnings: 0,
-      activeInvestments: [],
-      watchedVideosToday: {}
-    };
+    const regBtn = document.getElementById('regBtn');
+    regBtn.innerHTML = `<span class="spinner"></span> Tegereza...`;
+    regBtn.disabled = true;
 
-    usersDatabase.push(newUser);
-    localStorage.setItem('tesla_users_db', JSON.stringify(usersDatabase));
+    // Loading 2 Seconds Delay
+    setTimeout(() => {
+      regBtn.innerHTML = `Iyandikishe ➔`;
+      regBtn.disabled = false;
 
-    user = newUser;
-    currentUserPhone = user.phone;
-    localStorage.setItem('tesla_current_user_phone', currentUserPhone);
+      const newUser = { 
+        name, 
+        phone, 
+        pass,
+        practiceBalance: 1500,
+        depositBalance: 0,
+        withdrawableEarnings: 0,
+        investedAmount: 0, 
+        totalInvestments: 0,
+        refCode: generateUniqueRefCode(),
+        referredBy: refCode || null,
+        level1Members: [],
+        level1Earnings: 0,
+        activeInvestments: [],
+        watchedVideosToday: {}
+      };
 
-    alert("Konti yawe yayanditse neza! Uhawe 1,500 RWF yo kwimenyereza.");
-    showDashboard();
+      usersDatabase.push(newUser);
+      localStorage.setItem('tesla_users_db', JSON.stringify(usersDatabase));
+
+      user = newUser;
+      currentUserPhone = user.phone;
+      localStorage.setItem('tesla_current_user_phone', currentUserPhone);
+
+      alert("Konti yawe yayanditse neza! Uhawe 1,500 RWF yo kwimenyereza.");
+      showDashboard();
+    }, 2000);
   }
 
   function handleLogin() {
@@ -624,9 +639,10 @@
     }
 
     const loginBtn = document.getElementById('loginBtn');
-    loginBtn.innerHTML = `<span class="spinner"></span> Indimo iraloading...`;
+    loginBtn.innerHTML = `<span class="spinner"></span> Tegereza...`;
     loginBtn.disabled = true;
 
+    // Loading 2 Seconds Delay
     setTimeout(() => {
       loginBtn.innerHTML = `Injira ➔`;
       loginBtn.disabled = false;
@@ -784,7 +800,7 @@
     if (!container) return;
 
     if (!user.activeInvestments || user.activeInvestments.length === 0) {
-      container.innerHTML = `<div style="background:#1f2937; padding:20px; border-radius:12px; border:1px solid #374151;">Nta mugabane uragura ushoboye gukora. Gura uyu munsi muri SHORA!</div>`;
+      container.innerHTML = `<div style="background:#111827; padding:20px; border-radius:12px; border:1px solid #1f2937;">Nta mugabane uragura ushoboye gukora. Gura uyu munsi muri SHORA!</div>`;
       return;
     }
 
@@ -845,7 +861,7 @@
     const infoEl = document.getElementById('tasksInfoText');
     if (maxVideosAllowed === 0) {
       infoEl.innerText = "⚠️ Nta mugabane active ufite. Banza ushore imari ngo amavideo afunguke!";
-      container.innerHTML = `<div style="background:#1f2937; padding:20px; border-radius:12px; border:1px solid #374151;">Jya muri "SHORA" ugure umugabane wo kurebera amavideo!</div>`;
+      container.innerHTML = `<div style="background:#111827; padding:20px; border-radius:12px; border:1px solid #1f2937;">Jya muri "SHORA" ugure umugabane wo kurebera amavideo!</div>`;
       return;
     } else {
       infoEl.innerText = `⚡ Wafunguye amavideo ${maxVideosAllowed} kuri umugabane wawa active! Reba amavideo yose uyu munsi ubone inyungu ya ${activePlan.daily.toLocaleString()} RWF.`;
@@ -862,7 +878,7 @@
           <div style="font-size:12px; font-weight:800; color:#60a5fa; margin-bottom:6px;">
             🎬 TESLA VIDEO #${i} ${isLocked ? '🔒 (Locked)' : ''}
           </div>
-          ${!isLocked ? `<video src="${videoSrc}" controls controlsList="nodownload"></video>` : '<div style="height:120px; background:#111827; border-radius:10px; display:flex; align-items:center; justify-content:center; font-size:12px; color:#9ca3af;">🔒 Banza ugure VIP yo hejuru ngo ufungure iyi video</div>'}
+          ${!isLocked ? `<video src="${videoSrc}" controls controlsList="nodownload"></video>` : '<div style="height:120px; background:#0b0f19; border-radius:10px; display:flex; align-items:center; justify-content:center; font-size:12px; color:#9ca3af;">🔒 Banza ugure VIP yo hejuru ngo ufungure iyi video</div>'}
           
           <button class="video-btn" ${isLocked || isWatched ? 'disabled' : ''} onclick="watchVideoTask(${i}, ${maxVideosAllowed})">
             ${isWatched ? '✓ Yarebwe Uyu munsi' : (isLocked ? '🔒 Ipfunze' : 'Emeza ko Wairebye (30s)')}
@@ -991,7 +1007,7 @@
     content.className = '';
     content.innerHTML = `
       <div class="pay-card-modal">
-        <div class="modal-nav-btns" style="border-color: #374151;">
+        <div class="modal-nav-btns" style="border-color: #1f2937;">
           <button class="btn-modal-nav" style="background:#1f2937; color:#fff;" onclick="openDepositFlow(${selectedDepositAmount})">⬅ Subira inyuma</button>
           <button class="btn-modal-nav" style="background:#1f2937; color:#fff;" onclick="closeModal(); switchTab('ahabanza');">🏠 Subira ahabanza</button>
         </div>
