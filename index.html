@@ -161,7 +161,6 @@
             <button type="button" class="eye-btn" onclick="togglePassword('regPassConfirm', this)">👁️</button>
           </div>
         </div>
-        <!-- REF CODE ISHYIZWE MUNSI YA EMEZA IJAMBOBANGA -->
         <div class="form-group">
           <label class="form-label">KODE Y'UBUTUMIRE (REF CODE)</label>
           <input type="text" id="regRefCode" class="input-box-normal" placeholder="SHEMAS/INVISIBBLE CODE" style="text-transform:uppercase;">
@@ -410,11 +409,9 @@
 
   let currentFirebaseUid = null;
 
-  // Real-time listener ya User Auth & Data Sync
   onAuthStateChanged(auth, async (firebaseUser) => {
     if (firebaseUser) {
       currentFirebaseUid = firebaseUser.uid;
-      // Kurura amakuru mu gihe nyacyo muri Firestore
       onSnapshot(doc(db, "users", firebaseUser.uid), (docSnap) => {
         if (docSnap.exists()) {
           const dbData = docSnap.data();
@@ -436,7 +433,6 @@
     }
   });
 
-  // A. KUREMA KONTI (Register with Firebase)
   window.handleRegister = async function() {
     const name = document.getElementById('regName').value.trim();
     const phone = document.getElementById('regPhone').value.trim();
@@ -458,7 +454,6 @@
     regBtn.disabled = true;
 
     try {
-      // Firebase auth ikoresha email -> duhindura phone ibe fake email
       const dummyEmail = `${phone}@tesla.com`;
       const userCredential = await createUserWithEmailAndPassword(auth, dummyEmail, pass);
       const fUser = userCredential.user;
@@ -493,7 +488,6 @@
     }
   };
 
-  // B. KWINJIRA (Login with Firebase)
   window.handleLogin = async function() {
     const phone = document.getElementById('loginPhone').value.trim();
     const pass = document.getElementById('loginPass').value;
@@ -518,13 +512,11 @@
     }
   };
 
-  // C. SOHOKAMO (Logout)
   window.handleLogout = async function() {
     await signOut(auth);
     window.showLoginSection();
   };
 
-  // D. KUBITSA (Deposit Request in Firestore)
   window.confirmPaymentAction = async function() {
     if (!window.selectedDepositAmount || window.selectedDepositAmount <= 0) return;
     if (!currentFirebaseUid) {
@@ -533,9 +525,8 @@
     }
 
     const btn = document.getElementById('btnEmezaPayment');
-    btn.innerHTML = "⏳ Byemejwe! Tegereza Admin Approve";
-    btn.classList.add('done');
-    btn.onclick = null;
+    btn.innerHTML = `<span class="spinner"></span> Byemejwe! Birimo koherezwa...`;
+    btn.disabled = true;
 
     try {
       await addDoc(collection(db, "deposits"), {
@@ -547,14 +538,15 @@
         date: new Date().toISOString()
       });
 
-      alert("Ibusabe bwawe bwo kubitsa RWF " + window.selectedDepositAmount.toLocaleString() + " bwoherejwe kuri Admin!");
+      alert("Byemejwe! Ubusabe bwawe bwo kubitsa RWF " + window.selectedDepositAmount.toLocaleString() + " bwoherejwe muri Database ya Admin kugira ngo abyemeze!");
       window.closeModal();
     } catch (error) {
       alert("Ikosa mu kubitsa: " + error.message);
+      btn.innerHTML = "Emeza ko wishyuye";
+      btn.disabled = false;
     }
   };
 
-  // E. BIKUZA INYUNGU (Withdrawal in Firestore)
   window.submitWithdrawal = async function() {
     const amt = Number(document.getElementById('withdrawAmount').value);
 
@@ -593,7 +585,6 @@
     }
   };
 
-  // Synchronize DB helper
   window.saveUsersDB = async function() {
     if (currentFirebaseUid && window.user) {
       await updateDoc(doc(db, "users", currentFirebaseUid), {
