@@ -447,9 +447,8 @@
     if (refFromUrl) {
       refInput.value = refFromUrl;
       refInput.readOnly = true; // Readonly niba link iriho ref code
-    }
-
-    if (user) {
+      showRegisterSection();   // Niba URL iriho ref link, ihita imujyana kuri REGISTER DIRECT
+    } else if (user) {
       showDashboard();
     } else {
       showLoginSection();
