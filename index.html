@@ -19,15 +19,15 @@
     .btn-step-back { background: rgba(255, 255, 255, 0.2); border: none; color: white; padding: 6px 12px; border-radius: 8px; font-size: 12px; font-weight: 700; cursor: pointer; display: flex; align-items: center; gap: 4px; }
     .btn-step-back:hover { background: rgba(255, 255, 255, 0.3); }
 
-    /* Balance Card */
+    /* Balance Card Custom */
     .balance-card { background: #0f172a; margin: -35px 16px 15px; border-radius: 20px; padding: 18px; border: 1px solid #334155; box-shadow: 0 10px 20px rgba(0,0,0,0.3); }
-    .balance-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; border-bottom: 1px solid #1e293b; padding-bottom: 12px; }
-    .bal-title { font-size: 11px; color: #94a3b8; font-weight: 700; }
-    .bal-num { font-size: 20px; font-weight: 900; color: #ffffff; margin-top: 4px; }
-    .bal-num span { font-size: 11px; color: #3b82f6; }
+    .balance-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; border-bottom: 1px solid #1e293b; padding-bottom: 12px; }
+    .bal-title { font-size: 10px; color: #94a3b8; font-weight: 700; text-transform: uppercase; }
+    .bal-num { font-size: 16px; font-weight: 900; color: #ffffff; margin-top: 4px; }
+    .bal-num span { font-size: 10px; color: #3b82f6; }
 
     .action-btns { display: flex; gap: 10px; margin-top: 12px; }
-    .btn-act { flex: 1; background: #1e293b; border: 1px solid #334155; padding: 10px; border-radius: 12px; font-weight: 700; color: #3b82f6; font-size: 13px; cursor: pointer; text-align: center; }
+    .btn-act { flex: 1; background: #1e293b; border: 1px solid #334155; padding: 10px; border-radius: 12px; font-weight: 700; color: #3b82f6; font-size: 12px; cursor: pointer; text-align: center; }
 
     /* Notice */
     .notice-bar { background: #1e293b; margin: 0 16px 15px; padding: 10px 14px; border-radius: 12px; font-size: 12px; color: #e2e8f0; display: flex; align-items: center; gap: 8px; border: 1px solid #334155; }
@@ -65,6 +65,16 @@
     .plan-header { display: flex; justify-content: space-between; align-items: center; font-weight: 800; font-size: 16px; color: #f8fafc; margin-bottom: 10px; }
     .plan-badge { background: #1e3a8a; color: #60a5fa; font-size: 11px; padding: 4px 10px; border-radius: 8px; }
     .plan-details { font-size: 12px; color: #cbd5e1; line-height: 1.8; margin-bottom: 14px; text-align: left; background: #1e293b; padding: 10px 12px; border-radius: 10px; }
+
+    /* Active Investment Card */
+    .active-plan-card { background: #1e293b; border-radius: 16px; padding: 16px; margin-bottom: 12px; border: 1px solid #3b82f6; text-align: left; }
+    .active-timer { font-size: 14px; font-weight: 800; color: #eab308; margin-top: 4px; }
+
+    /* Video Task Styles */
+    .video-card { background: #0f172a; border-radius: 16px; padding: 12px; margin-bottom: 15px; border: 1px solid #334155; }
+    .video-card video { width: 100%; border-radius: 12px; max-height: 200px; background: #000; }
+    .video-btn { width: 100%; background: #22c55e; color: white; border: none; padding: 10px; border-radius: 10px; font-size: 13px; font-weight: 700; margin-top: 8px; cursor: pointer; }
+    .video-btn:disabled { background: #475569; cursor: not-allowed; }
 
     /* Modal Styles */
     .modal-overlay { position: fixed; inset: 0; background: rgba(0, 0, 0, 0.85); backdrop-filter: blur(5px); display: flex; align-items: center; justify-content: center; z-index: 100; padding: 15px; }
@@ -197,16 +207,20 @@
     <div class="balance-card">
       <div class="balance-grid">
         <div>
-          <div class="bal-title">Ayo ufiteho</div>
-          <div class="bal-num"><span id="userBalance">1,000</span> <span>RWF</span></div>
+          <div class="bal-title">Kwimenyereza</div>
+          <div class="bal-num"><span id="userPracticeBalance">1,500</span> <span>RWF</span></div>
         </div>
         <div>
-          <div class="bal-title">Inyungu zose</div>
-          <div class="bal-num"><span id="userEarnings">0</span> <span>RWF</span></div>
+          <div class="bal-title">Ayo Wabikije</div>
+          <div class="bal-num"><span id="userDepositBalance">0</span> <span>RWF</span></div>
         </div>
       </div>
+      <div style="margin-top: 10px; border-bottom: 1px solid #1e293b; padding-bottom: 10px;">
+        <div class="bal-title">Inyungu Zokubikuza</div>
+        <div class="bal-num" style="color:#22c55e;"><span id="userWithdrawableEarnings">0</span> <span>RWF</span></div>
+      </div>
       <div class="action-btns">
-        <button class="btn-act" onclick="switchTab('imirimo')">👑 Gura VIP</button>
+        <button class="btn-act" onclick="switchTab('shora')">👑 Gura VIP</button>
         <button class="btn-act" onclick="openDepositFlow()">💵 Bitsa</button>
       </div>
     </div>
@@ -216,7 +230,7 @@
       <div class="notice-bar">
         <span>🔔</span>
         <marquee behavior="scroll" direction="left" scrollamount="4">
-          Murakaza neza kuri Tesla Motors Investment Platform! Shora Imari mu migabane ya Tesla ubone inyungu Buri munsi!
+          Murakaza neza kuri Tesla Motors Investment Platform! Shora Imari reba video ubone inyungu Buri munsi!
         </marquee>
       </div>
 
@@ -249,6 +263,7 @@
       <div class="grid-menu">
         <div class="menu-item" onclick="openDepositFlow()"><div class="menu-icon">💵</div><div class="menu-label">Bitsa</div></div>
         <div class="menu-item" onclick="openWithdrawModal()"><div class="menu-icon">📲</div><div class="menu-label">Bikuza</div></div>
+        <div class="menu-item" onclick="switchTab('washoye')"><div class="menu-icon">📈</div><div class="menu-label">Aho Washoye</div></div>
         <div class="menu-item" onclick="switchTab('itsinda')"><div class="menu-icon">👥</div><div class="menu-label">Itsinda</div></div>
         <div class="menu-item" onclick="openHistoryModal()"><div class="menu-icon">🕒</div><div class="menu-label">Amateka</div></div>
         <div class="menu-item" onclick="openBonusModal()"><div class="menu-icon">🎁</div><div class="menu-label">Bonus</div></div>
@@ -258,12 +273,30 @@
       </div>
     </div>
 
-    <!-- TAB 2: IMIRIMO / SHORA -->
-    <div id="tabImirimo" style="display: none;">
+    <!-- TAB 2: SHORA (VIP PLANS) -->
+    <div id="tabShora" style="display: none;">
       <div id="plansContainer"></div>
     </div>
 
-    <!-- TAB 3: ITSINDA (TEAM) -->
+    <!-- TAB 3: IMIRIMO (41 TESLA VIDEOS) -->
+    <div id="tabImirimo" style="display: none; padding: 0 16px;">
+      <div style="margin-bottom: 15px; background:#0f172a; padding:12px; border-radius:12px; border:1px solid #334155; text-align:left;">
+        <h3 style="font-size:14px; color:#3b82f6;">🎬 Reba Amavideo Ubone Inyungu</h3>
+        <p style="font-size:11px; color:#cbd5e1; margin-top:4px;" id="tasksInfoText">Baza gukora ishoramari hanyuma urebe amavideo agenewe umugabane wawe!</p>
+      </div>
+      <div id="videosContainer"></div>
+    </div>
+
+    <!-- TAB 4: AHO WASHOYE (ACTIVE INVESTMENTS) -->
+    <div id="tabWashoye" style="display: none; padding: 0 16px;">
+      <div style="margin-bottom: 15px; text-align:left;">
+        <h3 style="font-size:16px; color:white;">📈 Imigabane Yawe Iri Active</h3>
+        <p style="font-size:12px; color:#94a3b8;">Hano harabara igihe gisigaye ngo umugabane wawe urangire.</p>
+      </div>
+      <div id="activeInvestmentsContainer"></div>
+    </div>
+
+    <!-- TAB 5: ITSINDA (TEAM) -->
     <div id="tabItsinda" style="display: none; padding: 0 16px;">
       <div style="background:#0f172a; border-radius:20px; padding:20px; text-align:center; border:1px solid #334155;">
         <div style="font-size:36px; margin-bottom:6px;">👥</div>
@@ -297,7 +330,7 @@
       </div>
     </div>
 
-    <!-- TAB 4: KONTI -->
+    <!-- TAB 6: KONTI -->
     <div id="tabKonti" style="display: none; padding: 0 16px;">
       <div style="background:#0f172a; border-radius:20px; padding:20px; border:1px solid #334155;">
         <div style="text-align:center; margin-bottom:15px;">
@@ -308,12 +341,16 @@
         </div>
         <hr style="border:none; border-top:1px solid #334155; margin:15px 0;">
         <div style="display:flex; justify-content:space-between; margin-bottom:10px;">
-          <span style="font-size:13px; color:#94a3b8;">Balance yose:</span>
-          <span style="font-size:14px; font-weight:800; color:#3b82f6;"><span id="accBal">1000</span> RWF</span>
+          <span style="font-size:13px; color:#94a3b8;">Ayo wabikije:</span>
+          <span style="font-size:14px; font-weight:800; color:#3b82f6;"><span id="accDepBal">0</span> RWF</span>
+        </div>
+        <div style="display:flex; justify-content:space-between; margin-bottom:10px;">
+          <span style="font-size:13px; color:#94a3b8;">Inyungu zo kubikuza:</span>
+          <span style="font-size:14px; font-weight:800; color:#22c55e;"><span id="accWithdrawable">0</span> RWF</span>
         </div>
         <div style="display:flex; justify-content:space-between; margin-bottom:10px;">
           <span style="font-size:13px; color:#94a3b8;">Inyungu z'Itsinda (Level 1):</span>
-          <span style="font-size:14px; font-weight:800; color:#22c55e;"><span id="accTeamEarnings">0</span> RWF</span>
+          <span style="font-size:14px; font-weight:800; color:#eab308;"><span id="accTeamEarnings">0</span> RWF</span>
         </div>
         <button class="btn-main" onclick="openWithdrawModal()">📲 Bikuza Inyungu</button>
         <button class="btn-back" onclick="handleLogout()" style="margin-top:15px; background:rgba(239, 68, 68, 0.2); color:#ef4444; border:1px solid #ef4444;">Sohokamo muri Konti</button>
@@ -323,7 +360,9 @@
     <!-- BOTTOM NAVIGATION -->
     <div class="bottom-nav">
       <div onclick="switchTab('ahabanza')" id="navAhabanza" class="nav-item active"><span class="nav-icon">🏠</span>Ahabanza</div>
+      <div onclick="switchTab('shora')" id="navShora" class="nav-item"><span class="nav-icon">👑</span>Shora</div>
       <div onclick="switchTab('imirimo')" id="navImirimo" class="nav-item"><span class="nav-icon">📦</span>Imirimo</div>
+      <div onclick="switchTab('washoye')" id="navWashoye" class="nav-item"><span class="nav-icon">📈</span>Aho Washoye</div>
       <div onclick="switchTab('itsinda')" id="navItsinda" class="nav-item"><span class="nav-icon">👥</span>Itsinda</div>
       <div onclick="switchTab('konti')" id="navKonti" class="nav-item"><span class="nav-icon">👤</span>Konti</div>
     </div>
@@ -338,55 +377,72 @@
 </div>
 
 <script>
-  // Helper to generate unique referral code (Random alphanumeric)
+  // Helper to generate unique referral code
   function generateUniqueRefCode() {
     return 'TSL-' + Math.random().toString(36).substring(2, 8).toUpperCase();
   }
 
+  // Load or initialize User Object with 1500 practice bonus
   let user = JSON.parse(localStorage.getItem('tesla_user')) || { 
     name: 'Bruno Alain', 
     phone: '0789681391', 
-    balance: 1000, 
-    earnings: 0, 
+    practiceBalance: 1500, // 1500 Welcome practice balance
+    depositBalance: 0,    // Deposit balance approved by admin
+    withdrawableEarnings: 0, // Profit earned from watching videos
     investedAmount: 0, 
     totalInvestments: 0,
     refCode: generateUniqueRefCode(),
     level1Members: [],
-    level1Earnings: 0
+    level1Earnings: 0,
+    activeInvestments: [], // Array of investments purchased
+    watchedVideosToday: {}  // Track watched videos
   };
 
-  // Ensure refCode exists for old users
-  if (!user.refCode) {
-    user.refCode = generateUniqueRefCode();
-    localStorage.setItem('tesla_user', JSON.stringify(user));
-  }
+  // Ensure properties exist
+  if (user.practiceBalance === undefined) user.practiceBalance = 1500;
+  if (user.depositBalance === undefined) user.depositBalance = 0;
+  if (user.withdrawableEarnings === undefined) user.withdrawableEarnings = 0;
+  if (!user.activeInvestments) user.activeInvestments = [];
+  if (!user.watchedVideosToday) user.watchedVideosToday = {};
+  if (!user.refCode) user.refCode = generateUniqueRefCode();
+
+  localStorage.setItem('tesla_user', JSON.stringify(user));
 
   let currentTab = localStorage.getItem('tesla_tab') || 'ahabanza';
   let tabHistory = ['ahabanza'];
   let selectedDepositAmount = 0;
 
-  // IMIGABANE YOSE (M0 - M10 VIP)
+  // IMIGABANE YOSE (M0 - M10 VIP) & REQUIRED VIDEO COUNT
   const plans = [
-    { id: 'M0', name: 'M0 Level', price: 500, daily: 300, monthly: 600, annual: 600, validity: 2 },
-    { id: 'M1', name: 'M1 Level', price: 20000, daily: 675, monthly: 20250, annual: 246375, validity: 365 },
-    { id: 'M2', name: 'M2 Level', price: 100000, daily: 3350, monthly: 100500, annual: 1222750, validity: 365 },
-    { id: 'M2-VIP', name: 'M2-VIP Level', price: 120000, daily: 8000, monthly: 240000, annual: 2920000, validity: 365 },
-    { id: 'M3', name: 'M3 Level', price: 250000, daily: 8325, monthly: 249750, annual: 3038625, validity: 365 },
-    { id: 'M3-VIP', name: 'M3-VIP Level', price: 300000, daily: 20025, monthly: 600750, annual: 7309125, validity: 365 },
-    { id: 'M4', name: 'M4 Level', price: 550000, daily: 18400, monthly: 552000, annual: 6716000, validity: 365 },
-    { id: 'M4-VIP', name: 'M4-VIP Level', price: 600000, daily: 40000, monthly: 1200000, annual: 14600000, validity: 365 },
-    { id: 'M5', name: 'M5 Level', price: 1200000, daily: 40000, monthly: 1200000, annual: 14600000, validity: 365 },
-    { id: 'M5-VIP', name: 'M5-VIP Level', price: 1500000, daily: 100000, monthly: 3000000, annual: 36500000, validity: 365 },
-    { id: 'M6', name: 'M6 Level', price: 2400000, daily: 81000, monthly: 2430000, annual: 29565000, validity: 365 },
-    { id: 'M6-VIP', name: 'M6-VIP Level', price: 2800000, daily: 187500, monthly: 5625000, annual: 68437500, validity: 365 },
-    { id: 'M7', name: 'M7 Level', price: 4000000, daily: 134750, monthly: 4042500, annual: 49183750, validity: 365 },
-    { id: 'M7-VIP', name: 'M7-VIP Level', price: 5000000, daily: 334250, monthly: 10027500, annual: 122001250, validity: 365 },
-    { id: 'M8', name: 'M8 Level', price: 6000000, daily: 200000, monthly: 6000000, annual: 73000000, validity: 365 },
-    { id: 'M8-VIP', name: 'M8-VIP Level', price: 7000000, daily: 468000, monthly: 14040000, annual: 170820000, validity: 365 },
-    { id: 'M9', name: 'M9 Level', price: 8000000, daily: 267750, monthly: 8032500, annual: 97728750, validity: 365 },
-    { id: 'M9-VIP', name: 'M9-VIP Level', price: 9000000, daily: 600750, monthly: 18022500, annual: 219273750, validity: 365 },
-    { id: 'M10', name: 'M10 Level', price: 10000000, daily: 335000, monthly: 10050000, annual: 122275000, validity: 365 },
-    { id: 'M10-VIP', name: 'M10-VIP Level', price: 11000000, daily: 735000, monthly: 22050000, annual: 268275000, validity: 365 }
+    { id: 'M0', name: 'M0 Level', price: 500, daily: 300, monthly: 600, annual: 600, validity: 2, reqVideos: 3, isPractice: true },
+    { id: 'M1', name: 'M1 Level', price: 20000, daily: 675, monthly: 20250, annual: 246375, validity: 365, reqVideos: 5 },
+    { id: 'M2', name: 'M2 Level', price: 100000, daily: 3350, monthly: 100500, annual: 1222750, validity: 365, reqVideos: 7 },
+    { id: 'M2-VIP', name: 'M2-VIP Level', price: 120000, daily: 8000, monthly: 240000, annual: 2920000, validity: 365, reqVideos: 9 },
+    { id: 'M3', name: 'M3 Level', price: 250000, daily: 8325, monthly: 249750, annual: 3038625, validity: 365, reqVideos: 11 },
+    { id: 'M3-VIP', name: 'M3-VIP Level', price: 300000, daily: 20025, monthly: 600750, annual: 7309125, validity: 365, reqVideos: 13 },
+    { id: 'M4', name: 'M4 Level', price: 550000, daily: 18400, monthly: 552000, annual: 6716000, validity: 365, reqVideos: 15 },
+    { id: 'M4-VIP', name: 'M4-VIP Level', price: 600000, daily: 40000, monthly: 1200000, annual: 14600000, validity: 365, reqVideos: 17 },
+    { id: 'M5', name: 'M5 Level', price: 1200000, daily: 40000, monthly: 1200000, annual: 14600000, validity: 365, reqVideos: 19 },
+    { id: 'M5-VIP', name: 'M5-VIP Level', price: 1500000, daily: 100000, monthly: 3000000, annual: 36500000, validity: 365, reqVideos: 21 },
+    { id: 'M6', name: 'M6 Level', price: 2400000, daily: 81000, monthly: 2430000, annual: 29565000, validity: 365, reqVideos: 23 },
+    { id: 'M6-VIP', name: 'M6-VIP Level', price: 2800000, daily: 187500, monthly: 5625000, annual: 68437500, validity: 365, reqVideos: 25 },
+    { id: 'M7', name: 'M7 Level', price: 4000000, daily: 134750, monthly: 4042500, annual: 49183750, validity: 365, reqVideos: 27 },
+    { id: 'M7-VIP', name: 'M7-VIP Level', price: 5000000, daily: 334250, monthly: 10027500, annual: 122001250, validity: 365, reqVideos: 29 },
+    { id: 'M8', name: 'M8 Level', price: 6000000, daily: 200000, monthly: 6000000, annual: 73000000, validity: 365, reqVideos: 31 },
+    { id: 'M8-VIP', name: 'M8-VIP Level', price: 7000000, daily: 468000, monthly: 14040000, annual: 170820000, validity: 365, reqVideos: 33 },
+    { id: 'M9', name: 'M9 Level', price: 8000000, daily: 267750, monthly: 8032500, annual: 97728750, validity: 365, reqVideos: 35 },
+    { id: 'M9-VIP', name: 'M9-VIP Level', price: 9000000, daily: 600750, monthly: 18022500, annual: 219273750, validity: 365, reqVideos: 37 },
+    { id: 'M10', name: 'M10 Level', price: 10000000, daily: 335000, monthly: 10050000, annual: 122275000, validity: 365, reqVideos: 39 },
+    { id: 'M10-VIP', name: 'M10-VIP Level', price: 11000000, daily: 735000, monthly: 22050000, annual: 268275000, validity: 365, reqVideos: 41 }
+  ];
+
+  // SAMPLE TESLA VIDEOS LIST (41 VIDEOS)
+  const videoUrls = [
+    "https://www.w3schools.com/html/mov_bbb.mp4",
+    "https://www.w3schools.com/html/movie.mp4",
+    "https://assets.mixkit.co/videos/preview/mixkit-car-driving-on-a-road-in-the-middle-of-a-4061-large.mp4",
+    "https://assets.mixkit.co/videos/preview/mixkit-sports-car-driving-on-a-road-4062-large.mp4",
+    "https://assets.mixkit.co/videos/preview/mixkit-electric-car-charging-at-a-station-41561-large.mp4"
   ];
 
   window.onload = function() {
@@ -396,6 +452,7 @@
       showLoginSection();
     }
     startCarSlider();
+    setInterval(updateTimers, 1000);
   };
 
   /* AUTOMATIC CAR SLIDER (EVERY 3 SECONDS) */
@@ -437,9 +494,13 @@
       document.getElementById('profileName').innerText = user.name || "User";
       document.getElementById('profilePhone').innerText = user.phone || "0789681391";
       document.getElementById('profileRefCode').innerText = "Ref Code: " + (user.refCode || "TSL-8A2F9B");
-      document.getElementById('userBalance').innerText = (user.balance || 0).toLocaleString();
-      document.getElementById('userEarnings').innerText = (user.earnings || 0).toLocaleString();
-      document.getElementById('accBal').innerText = (user.balance || 0).toLocaleString();
+      
+      document.getElementById('userPracticeBalance').innerText = (user.practiceBalance || 0).toLocaleString();
+      document.getElementById('userDepositBalance').innerText = (user.depositBalance || 0).toLocaleString();
+      document.getElementById('userWithdrawableEarnings').innerText = (user.withdrawableEarnings || 0).toLocaleString();
+      
+      document.getElementById('accDepBal').innerText = (user.depositBalance || 0).toLocaleString();
+      document.getElementById('accWithdrawable').innerText = (user.withdrawableEarnings || 0).toLocaleString();
       document.getElementById('accTeamEarnings').innerText = (user.level1Earnings || 0).toLocaleString();
 
       // Team section updates
@@ -466,6 +527,8 @@
     
     document.getElementById('refLinkText').innerText = getReferralLink();
     renderPlans();
+    renderActiveInvestments();
+    renderVideos();
     switchTab(currentTab, false);
   }
 
@@ -501,13 +564,16 @@
     user = { 
       name, 
       phone, 
-      balance: 1000, 
-      earnings: 0, 
+      practiceBalance: 1500,
+      depositBalance: 0,
+      withdrawableEarnings: 0,
       investedAmount: 0, 
       totalInvestments: 0,
       refCode: generateUniqueRefCode(),
       level1Members: [],
-      level1Earnings: 0
+      level1Earnings: 0,
+      activeInvestments: [],
+      watchedVideosToday: {}
     };
     localStorage.setItem('tesla_user', JSON.stringify(user));
     showDashboard();
@@ -522,16 +588,19 @@
       return;
     }
 
-    user = { 
+    user = JSON.parse(localStorage.getItem('tesla_user')) || { 
       name: "Bruno Alain", 
       phone: phone, 
-      balance: 1000, 
-      earnings: 0, 
+      practiceBalance: 1500,
+      depositBalance: 0,
+      withdrawableEarnings: 0,
       investedAmount: 0, 
       totalInvestments: 0,
       refCode: generateUniqueRefCode(),
       level1Members: [],
-      level1Earnings: 0
+      level1Earnings: 0,
+      activeInvestments: [],
+      watchedVideosToday: {}
     };
     localStorage.setItem('tesla_user', JSON.stringify(user));
     showDashboard();
@@ -550,8 +619,8 @@
     currentTab = tabName;
     localStorage.setItem('tesla_tab', tabName);
 
-    const tabs = ['tabAhabanza', 'tabImirimo', 'tabItsinda', 'tabKonti'];
-    const navs = ['navAhabanza', 'navImirimo', 'navItsinda', 'navKonti'];
+    const tabs = ['tabAhabanza', 'tabShora', 'tabImirimo', 'tabWashoye', 'tabItsinda', 'tabKonti'];
+    const navs = ['navAhabanza', 'navShora', 'navImirimo', 'navWashoye', 'navItsinda', 'navKonti'];
 
     tabs.forEach(t => {
       const el = document.getElementById(t);
@@ -565,9 +634,17 @@
     if (tabName === 'ahabanza') {
       document.getElementById('tabAhabanza').style.display = 'block';
       document.getElementById('navAhabanza').classList.add('active');
+    } else if (tabName === 'shora') {
+      document.getElementById('tabShora').style.display = 'block';
+      document.getElementById('navShora').classList.add('active');
     } else if (tabName === 'imirimo') {
       document.getElementById('tabImirimo').style.display = 'block';
       document.getElementById('navImirimo').classList.add('active');
+      renderVideos();
+    } else if (tabName === 'washoye') {
+      document.getElementById('tabWashoye').style.display = 'block';
+      document.getElementById('navWashoye').classList.add('active');
+      renderActiveInvestments();
     } else if (tabName === 'itsinda') {
       document.getElementById('tabItsinda').style.display = 'block';
       document.getElementById('navItsinda').classList.add('active');
@@ -598,27 +675,191 @@
         </div>
         <div class="plan-details">
           <div>• Igiciro (Price): <b>${p.price.toLocaleString()} RWF</b></div>
-          <div>• Inyungu ku munsi (Daily): <b>${p.daily.toLocaleString()} RWF</b></div>
-          <div>• Inyungu ku kwezi (Monthly): <b>${p.monthly.toLocaleString()} RWF</b></div>
-          <div>• Inyungu ku mwaka (Annual): <b>${p.annual.toLocaleString()} RWF</b></div>
+          <div>• Inyungu ku munsi: <b>${p.daily.toLocaleString()} RWF</b></div>
+          <div>• Video zo kureba/munsi: <b>${p.reqVideos} Videos (30s)</b></div>
+          <div>• Inyungu ku kwezi: <b>${p.monthly.toLocaleString()} RWF</b></div>
         </div>
-        <button class="btn-main" onclick="buyInvestment('${p.id}', ${p.price})">Shora (${p.name})</button>
+        <button class="btn-main" onclick="buyInvestment('${p.id}')">Shora (${p.name})</button>
       </div>
     `).join('');
   }
 
-  function buyInvestment(planId, price) {
-    if (user.balance >= price) {
-      user.balance -= price;
-      user.investedAmount = (user.investedAmount || 0) + price;
-      user.totalInvestments = (user.totalInvestments || 0) + 1;
-      localStorage.setItem('tesla_user', JSON.stringify(user));
-      showDashboard();
-      alert("Ushoye neza mu mugabane wa " + planId + "!");
+  function buyInvestment(planId) {
+    const plan = plans.find(p => p.id === planId);
+    if (!plan) return;
+
+    if (plan.isPractice) {
+      if (user.practiceBalance >= plan.price) {
+        user.practiceBalance -= plan.price;
+        addActiveInvestment(plan);
+        alert("Ushoye neza muri " + plan.name + " (Kwimenyereza)! Jya muri Imirimo urebe video " + plan.reqVideos + " ngo ubone inyungu.");
+      } else {
+        alert("Nta mafaranga yo kwimenyereza ahagije usigaye nayo!");
+      }
     } else {
-      alert("Ntabwo amafaranga yo gushora ahagije! Banza ubitse amafaranga.");
-      openDepositFlow(price);
+      if (user.depositBalance >= plan.price) {
+        user.depositBalance -= plan.price;
+        addActiveInvestment(plan);
+        alert("Ushoye neza muri " + plan.name + "! Jya muri Imirimo urebe video " + plan.reqVideos + " z'uyu munsi.");
+      } else {
+        alert("Ntabwo amafaranga wabikije ahagije! Banza ubitse ubundi Admin abyapprove.");
+        openDepositFlow(plan.price);
+      }
     }
+    localStorage.setItem('tesla_user', JSON.stringify(user));
+    showDashboard();
+  }
+
+  function addActiveInvestment(plan) {
+    const now = Date.now();
+    const expiry = now + (plan.validity * 24 * 60 * 60 * 1000);
+    user.activeInvestments.push({
+      planId: plan.id,
+      name: plan.name,
+      price: plan.price,
+      daily: plan.daily,
+      reqVideos: plan.reqVideos,
+      startTime: now,
+      expiryTime: expiry,
+      lastClaimCycle: 0,
+      completedToday: 0
+    });
+    user.investedAmount = (user.investedAmount || 0) + plan.price;
+    user.totalInvestments = (user.totalInvestments || 0) + 1;
+  }
+
+  /* RENDER ACTIVE INVESTMENTS WITH COUNTDOWN TIMER */
+  function renderActiveInvestments() {
+    const container = document.getElementById('activeInvestmentsContainer');
+    if (!container) return;
+
+    if (!user.activeInvestments || user.activeInvestments.length === 0) {
+      container.innerHTML = `<div style="background:#1e293b; padding:20px; border-radius:12px; border:1px solid #334155;">Nta mugabane uragura ushoboye gukora. Gura uyu munsi muri SHORA!</div>`;
+      return;
+    }
+
+    container.innerHTML = user.activeInvestments.map((inv, index) => {
+      return `
+        <div class="active-plan-card">
+          <div style="display:flex; justify-content:space-between; font-weight:800; color:#22c55e;">
+            <span>⚡ ${inv.name}</span>
+            <span>ACTIVE</span>
+          </div>
+          <div style="font-size:12px; color:#cbd5e1; margin-top:6px;">
+            • Daily Income: <b>${inv.daily.toLocaleString()} RWF</b><br>
+            • Videos z'uyu munsi: <b>${inv.completedToday || 0} / ${inv.reqVideos}</b>
+          </div>
+          <div class="active-timer" id="timer-${index}">Carging Timer...</div>
+        </div>
+      `;
+    }).join('');
+  }
+
+  function updateTimers() {
+    if (!user || !user.activeInvestments) return;
+    const now = Date.now();
+    user.activeInvestments.forEach((inv, index) => {
+      const el = document.getElementById(`timer-${index}`);
+      if (!el) return;
+
+      const timeLeft = inv.expiryTime - now;
+      if (timeLeft <= 0) {
+        el.innerText = "UMUGABANE WARRANGIYE (CLOSED)";
+        el.style.color = "#ef4444";
+      } else {
+        const days = Math.floor(timeLeft / (1000 * 60 * 60 * 24));
+        const hours = Math.floor((timeLeft % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+        const minutes = Math.floor((timeLeft % (1000 * 60 * 60)) / (1000 * 60));
+        const seconds = Math.floor((timeLeft % (1000 * 60)) / 1000);
+        el.innerText = `⏱️ Isagaye: ${days}d ${hours}h ${minutes}m ${seconds}s`;
+      }
+    });
+  }
+
+  /* RENDER 41 VIDEO TASKS */
+  function renderVideos() {
+    const container = document.getElementById('videosContainer');
+    if (!container) return;
+
+    // Maximum required videos from highest plan user owns
+    let maxVideosAllowed = 0;
+    let activePlan = null;
+
+    if (user.activeInvestments && user.activeInvestments.length > 0) {
+      user.activeInvestments.forEach(inv => {
+        if (inv.reqVideos > maxVideosAllowed) {
+          maxVideosAllowed = inv.reqVideos;
+          activePlan = inv;
+        }
+      });
+    }
+
+    const infoEl = document.getElementById('tasksInfoText');
+    if (maxVideosAllowed === 0) {
+      infoEl.innerText = "⚠️ Nta mugabane active ufite. Banza ushore imari ngo amavideo afunguke!";
+      container.innerHTML = `<div style="background:#1e293b; padding:20px; border-radius:12px; border:1px solid #334155;">Jya muri "SHORA" ugure umugabane wo kurebera amavideo!</div>`;
+      return;
+    } else {
+      infoEl.innerText = `⚡ Wafunguye amavideo ${maxVideosAllowed} kuri umugabane wawa active! Reba amavideo yose uyu munsi ubone inyungu ya ${activePlan.daily.toLocaleString()} RWF.`;
+    }
+
+    let html = '';
+    for (let i = 1; i <= 41; i++) {
+      const isLocked = i > maxVideosAllowed;
+      const videoSrc = videoUrls[(i - 1) % videoUrls.length];
+      const isWatched = user.watchedVideosToday[`vid_${i}`] || false;
+
+      html += `
+        <div class="video-card" style="${isLocked ? 'opacity: 0.4;' : ''}">
+          <div style="font-size:12px; font-weight:800; color:#3b82f6; margin-bottom:6px;">
+            🎬 TESLA VIDEO #${i} ${isLocked ? '🔒 (Locked)' : ''}
+          </div>
+          ${!isLocked ? `<video src="${videoSrc}" controls controlsList="nodownload"></video>` : '<div style="height:120px; background:#1e293b; border-radius:10px; display:flex; align-items:center; justify-content:center; font-size:12px; color:#94a3b8;">🔒 Banza ugure VIP yo hejuru ngo ufungure iyi video</div>'}
+          
+          <button class="video-btn" ${isLocked || isWatched ? 'disabled' : ''} onclick="watchVideoTask(${i}, ${maxVideosAllowed})">
+            ${isWatched ? '✓ Yarebwe Uyu munsi' : (isLocked ? '🔒 Ipfunze' : 'Emeza ko Wairebye (30s)')}
+          </button>
+        </div>
+      `;
+    }
+    container.innerHTML = html;
+  }
+
+  function watchVideoTask(vidIndex, maxReq) {
+    user.watchedVideosToday[`vid_${vidIndex}`] = true;
+    
+    // Count watched videos today
+    let watchedCount = 0;
+    for (let i = 1; i <= maxReq; i++) {
+      if (user.watchedVideosToday[`vid_${i}`]) watchedCount++;
+    }
+
+    // Update progress on active plan
+    if (user.activeInvestments && user.activeInvestments.length > 0) {
+      user.activeInvestments.forEach(inv => {
+        inv.completedToday = watchedCount;
+        
+        // Check if all required videos for 24h cycle are completed
+        if (watchedCount >= inv.reqVideos) {
+          const now = Date.now();
+          const cycleDiff = now - (inv.lastClaimCycle || 0);
+          
+          // Claim profit if 24 hours cycle passed or first time today
+          if (cycleDiff >= 24 * 60 * 60 * 1000 || !inv.lastClaimCycle) {
+            if (inv.planId === 'M0') {
+              user.practiceBalance += inv.daily;
+            } else {
+              user.withdrawableEarnings += inv.daily;
+            }
+            inv.lastClaimCycle = now;
+            alert(`🎉 Whuuu! Urangije amavideo ${inv.reqVideos}! Inyungu ya ${inv.daily.toLocaleString()} RWF yinjijwe kuri Balance yawe!`);
+          }
+        }
+      });
+    }
+
+    localStorage.setItem('tesla_user', JSON.stringify(user));
+    showDashboard();
   }
 
   /* DEPOSIT FLOW (BITSA) */
@@ -745,12 +986,10 @@
           <span class="copy-icon" style="color: #fff; margin-left: 6px;" onclick="copyText('*182*8*1*000564#')">📋</span>
         </div>
 
-        <!-- BUTONI YA EMEZA KO WISHYUYE (NO AUTO ADD TO BALANCE) -->
         <button id="btnEmezaPayment" class="btn-confirm-payment" onclick="confirmPaymentAction()">
           Emeza ko wishyuye
         </button>
 
-        <!-- BUTONI YO SUBIRA AHABANZA -->
         <button class="btn-back" onclick="closeModal(); switchTab('ahabanza');" style="margin-top: 12px; border-radius: 14px;">
           🏠 Subira ahabanza
         </button>
@@ -758,22 +997,19 @@
     `;
   }
 
-  /* FUNCTION YO KOHEREZA IBUSABE BWO KUBITSA (ADMIN NIWE UBYAPROVA) */
   function confirmPaymentAction() {
     const btn = document.getElementById('btnEmezaPayment');
-    
-    // Hindura Butoni ikereke ko byoherejwe gutegereza Admin
     btn.innerHTML = "⏳ Byemejwe! Tegereza Admin Approve";
     btn.classList.add('done');
-    btn.onclick = null; // Yipfunge kugira ngo atayikanda kabiri
+    btn.onclick = null;
 
     setTimeout(() => {
-      alert("Ibusabe bwawe bwo kubitsa RWF " + selectedDepositAmount.toLocaleString() + " bwoherejwe neza! Tegereza kidogo Admin abyapprovinge kuri account yawe.");
+      alert("Ibusabe bwawe bwo kubitsa RWF " + selectedDepositAmount.toLocaleString() + " bwoherejwe neza! Admin nabyapprove amafaranga azajya kuri 'Ayo Wabikije'.");
       closeModal();
     }, 500);
   }
 
-  /* BIKUZA MODAL */
+  /* BIKUZA MODAL (ONLY WITHDRAWABLE EARNINGS CAN BE WITHDRAWN) */
   function openWithdrawModal() {
     const modal = document.getElementById('generalModal');
     const content = document.getElementById('modalCardContent');
@@ -792,7 +1028,7 @@
         <div style="background: #e0f2fe; border: 1px solid #bae6fd; padding: 10px; border-radius: 10px; font-size: 12px; color: #0369a1; margin-bottom: 15px;">
           <b>Ibipimo byo kubikuza:</b><br>
           • Amacye yo kubikuza ni <b>2,000 RWF</b><br>
-          • Amenshi yo kubikuza ni <b>5,000,000 RWF</b>
+          • Inyungu ushobora kubikuza ubu: <b>${(user.withdrawableEarnings || 0).toLocaleString()} RWF</b>
         </div>
 
         <div style="margin-bottom: 12px;">
@@ -821,12 +1057,12 @@
       alert("Amafaranga aranga kurenga 5,000,000 RWF.");
       return;
     }
-    if (amt > user.balance) {
-      alert("Nta amafaranga ahagije ufite kuri konti.");
+    if (amt > user.withdrawableEarnings) {
+      alert("Nta inyungu zokubikuza zihagije ufite. Amfara yo kwimenyereza ntabwo abikuzwa!");
       return;
     }
 
-    user.balance -= amt;
+    user.withdrawableEarnings -= amt;
     localStorage.setItem('tesla_user', JSON.stringify(user));
     showDashboard();
     closeModal();
@@ -851,7 +1087,7 @@
         
         <div style="font-size: 12px; color: #334155; line-height: 1.6;">
           <p style="margin-bottom: 8px;"><b>Tesla Motors</b> yashinzwe ku ntego yo kwihutisha ingufu zirambye ku isi no gukora imodoka zikoresha amashanyarazi akomeye.</p>
-          <p style="margin-bottom: 8px;">Ku bw'intego z'iterambere, Tesla yafunguye uburyo bw'ishoramari (Investment Platform) bwemerera abantu bose gushora imari mu migabane no kubona inyungu y'itumanaho buri munsi.</p>
+          <p style="margin-bottom: 8px;">Ku bw'intego z'iterambere, Tesla yafunguye uburyo bw'ishoramari bwemerera abantu bose gushora imari mu migabane reba video z'amasegonda 30 ubone inyungu buri munsi.</p>
         </div>
       </div>
     `;
