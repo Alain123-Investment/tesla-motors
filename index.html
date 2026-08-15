@@ -117,7 +117,7 @@
     .btn-confirm-payment.done { background: #d97706; cursor: default; }
 
     /* Bottom Nav */
-    .bottom-nav { position: fixed; bottom: 0; left: 50%; transform: translateX(-50%); width: 100%; max-width: 480px; background: #111827; border-top: 1px solid #1f2937; display: flex; justify-around: space-around; padding: 10px 0; z-index: 90; }
+    .bottom-nav { position: fixed; bottom: 0; left: 50%; transform: translateX(-50%); width: 100%; max-width: 480px; background: #111827; border-top: 1px solid #1f2937; display: flex; justify-content: space-around; padding: 10px 0; z-index: 90; }
     .nav-item { text-align: center; color: #9ca3af; font-size: 10px; font-weight: 700; cursor: pointer; flex: 1; }
     .nav-item.active { color: #60a5fa; }
     .nav-icon { font-size: 18px; display: block; margin-bottom: 2px; }
@@ -388,12 +388,233 @@
 
 </div>
 
+<!-- FIREBASE INTEGRATION MODULE -->
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+  import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+  import { getFirestore, doc, setDoc, getDoc, collection, addDoc, onSnapshot, updateDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyBZon08Rj5NcQO6N-O4uC4FoEIDHmdWvsA",
+    authDomain: "my-investment-platform-7d442.firebaseapp.com",
+    projectId: "my-investment-platform-7d442",
+    storageBucket: "my-investment-platform-7d442.firebasestorage.app",
+    messagingSenderId: "1456551588",
+    appId: "1:1456551588:web:e8d55f6fe58af02cc91831",
+    measurementId: "G-0H4ZH1R83Y"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+  const db = getFirestore(app);
+
+  let currentFirebaseUid = null;
+
+  // Real-time listener ya User Auth & Data Sync
+  onAuthStateChanged(auth, async (firebaseUser) => {
+    if (firebaseUser) {
+      currentFirebaseUid = firebaseUser.uid;
+      // Kurura amakuru mu gihe nyacyo muri Firestore
+      onSnapshot(doc(db, "users", firebaseUser.uid), (docSnap) => {
+        if (docSnap.exists()) {
+          const dbData = docSnap.data();
+          window.user = {
+            ...dbData,
+            practiceBalance: dbData.practiceBalance ?? 1500,
+            depositBalance: dbData.balance ?? 0,
+            withdrawableEarnings: dbData.withdrawableEarnings ?? 0,
+            activeInvestments: dbData.activeInvestments || [],
+            watchedVideosToday: dbData.watchedVideosToday || {}
+          };
+          window.showDashboard();
+        }
+      });
+    } else {
+      currentFirebaseUid = null;
+      window.user = null;
+      window.showLoginSection();
+    }
+  });
+
+  // A. KUREMA KONTI (Register with Firebase)
+  window.handleRegister = async function() {
+    const name = document.getElementById('regName').value.trim();
+    const phone = document.getElementById('regPhone').value.trim();
+    const refCode = document.getElementById('regRefCode').value.trim().toUpperCase();
+    const pass = document.getElementById('regPass').value;
+    const confirm = document.getElementById('regPassConfirm').value;
+
+    if (!name || !phone || !pass) {
+      alert("Nyamuneka uzuze imyanya yose y'ingenzi.");
+      return;
+    }
+    if (pass !== confirm) {
+      alert("Amagambo abanga ntahura.");
+      return;
+    }
+
+    const regBtn = document.getElementById('regBtn');
+    regBtn.innerHTML = `<span class="spinner"></span> Tegereza...`;
+    regBtn.disabled = true;
+
+    try {
+      // Firebase auth ikoresha email -> duhindura phone ibe fake email
+      const dummyEmail = `${phone}@tesla.com`;
+      const userCredential = await createUserWithEmailAndPassword(auth, dummyEmail, pass);
+      const fUser = userCredential.user;
+
+      const newUserDoc = {
+        uid: fUser.uid,
+        name: name,
+        phone: phone,
+        email: dummyEmail,
+        balance: 0,
+        practiceBalance: 1500,
+        withdrawableEarnings: 0,
+        investedAmount: 0,
+        totalInvestments: 0,
+        role: "user",
+        refCode: window.generateUniqueRefCode(),
+        referredBy: refCode || null,
+        level1Members: [],
+        level1Earnings: 0,
+        activeInvestments: [],
+        watchedVideosToday: {},
+        createdAt: new Date().toISOString()
+      };
+
+      await setDoc(doc(db, "users", fUser.uid), newUserDoc);
+      alert("Konti yawe yayanditse neza! Uhawe 1,500 RWF yo kwimenyereza.");
+    } catch (error) {
+      alert("Ikosa ryabaye: " + error.message);
+    } finally {
+      regBtn.innerHTML = `Iyandikishe ➔`;
+      regBtn.disabled = false;
+    }
+  };
+
+  // B. KWINJIRA (Login with Firebase)
+  window.handleLogin = async function() {
+    const phone = document.getElementById('loginPhone').value.trim();
+    const pass = document.getElementById('loginPass').value;
+
+    if (!phone || !pass) {
+      alert("Shyiramo telephone n'ijambobanga.");
+      return;
+    }
+
+    const loginBtn = document.getElementById('loginBtn');
+    loginBtn.innerHTML = `<span class="spinner"></span> Tegereza...`;
+    loginBtn.disabled = true;
+
+    try {
+      const dummyEmail = `${phone}@tesla.com`;
+      await signInWithEmailAndPassword(auth, dummyEmail, pass);
+    } catch (error) {
+      alert("Kwinjira byanze! Yaba numero cyangwa password ari iby'ibinyoma.");
+    } finally {
+      loginBtn.innerHTML = `Injira ➔`;
+      loginBtn.disabled = false;
+    }
+  };
+
+  // C. SOHOKAMO (Logout)
+  window.handleLogout = async function() {
+    await signOut(auth);
+    window.showLoginSection();
+  };
+
+  // D. KUBITSA (Deposit Request in Firestore)
+  window.confirmPaymentAction = async function() {
+    if (!window.selectedDepositAmount || window.selectedDepositAmount <= 0) return;
+    if (!currentFirebaseUid) {
+      alert("Banza uinjire muri konti yawe!");
+      return;
+    }
+
+    const btn = document.getElementById('btnEmezaPayment');
+    btn.innerHTML = "⏳ Byemejwe! Tegereza Admin Approve";
+    btn.classList.add('done');
+    btn.onclick = null;
+
+    try {
+      await addDoc(collection(db, "deposits"), {
+        userId: currentFirebaseUid,
+        userName: window.user ? window.user.name : "Unknown",
+        userPhone: window.user ? window.user.phone : "Unknown",
+        amount: Number(window.selectedDepositAmount),
+        status: "pending",
+        date: new Date().toISOString()
+      });
+
+      alert("Ibusabe bwawe bwo kubitsa RWF " + window.selectedDepositAmount.toLocaleString() + " bwoherejwe kuri Admin!");
+      window.closeModal();
+    } catch (error) {
+      alert("Ikosa mu kubitsa: " + error.message);
+    }
+  };
+
+  // E. BIKUZA INYUNGU (Withdrawal in Firestore)
+  window.submitWithdrawal = async function() {
+    const amt = Number(document.getElementById('withdrawAmount').value);
+
+    if (!amt || amt < 2000) {
+      alert("Amafaranga ya make yo kubikuza ni 2,000 RWF.");
+      return;
+    }
+    if (amt > 5000000) {
+      alert("Amafaranga aranga kurenga 5,000,000 RWF.");
+      return;
+    }
+    if (amt > (window.user.withdrawableEarnings || 0)) {
+      alert("Nta inyungu zokubikuza zihagije ufite. Amfara yo kwimenyereza ntabwo abikuzwa!");
+      return;
+    }
+
+    try {
+      const newWithdrawable = (window.user.withdrawableEarnings || 0) - amt;
+      await updateDoc(doc(db, "users", currentFirebaseUid), {
+        withdrawableEarnings: newWithdrawable
+      });
+
+      await addDoc(collection(db, "withdrawals"), {
+        userId: currentFirebaseUid,
+        userPhone: window.user.phone,
+        amount: amt,
+        status: "pending",
+        date: new Date().toISOString()
+      });
+
+      window.showDashboard();
+      window.closeModal();
+      alert("Ibusabe bwawe bwo kubikuza RWF " + amt.toLocaleString() + " bwoherejwe neza!");
+    } catch (error) {
+      alert("Ikosa: " + error.message);
+    }
+  };
+
+  // Synchronize DB helper
+  window.saveUsersDB = async function() {
+    if (currentFirebaseUid && window.user) {
+      await updateDoc(doc(db, "users", currentFirebaseUid), {
+        practiceBalance: window.user.practiceBalance || 0,
+        balance: window.user.depositBalance || 0,
+        withdrawableEarnings: window.user.withdrawableEarnings || 0,
+        investedAmount: window.user.investedAmount || 0,
+        totalInvestments: window.user.totalInvestments || 0,
+        activeInvestments: window.user.activeInvestments || [],
+        watchedVideosToday: window.user.watchedVideosToday || {}
+      });
+    }
+  };
+</script>
+
+<!-- APP LOGIC SCRIPT -->
 <script>
   function generateUniqueRefCode() {
     return 'TSL-' + Math.random().toString(36).substring(2, 8).toUpperCase();
   }
 
-  // Get URL parameters for ref link auto fill
   function getUrlParameter(name) {
     name = name.replace(/[\[]/, '\\[').replace(/[\]]/, '\\]');
     var regex = new RegExp('[\\?&]' + name + '=([^&#]*)');
@@ -401,10 +622,7 @@
     return results === null ? '' : decodeURIComponent(results[1].replace(/\+/g, ' '));
   }
 
-  let usersDatabase = JSON.parse(localStorage.getItem('tesla_users_db')) || [];
-  let currentUserPhone = localStorage.getItem('tesla_current_user_phone') || null;
-  let user = usersDatabase.find(u => u.phone === currentUserPhone) || null;
-
+  let user = null;
   let currentTab = localStorage.getItem('tesla_tab') || 'ahabanza';
   let tabHistory = ['ahabanza'];
   let selectedDepositAmount = 0;
@@ -446,12 +664,8 @@
     
     if (refFromUrl) {
       refInput.value = refFromUrl;
-      refInput.readOnly = true; // Readonly niba link iriho ref code
-      showRegisterSection();   // Niba URL iriho ref link, ihita imujyana kuri REGISTER DIRECT
-    } else if (user) {
-      showDashboard();
-    } else {
-      showLoginSection();
+      refInput.readOnly = true;
+      showRegisterSection();
     }
     startCarSlider();
     setInterval(updateTimers, 1000);
@@ -470,7 +684,7 @@
 
   function getReferralLink() {
     const baseUrl = window.location.origin + window.location.pathname;
-    const code = (user && user.refCode) ? user.refCode : 'TSL-8A2F9B';
+    const code = (window.user && window.user.refCode) ? window.user.refCode : 'TSL-8A2F9B';
     return `${baseUrl}?ref=${code}`;
   }
 
@@ -485,36 +699,27 @@
     }
   }
 
-  function saveUsersDB() {
-    if (user) {
-      const idx = usersDatabase.findIndex(u => u.phone === user.phone);
-      if (idx !== -1) usersDatabase[idx] = user;
-      else usersDatabase.push(user);
-    }
-    localStorage.setItem('tesla_users_db', JSON.stringify(usersDatabase));
-  }
-
   function showDashboard() {
     document.getElementById('authContainer').style.display = 'none';
     document.getElementById('appBody').style.display = 'block';
-    if (user) {
-      document.getElementById('dispName').innerText = user.name || "User";
-      document.getElementById('dispPhone').innerText = "Konti - " + (user.phone || "");
-      document.getElementById('profileName').innerText = user.name || "User";
-      document.getElementById('profilePhone').innerText = user.phone || "";
-      document.getElementById('profileRefCode').innerText = "Ref Code: " + (user.refCode || "");
+    if (window.user) {
+      document.getElementById('dispName').innerText = window.user.name || "User";
+      document.getElementById('dispPhone').innerText = "Konti - " + (window.user.phone || "");
+      document.getElementById('profileName').innerText = window.user.name || "User";
+      document.getElementById('profilePhone').innerText = window.user.phone || "";
+      document.getElementById('profileRefCode').innerText = "Ref Code: " + (window.user.refCode || "");
       
-      document.getElementById('userPracticeBalance').innerText = (user.practiceBalance || 0).toLocaleString();
-      document.getElementById('userDepositBalance').innerText = (user.depositBalance || 0).toLocaleString();
-      document.getElementById('userWithdrawableEarnings').innerText = (user.withdrawableEarnings || 0).toLocaleString();
+      document.getElementById('userPracticeBalance').innerText = (window.user.practiceBalance || 0).toLocaleString();
+      document.getElementById('userDepositBalance').innerText = (window.user.depositBalance || 0).toLocaleString();
+      document.getElementById('userWithdrawableEarnings').innerText = (window.user.withdrawableEarnings || 0).toLocaleString();
       
-      document.getElementById('accDepBal').innerText = (user.depositBalance || 0).toLocaleString();
-      document.getElementById('accWithdrawable').innerText = (user.withdrawableEarnings || 0).toLocaleString();
-      document.getElementById('accTeamEarnings').innerText = (user.level1Earnings || 0).toLocaleString();
+      document.getElementById('accDepBal').innerText = (window.user.depositBalance || 0).toLocaleString();
+      document.getElementById('accWithdrawable').innerText = (window.user.withdrawableEarnings || 0).toLocaleString();
+      document.getElementById('accTeamEarnings').innerText = (window.user.level1Earnings || 0).toLocaleString();
 
-      const members = user.level1Members || [];
+      const members = window.user.level1Members || [];
       document.getElementById('teamL1Count').innerText = members.length + " People";
-      document.getElementById('teamL1Earnings').innerText = (user.level1Earnings || 0).toLocaleString() + " RWF";
+      document.getElementById('teamL1Earnings').innerText = (window.user.level1Earnings || 0).toLocaleString() + " RWF";
 
       if (members.length === 0) {
         document.getElementById('teamStatusText').innerHTML = "Nta muntu uraza muri level 1 yawe. Tumira abantu uyu munsi ukomeze kongera inyungu!";
@@ -552,111 +757,6 @@
     document.getElementById('appBody').style.display = 'none';
     document.getElementById('loginPage').style.display = 'none';
     document.getElementById('registerPage').style.display = 'block';
-  }
-
-  function handleRegister() {
-    const name = document.getElementById('regName').value.trim();
-    const phone = document.getElementById('regPhone').value.trim();
-    const refCode = document.getElementById('regRefCode').value.trim().toUpperCase();
-    const pass = document.getElementById('regPass').value;
-    const confirm = document.getElementById('regPassConfirm').value;
-
-    if (!name || !phone || !pass) {
-      alert("Nyamuneka uzuze imyanya yose y'ingenzi.");
-      return;
-    }
-    if (pass !== confirm) {
-      alert("Amagambo abanga ntahura.");
-      return;
-    }
-
-    let existing = usersDatabase.find(u => u.phone === phone);
-    if (existing) {
-      alert("Iyi nomero isanzwe ifite konti! Nyamuneka koresha LOGIN uinjire.");
-      showLoginSection();
-      return;
-    }
-
-    const regBtn = document.getElementById('regBtn');
-    regBtn.innerHTML = `<span class="spinner"></span> Tegereza...`;
-    regBtn.disabled = true;
-
-    // Loading 2 Seconds Delay
-    setTimeout(() => {
-      regBtn.innerHTML = `Iyandikishe ➔`;
-      regBtn.disabled = false;
-
-      const newUser = { 
-        name, 
-        phone, 
-        pass,
-        practiceBalance: 1500,
-        depositBalance: 0,
-        withdrawableEarnings: 0,
-        investedAmount: 0, 
-        totalInvestments: 0,
-        refCode: generateUniqueRefCode(),
-        referredBy: refCode || null,
-        level1Members: [],
-        level1Earnings: 0,
-        activeInvestments: [],
-        watchedVideosToday: {}
-      };
-
-      usersDatabase.push(newUser);
-      localStorage.setItem('tesla_users_db', JSON.stringify(usersDatabase));
-
-      user = newUser;
-      currentUserPhone = user.phone;
-      localStorage.setItem('tesla_current_user_phone', currentUserPhone);
-
-      alert("Konti yawe yayanditse neza! Uhawe 1,500 RWF yo kwimenyereza.");
-      showDashboard();
-    }, 2000);
-  }
-
-  function handleLogin() {
-    const phone = document.getElementById('loginPhone').value.trim();
-    const pass = document.getElementById('loginPass').value;
-
-    if (!phone || !pass) {
-      alert("Shyiramo telephone n'ijambobanga.");
-      return;
-    }
-
-    let foundUser = usersDatabase.find(u => u.phone === phone);
-
-    if (!foundUser) {
-      alert("Nta konti iyandikishije ku iyi nomero (" + phone + ")! Nyamuneka banza wiyandikishe hejuru.");
-      showRegisterSection();
-      return;
-    }
-
-    if (foundUser.pass !== pass) {
-      alert("Ijambobanga (Password) si ryo! Ongera ugerageze.");
-      return;
-    }
-
-    const loginBtn = document.getElementById('loginBtn');
-    loginBtn.innerHTML = `<span class="spinner"></span> Tegereza...`;
-    loginBtn.disabled = true;
-
-    // Loading 2 Seconds Delay
-    setTimeout(() => {
-      loginBtn.innerHTML = `Injira ➔`;
-      loginBtn.disabled = false;
-      user = foundUser;
-      currentUserPhone = user.phone;
-      localStorage.setItem('tesla_current_user_phone', currentUserPhone);
-      showDashboard();
-    }, 2000);
-  }
-
-  function handleLogout() {
-    localStorage.removeItem('tesla_current_user_phone');
-    user = null;
-    currentUserPhone = null;
-    showLoginSection();
   }
 
   function switchTab(tabName, recordHistory = true) {
@@ -733,53 +833,34 @@
 
   function buyInvestment(planId) {
     const plan = plans.find(p => p.id === planId);
-    if (!plan) return;
+    if (!plan || !window.user) return;
 
     if (plan.isPractice) {
-      if (user.practiceBalance >= plan.price) {
-        user.practiceBalance -= plan.price;
+      if (window.user.practiceBalance >= plan.price) {
+        window.user.practiceBalance -= plan.price;
         addActiveInvestment(plan);
         alert("Ushoye neza muri " + plan.name + " (Kwimenyereza)! Jya muri Imirimo urebe video " + plan.reqVideos + " ngo ubone inyungu.");
       } else {
         alert("Nta mafaranga yo kwimenyereza ahagije usigaye nayo!");
       }
     } else {
-      if (user.depositBalance >= plan.price) {
-        user.depositBalance -= plan.price;
+      if (window.user.depositBalance >= plan.price) {
+        window.user.depositBalance -= plan.price;
         addActiveInvestment(plan);
-        
-        // Referral Commission 35% Logic
-        if (user.referredBy) {
-          let referrer = usersDatabase.find(u => u.refCode === user.referredBy);
-          if (referrer) {
-            let comm = Math.round(plan.price * 0.35);
-            referrer.withdrawableEarnings = (referrer.withdrawableEarnings || 0) + comm;
-            referrer.level1Earnings = (referrer.level1Earnings || 0) + comm;
-            if (!referrer.level1Members) referrer.level1Members = [];
-            
-            let existingM = referrer.level1Members.find(m => m.phone === user.phone);
-            if (existingM) {
-              existingM.commission += comm;
-            } else {
-              referrer.level1Members.push({ phone: user.phone, commission: comm });
-            }
-          }
-        }
-
         alert("Ushoye neza muri " + plan.name + "! Jya muri Imirimo urebe video " + plan.reqVideos + " z'uyu munsi.");
       } else {
         alert("Ntabwo amafaranga wabikije ahagije! Banza ubitse ubundi Admin abyapprove.");
         openDepositFlow(plan.price);
       }
     }
-    saveUsersDB();
+    window.saveUsersDB();
     showDashboard();
   }
 
   function addActiveInvestment(plan) {
     const now = Date.now();
     const expiry = now + (plan.validity * 24 * 60 * 60 * 1000);
-    user.activeInvestments.push({
+    window.user.activeInvestments.push({
       planId: plan.id,
       name: plan.name,
       price: plan.price,
@@ -790,20 +871,20 @@
       lastClaimCycle: 0,
       completedToday: 0
     });
-    user.investedAmount = (user.investedAmount || 0) + plan.price;
-    user.totalInvestments = (user.totalInvestments || 0) + 1;
+    window.user.investedAmount = (window.user.investedAmount || 0) + plan.price;
+    window.user.totalInvestments = (window.user.totalInvestments || 0) + 1;
   }
 
   function renderActiveInvestments() {
     const container = document.getElementById('activeInvestmentsContainer');
     if (!container) return;
 
-    if (!user.activeInvestments || user.activeInvestments.length === 0) {
+    if (!window.user || !window.user.activeInvestments || window.user.activeInvestments.length === 0) {
       container.innerHTML = `<div style="background:#111827; padding:20px; border-radius:12px; border:1px solid #1f2937;">Nta mugabane uragura ushoboye gukora. Gura uyu munsi muri SHORA!</div>`;
       return;
     }
 
-    container.innerHTML = user.activeInvestments.map((inv, index) => {
+    container.innerHTML = window.user.activeInvestments.map((inv, index) => {
       return `
         <div class="active-plan-card">
           <div style="display:flex; justify-content:space-between; font-weight:800; color:#10b981;">
@@ -821,9 +902,9 @@
   }
 
   function updateTimers() {
-    if (!user || !user.activeInvestments) return;
+    if (!window.user || !window.user.activeInvestments) return;
     const now = Date.now();
-    user.activeInvestments.forEach((inv, index) => {
+    window.user.activeInvestments.forEach((inv, index) => {
       const el = document.getElementById(`timer-${index}`);
       if (!el) return;
 
@@ -848,8 +929,8 @@
     let maxVideosAllowed = 0;
     let activePlan = null;
 
-    if (user.activeInvestments && user.activeInvestments.length > 0) {
-      user.activeInvestments.forEach(inv => {
+    if (window.user && window.user.activeInvestments && window.user.activeInvestments.length > 0) {
+      window.user.activeInvestments.forEach(inv => {
         if (inv.reqVideos > maxVideosAllowed) {
           maxVideosAllowed = inv.reqVideos;
           activePlan = inv;
@@ -870,7 +951,7 @@
     for (let i = 1; i <= 41; i++) {
       const isLocked = i > maxVideosAllowed;
       const videoSrc = videoUrls[(i - 1) % videoUrls.length];
-      const isWatched = user.watchedVideosToday[`vid_${i}`] || false;
+      const isWatched = window.user.watchedVideosToday[`vid_${i}`] || false;
 
       html += `
         <div class="video-card" style="${isLocked ? 'opacity: 0.4;' : ''}">
@@ -889,15 +970,16 @@
   }
 
   function watchVideoTask(vidIndex, maxReq) {
-    user.watchedVideosToday[`vid_${vidIndex}`] = true;
+    if (!window.user) return;
+    window.user.watchedVideosToday[`vid_${vidIndex}`] = true;
     
     let watchedCount = 0;
     for (let i = 1; i <= maxReq; i++) {
-      if (user.watchedVideosToday[`vid_${i}`]) watchedCount++;
+      if (window.user.watchedVideosToday[`vid_${i}`]) watchedCount++;
     }
 
-    if (user.activeInvestments && user.activeInvestments.length > 0) {
-      user.activeInvestments.forEach(inv => {
+    if (window.user.activeInvestments && window.user.activeInvestments.length > 0) {
+      window.user.activeInvestments.forEach(inv => {
         inv.completedToday = watchedCount;
         
         if (watchedCount >= inv.reqVideos) {
@@ -906,9 +988,9 @@
           
           if (cycleDiff >= 24 * 60 * 60 * 1000 || !inv.lastClaimCycle) {
             if (inv.planId === 'M0') {
-              user.practiceBalance += inv.daily;
+              window.user.practiceBalance += inv.daily;
             } else {
-              user.withdrawableEarnings += inv.daily;
+              window.user.withdrawableEarnings += inv.daily;
             }
             inv.lastClaimCycle = now;
             alert(`🎉 Whuuu! Urangije amavideo ${inv.reqVideos}! Inyungu ya ${inv.daily.toLocaleString()} RWF yinjijwe kuri Balance yawe!`);
@@ -917,7 +999,7 @@
       });
     }
 
-    saveUsersDB();
+    window.saveUsersDB();
     showDashboard();
   }
 
@@ -1054,18 +1136,6 @@
     `;
   }
 
-  function confirmPaymentAction() {
-    const btn = document.getElementById('btnEmezaPayment');
-    btn.innerHTML = "⏳ Byemejwe! Tegereza Admin Approve";
-    btn.classList.add('done');
-    btn.onclick = null;
-
-    setTimeout(() => {
-      alert("Ibusabe bwawe bwo kubitsa RWF " + selectedDepositAmount.toLocaleString() + " bwoherejwe neza! Admin nabyapprove amafaranga azajya kuri 'Ayo Wabikije'.");
-      closeModal();
-    }, 500);
-  }
-
   function openWithdrawModal() {
     const modal = document.getElementById('generalModal');
     const content = document.getElementById('modalCardContent');
@@ -1084,7 +1154,7 @@
         <div style="background: #e0f2fe; border: 1px solid #bae6fd; padding: 10px; border-radius: 10px; font-size: 12px; color: #0369a1; margin-bottom: 15px;">
           <b>Ibipimo byo kubikuza:</b><br>
           • Amacye yo kubikuza ni <b>2,000 RWF</b><br>
-          • Inyungu ushobora kubikuza ubu: <b>${(user.withdrawableEarnings || 0).toLocaleString()} RWF</b>
+          • Inyungu ushobora kubikuza ubu: <b>${(window.user ? window.user.withdrawableEarnings || 0 : 0).toLocaleString()} RWF</b>
         </div>
 
         <div style="margin-bottom: 12px;">
@@ -1094,35 +1164,12 @@
 
         <div style="margin-bottom: 15px;">
           <label style="font-size: 11px; font-weight: 800; color: #6b7280; display: block; margin-bottom: 4px;">NUMERO Y'IREMEZO (MoMo/Airtel)</label>
-          <input type="tel" id="withdrawPhone" value="${user ? user.phone : ''}" placeholder="078xxxxxxx" class="input-box-normal" style="background:#f3f4f6; color:#111827; border:1px solid #d1d5db;">
+          <input type="tel" id="withdrawPhone" value="${window.user ? window.user.phone : ''}" placeholder="078xxxxxxx" class="input-box-normal" style="background:#f3f4f6; color:#111827; border:1px solid #d1d5db;">
         </div>
 
         <button class="btn-main" onclick="submitWithdrawal()" style="background:#059669;">Bikuza</button>
       </div>
     `;
-  }
-
-  function submitWithdrawal() {
-    const amt = Number(document.getElementById('withdrawAmount').value);
-
-    if (!amt || amt < 2000) {
-      alert("Amafaranga ya make yo kubikuza ni 2,000 RWF.");
-      return;
-    }
-    if (amt > 5000000) {
-      alert("Amafaranga aranga kurenga 5,000,000 RWF.");
-      return;
-    }
-    if (amt > user.withdrawableEarnings) {
-      alert("Nta inyungu zokubikuza zihagije ufite. Amfara yo kwimenyereza ntabwo abikuzwa!");
-      return;
-    }
-
-    user.withdrawableEarnings -= amt;
-    saveUsersDB();
-    showDashboard();
-    closeModal();
-    alert("Ibusabe bwawe bwo kubikuza RWF " + amt.toLocaleString() + " bwoherejwe neza!");
   }
 
   function openHistoryModal() {
@@ -1174,7 +1221,7 @@
   }
 
   function claimBonus() {
-    const inv = user.investedAmount || 0;
+    const inv = (window.user ? window.user.investedAmount || 0 : 0);
     if (inv >= 200000) {
       alert("Ibusabe bwawe bwa Bonus bwoherejwe!");
       closeModal();
@@ -1209,7 +1256,7 @@
   }
 
   function claimReward() {
-    const count = user.totalInvestments || 0;
+    const count = (window.user ? window.user.totalInvestments || 0 : 0);
     if (count >= 3) {
       alert("Ibusabe bwawe bw'Igihembo bwoherejwe!");
       closeModal();
