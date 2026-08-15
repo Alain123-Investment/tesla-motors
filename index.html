@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>TESLA MOTORS - Investment Platform</title>
+  <title>TESLA MOTORS - Investment Platform & Admin Portal</title>
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
     body { background-color: #0b0f19; color: #f8fafc; display: flex; justify-content: center; }
@@ -114,7 +114,6 @@
     .copy-icon { cursor: pointer; color: #6b7280; font-size: 16px; }
 
     .btn-confirm-payment { width: 100%; background: #059669; color: #ffffff; border: none; padding: 14px; border-radius: 14px; font-size: 15px; font-weight: 800; cursor: pointer; margin-top: 12px; display: flex; align-items: center; justify-content: center; gap: 6px; }
-    .btn-confirm-payment.done { background: #d97706; cursor: default; }
 
     /* Bottom Nav */
     .bottom-nav { position: fixed; bottom: 0; left: 50%; transform: translateX(-50%); width: 100%; max-width: 480px; background: #111827; border-top: 1px solid #1f2937; display: flex; justify-content: space-around; padding: 10px 0; z-index: 90; }
@@ -124,6 +123,10 @@
     
     .team-card { background: #0b0f19; padding: 12px; border-radius: 12px; margin-top: 10px; border: 1px solid #1f2937; text-align: left; }
     .team-member { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid #1f2937; font-size: 12px; }
+
+    /* Admin Styles */
+    .admin-container { background: #111827; border-radius: 16px; padding: 16px; margin: 0 16px 20px; border: 1px solid #dc2626; text-align: left; }
+    .admin-item-box { background: #0b0f19; border: 1px solid #1f2937; border-radius: 10px; padding: 10px; margin-bottom: 10px; font-size: 12px; }
   </style>
 </head>
 <body>
@@ -163,7 +166,7 @@
         </div>
         <div class="form-group">
           <label class="form-label">KODE Y'UBUTUMIRE (REF CODE)</label>
-          <input type="text" id="regRefCode" class="input-box-normal" placeholder="SHEMAS/INVISIBBLE CODE" style="text-transform:uppercase;">
+          <input type="text" id="regRefCode" class="input-box-normal" placeholder="Urugero: TSL-XXXXXX" style="text-transform:uppercase;">
         </div>
         <button id="regBtn" class="btn-main" onclick="handleRegister()">Iyandikishe ➔</button>
         <button class="btn-back" onclick="showLoginSection()">Ufite konti? Injira</button>
@@ -282,6 +285,15 @@
         <div class="menu-item" onclick="openSupport()"><div class="menu-icon">🎧</div><div class="menu-label">Ubufasha</div></div>
         <div class="menu-item" onclick="handleLogout()"><div class="menu-icon">🚪</div><div class="menu-label">Sohokamo</div></div>
       </div>
+
+      <!-- ADMIN PANEL SECTION (Visible only if user role is admin) -->
+      <div id="adminSection" style="display: none;">
+        <div class="admin-container">
+          <div style="font-size: 14px; font-weight: 900; color: #f87171; margin-bottom: 10px;">🛠️ ADMIN CONTROL PANEL</div>
+          <div style="font-size: 11px; color: #9ca3af; margin-bottom: 10px;">Ubusabe bwa Users busaba kwemezwa (Deposit/Withdrawal):</div>
+          <div id="adminPendingList"></div>
+        </div>
+      </div>
     </div>
 
     <!-- TAB 2: SHORA (VIP PLANS) -->
@@ -391,7 +403,7 @@
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
   import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
-  import { getFirestore, doc, setDoc, getDoc, collection, addDoc, onSnapshot, updateDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+  import { getFirestore, doc, setDoc, getDoc, collection, addDoc, onSnapshot, updateDoc, getDocs, query, where, increment } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
   const firebaseConfig = {
     apiKey: "AIzaSyBZon08Rj5NcQO6N-O4uC4FoEIDHmdWvsA",
@@ -424,6 +436,10 @@
             watchedVideosToday: dbData.watchedVideosToday || {}
           };
           window.showDashboard();
+          
+          if (dbData.role === "admin") {
+            window.listenForAdminPendingRequests(db);
+          }
         }
       });
     } else {
@@ -458,6 +474,19 @@
       const userCredential = await createUserWithEmailAndPassword(auth, dummyEmail, pass);
       const fUser = userCredential.user;
 
+      const myNewRefCode = window.generateUniqueRefCode();
+      
+      // Check if referred by someone
+      let referrerUid = null;
+      if (refCode) {
+        const qRef = query(collection(db, "users"), where("refCode", "==", refCode));
+        const refSnap = await getDocs(qRef);
+        if (!refSnap.empty) {
+          const refDocUser = refSnap.docs[0];
+          referrerUid = refDocUser.id;
+        }
+      }
+
       const newUserDoc = {
         uid: fUser.uid,
         name: name,
@@ -469,8 +498,8 @@
         investedAmount: 0,
         totalInvestments: 0,
         role: "user",
-        refCode: window.generateUniqueRefCode(),
-        referredBy: refCode || null,
+        refCode: myNewRefCode,
+        referredBy: referrerUid || null,
         level1Members: [],
         level1Earnings: 0,
         activeInvestments: [],
@@ -479,6 +508,19 @@
       };
 
       await setDoc(doc(db, "users", fUser.uid), newUserDoc);
+
+      // If referral exists, update referrer's level1Members list
+      if (referrerUid) {
+        const refUserRef = doc(db, "users", referrerUid);
+        const refSnapData = await getDoc(refUserRef);
+        if (refSnapData.exists()) {
+          const refData = refSnapData.data();
+          const existingList = refData.level1Members || [];
+          existingList.push({ uid: fUser.uid, phone: phone, commission: 0 });
+          await updateDoc(refUserRef, { level1Members: existingList });
+        }
+      }
+
       alert("Konti yawe yayanditse neza! Uhawe 1,500 RWF yo kwimenyereza.");
     } catch (error) {
       alert("Ikosa ryabaye: " + error.message);
@@ -529,16 +571,17 @@
     btn.disabled = true;
 
     try {
-      await addDoc(collection(db, "deposits"), {
+      await addDoc(collection(db, "transactions"), {
         userId: currentFirebaseUid,
         userName: window.user ? window.user.name : "Unknown",
         userPhone: window.user ? window.user.phone : "Unknown",
+        type: "deposit",
         amount: Number(window.selectedDepositAmount),
         status: "pending",
         date: new Date().toISOString()
       });
 
-      alert("Byemejwe! Ubusabe bwawe bwo kubitsa RWF " + window.selectedDepositAmount.toLocaleString() + " bwoherejwe muri Database ya Admin kugira ngo abyemeze!");
+      alert("Ubusabe bwawe bwo kubitsa RWF " + Number(window.selectedDepositAmount).toLocaleString() + " bwoherejwe kuri Admin. Buzemezwa nyuma y'igenzura!");
       window.closeModal();
     } catch (error) {
       alert("Ikosa mu kubitsa: " + error.message);
@@ -569,9 +612,11 @@
         withdrawableEarnings: newWithdrawable
       });
 
-      await addDoc(collection(db, "withdrawals"), {
+      await addDoc(collection(db, "transactions"), {
         userId: currentFirebaseUid,
+        userName: window.user.name,
         userPhone: window.user.phone,
+        type: "withdrawal",
         amount: amt,
         status: "pending",
         date: new Date().toISOString()
@@ -579,9 +624,103 @@
 
       window.showDashboard();
       window.closeModal();
-      alert("Ibusabe bwawe bwo kubikuza RWF " + amt.toLocaleString() + " bwoherejwe neza!");
+      alert("Ubusabe bwawe bwo kubikuza RWF " + amt.toLocaleString() + " bwoherejwe kuri Admin!");
     } catch (error) {
       alert("Ikosa: " + error.message);
+    }
+  };
+
+  // ADMIN LISTENER & APPROVAL
+  window.listenForAdminPendingRequests = function(dbInstance) {
+    document.getElementById('adminSection').style.display = 'block';
+    
+    onSnapshot(collection(dbInstance, "transactions"), (snapshot) => {
+      const pendingListEl = document.getElementById('adminPendingList');
+      let html = '';
+      let pendingDocs = [];
+
+      snapshot.forEach((docSnap) => {
+        const data = docSnap.data();
+        if (data.status === "pending") {
+          pendingDocs.push({ id: docSnap.id, ...data });
+        }
+      });
+
+      if (pendingDocs.length === 0) {
+        pendingListEl.innerHTML = `<div style="font-size:11px; color:#9ca3af;">Nta busabe buri pending ubu.</div>`;
+        return;
+      }
+
+      pendingDocs.forEach(item => {
+        html += `
+          <div class="admin-item-box">
+            <div><b>User:</b> ${item.userName} (${item.userPhone})</div>
+            <div><b>Ubwoko:</b> <span style="color:${item.type==='deposit'?'#34d399':'#fbbf24'}">${item.type.toUpperCase()}</span></div>
+            <div><b>Amafaranga:</b> ${Number(item.amount).toLocaleString()} RWF</div>
+            <div style="margin-top:8px; display:flex; gap:6px;">
+              <button onclick="adminApprove('${item.id}', '${item.userId}', '${item.type}', ${item.amount})" style="background:#059669; color:#fff; border:none; padding:4px 10px; border-radius:6px; cursor:pointer; font-weight:800;">Emeza (Approve)</button>
+              <button onclick="adminReject('${item.id}', '${item.userId}', '${item.type}', ${item.amount})" style="background:#dc2626; color:#fff; border:none; padding:4px 10px; border-radius:6px; cursor:pointer; font-weight:800;">Hagarika</button>
+            </div>
+          </div>
+        `;
+      });
+      pendingListEl.innerHTML = html;
+    });
+  };
+
+  window.adminApprove = async function(txId, targetUserId, type, amount) {
+    try {
+      // Update transaction status
+      await updateDoc(doc(db, "transactions", txId), { status: "approved" });
+
+      if (type === "deposit") {
+        // Fetch target user and add to balance
+        const targetUserRef = doc(db, "users", targetUserId);
+        const targetSnap = await getDoc(targetUserRef);
+        if (targetSnap.exists()) {
+          const tData = targetSnap.data();
+          const currentBal = tData.balance || 0;
+          await updateDoc(targetUserRef, { balance: currentBal + amount });
+
+          // Handle Referral Commission (35% if referred by someone)
+          if (tData.referredBy) {
+            const referrerRef = doc(db, "users", tData.referredBy);
+            const refSnap = await getDoc(referrerRef);
+            if (refSnap.exists()) {
+              const refData = refSnap.data();
+              const commission = amount * 0.35;
+              const currentCommEarnings = refData.level1Earnings || 0;
+              const currentWithdrawable = refData.withdrawableEarnings || 0;
+              
+              await updateDoc(referrerRef, {
+                level1Earnings: currentCommEarnings + commission,
+                withdrawableEarnings: currentWithdrawable + commission
+              });
+            }
+          }
+        }
+      }
+      alert("Byemejwe neza!");
+    } catch (err) {
+      alert("Ikosa: " + err.message);
+    }
+  };
+
+  window.adminReject = async function(txId, targetUserId, type, amount) {
+    try {
+      await updateDoc(doc(db, "transactions", txId), { status: "rejected" });
+      if (type === "withdrawal") {
+        // Refund withdrawable earnings back to user if rejected
+        const targetUserRef = doc(db, "users", targetUserId);
+        const targetSnap = await getDoc(targetUserRef);
+        if (targetSnap.exists()) {
+          const tData = targetSnap.data();
+          await updateDoc(targetUserRef, { withdrawableEarnings: (tData.withdrawableEarnings || 0) + amount });
+        }
+      }
+      alert("Ubusabe bwanzwe!");
+    } catch (err) {
+      alert("Ikosa: " + err.message);
     }
   };
 
@@ -1096,7 +1235,7 @@
 
         <div class="pay-box">
           <div class="pay-row-title">Ayo Kwishyura:</div>
-          <div class="pay-row-val" style="color: #d97706;">RWF ${selectedDepositAmount.toLocaleString()}</div>
+          <div class="pay-row-val" style="color: #d97706;">RWF ${Number(selectedDepositAmount).toLocaleString()}</div>
 
           <div class="pay-row-title">MOMO PAY:</div>
           <div class="pay-row-val" style="color: #111827;">
