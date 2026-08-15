@@ -437,8 +437,12 @@
           };
           window.showDashboard();
           
+          // Gusuzuma niba ari admin muri database
           if (dbData.role === "admin") {
+            document.getElementById('adminSection').style.display = 'block';
             window.listenForAdminPendingRequests(db);
+          } else {
+            document.getElementById('adminSection').style.display = 'none';
           }
         }
       });
@@ -476,7 +480,6 @@
 
       const myNewRefCode = window.generateUniqueRefCode();
       
-      // Check if referred by someone
       let referrerUid = null;
       if (refCode) {
         const qRef = query(collection(db, "users"), where("refCode", "==", refCode));
@@ -497,7 +500,7 @@
         withdrawableEarnings: 0,
         investedAmount: 0,
         totalInvestments: 0,
-        role: "user",
+        role: "user", // Buri mushya aba ari user usibye uwahinduwe na database aba admin
         refCode: myNewRefCode,
         referredBy: referrerUid || null,
         level1Members: [],
@@ -509,7 +512,6 @@
 
       await setDoc(doc(db, "users", fUser.uid), newUserDoc);
 
-      // If referral exists, update referrer's level1Members list
       if (referrerUid) {
         const refUserRef = doc(db, "users", referrerUid);
         const refSnapData = await getDoc(refUserRef);
@@ -632,8 +634,6 @@
 
   // ADMIN LISTENER & APPROVAL
   window.listenForAdminPendingRequests = function(dbInstance) {
-    document.getElementById('adminSection').style.display = 'block';
-    
     onSnapshot(collection(dbInstance, "transactions"), (snapshot) => {
       const pendingListEl = document.getElementById('adminPendingList');
       let html = '';
@@ -670,11 +670,9 @@
 
   window.adminApprove = async function(txId, targetUserId, type, amount) {
     try {
-      // Update transaction status
       await updateDoc(doc(db, "transactions", txId), { status: "approved" });
 
       if (type === "deposit") {
-        // Fetch target user and add to balance
         const targetUserRef = doc(db, "users", targetUserId);
         const targetSnap = await getDoc(targetUserRef);
         if (targetSnap.exists()) {
@@ -682,7 +680,6 @@
           const currentBal = tData.balance || 0;
           await updateDoc(targetUserRef, { balance: currentBal + amount });
 
-          // Handle Referral Commission (35% if referred by someone)
           if (tData.referredBy) {
             const referrerRef = doc(db, "users", tData.referredBy);
             const refSnap = await getDoc(referrerRef);
@@ -710,7 +707,6 @@
     try {
       await updateDoc(doc(db, "transactions", txId), { status: "rejected" });
       if (type === "withdrawal") {
-        // Refund withdrawable earnings back to user if rejected
         const targetUserRef = doc(db, "users", targetUserId);
         const targetSnap = await getDoc(targetUserRef);
         if (targetSnap.exists()) {
