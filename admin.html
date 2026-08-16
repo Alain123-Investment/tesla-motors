@@ -249,10 +249,6 @@
 </div>
 
 <script>
-  // LOGIN CREDENTIALS
-  const ADMIN_PHONE = "0729756862";
-  const ADMIN_PASS = "123456";
-
   // MOCK STORAGE OR LOCAL STORAGE
   let systemUsers = JSON.parse(localStorage.getItem('tesla_all_users')) || [
     { id: 101, name: "Bruno Alain", phone: "0789681391", balance: 1000, earnings: 0, referralsCount: 5, comms: 17500 },
@@ -274,7 +270,6 @@
     "https://images.unsplash.com/photo-1536700503339-1e4b06520771"
   ];
 
-  // UPDATED VIP SHARES (BASED ON TABLE DATA)
   let vipShares = JSON.parse(localStorage.getItem('tesla_vip_shares')) || [
     { id: "m0", name: "M0 Share", price: 500, dailyProfit: 300, validityDays: 2 },
     { id: "m1", name: "M1 Share", price: 20000, dailyProfit: 675, validityDays: 365 },
@@ -315,7 +310,10 @@
       return;
     }
 
-    if (phone === ADMIN_PHONE && pass === ADMIN_PASS) {
+    // Aho gushyiramo uburyo bwo gusuzuma admin (Koresha urugero rwa systemUsers cyangwa andi amakuru ashobora kugenzura umuyobozi muri localStorage cyangwa se aho bisanzwe bihuriye n'abandi ba user)
+    let foundAdmin = systemUsers.find(u => u.phone === phone);
+
+    if (phone && pass) { // Ushobora guhindura aya masezerano bitewe n'uko ushaka ko admin yinjira
       let btn = document.getElementById('loginBtn');
       btn.innerText = "⏳ Loading Admin Dashboard...";
       btn.style.opacity = "0.7";
@@ -327,7 +325,7 @@
         calculateTotalStats();
         switchTool('deposits');
         startLiveCountdown();
-      }, 2000);
+      }, 1500);
     } else {
       alert("Nomero cyangwa Password winjije si byo! Gerageza tena.");
     }
