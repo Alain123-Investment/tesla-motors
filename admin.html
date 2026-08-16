@@ -253,20 +253,21 @@
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
   import { getFirestore, collection, query, where, getDocs } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
-  // Shyira hano amakuru ya Firebase yawe (Configurations)
+  // Firebase Configuration as provided
   const firebaseConfig = {
-    apiKey: "YOUR_API_KEY",
-    authDomain: "YOUR_AUTH_DOMAIN",
-    projectId: "YOUR_PROJECT_ID",
-    storageBucket: "YOUR_STORAGE_BUCKET",
-    messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
-    appId: "YOUR_APP_ID"
+    apiKey: "AIzaSyBZon08Rj5NcQO6N-O4uC4FoEIDHmdWvsA",
+    authDomain: "my-investment-platform-7d442.firebaseapp.com",
+    projectId: "my-investment-platform-7d442",
+    storageBucket: "my-investment-platform-7d442.firebasestorage.app",
+    messagingSenderId: "1456551588",
+    appId: "1:1456551588:web:e8d55f6fe58af02cc91831",
+    measurementId: "G-0H4ZH1R83Y"
   };
 
   const app = initializeApp(firebaseConfig);
   const db = getFirestore(app);
 
-  // Twaha cyangwa tugashyira izi function muri window kugira ngo zishobore gusomwa n'ama button ya HTML
+  // Exposing functions to global window scope for HTML inline buttons
   window.db = db;
   window.collection = collection;
   window.query = query;
