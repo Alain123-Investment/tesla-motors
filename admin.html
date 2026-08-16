@@ -248,6 +248,32 @@
 
 </div>
 
+<!-- FIREBASE SDK (Modular) -->
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+  import { getFirestore, collection, query, where, getDocs } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+  // Shyira hano amakuru ya Firebase yawe (Configurations)
+  const firebaseConfig = {
+    apiKey: "YOUR_API_KEY",
+    authDomain: "YOUR_AUTH_DOMAIN",
+    projectId: "YOUR_PROJECT_ID",
+    storageBucket: "YOUR_STORAGE_BUCKET",
+    messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
+    appId: "YOUR_APP_ID"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const db = getFirestore(app);
+
+  // Twaha cyangwa tugashyira izi function muri window kugira ngo zishobore gusomwa n'ama button ya HTML
+  window.db = db;
+  window.collection = collection;
+  window.query = query;
+  window.where = where;
+  window.getDocs = getDocs;
+</script>
+
 <script>
   // MOCK STORAGE OR LOCAL STORAGE
   let systemUsers = JSON.parse(localStorage.getItem('tesla_all_users')) || [
@@ -301,7 +327,7 @@
   let currentTool = "deposits";
   let countdownTimerInterval = null;
 
-  function performAdminLogin() {
+  async function performAdminLogin() {
     let phone = document.getElementById('loginPhone').value.trim();
     let pass = document.getElementById('loginPass').value.trim();
 
@@ -310,25 +336,50 @@
       return;
     }
 
-    // Aho gushyiramo uburyo bwo gusuzuma admin (Koresha urugero rwa systemUsers cyangwa andi amakuru ashobora kugenzura umuyobozi muri localStorage cyangwa se aho bisanzwe bihuriye n'abandi ba user)
-    let foundAdmin = systemUsers.find(u => u.phone === phone);
+    let btn = document.getElementById('loginBtn');
+    btn.innerText = "⏳ Checking Database...";
+    btn.style.opacity = "0.7";
+    btn.disabled = true;
 
-    if (phone && pass) { // Ushobora guhindura aya masezerano bitewe n'uko ushaka ko admin yinjira
-      let btn = document.getElementById('loginBtn');
-      btn.innerText = "⏳ Loading Admin Dashboard...";
-      btn.style.opacity = "0.7";
-      btn.disabled = true;
+    try {
+      const usersRef = collection(db, "users");
+      const q = query(usersRef, where("phone", "==", phone), where("password", "==", pass));
+      const querySnapshot = await getDocs(q);
 
-      setTimeout(() => {
-        document.getElementById('adminLoginScreen').style.display = 'none';
-        document.getElementById('adminDashboardApp').style.display = 'block';
-        calculateTotalStats();
-        switchTool('deposits');
-        startLiveCountdown();
-      }, 1500);
-    } else {
-      alert("Nomero cyangwa Password winjije si byo! Gerageza tena.");
+      if (!querySnapshot.empty) {
+        let userData = null;
+        querySnapshot.forEach((doc) => {
+          userData = doc.data();
+        });
+
+        if (userData && userData.role === "admin") {
+          btn.innerText = "✅ Success! Loading...";
+          setTimeout(() => {
+            document.getElementById('adminLoginScreen').style.display = 'none';
+            document.getElementById('adminDashboardApp').style.display = 'block';
+            calculateTotalStats();
+            switchTool('deposits');
+            startLiveCountdown();
+          }, 1000);
+        } else {
+          alert("Uyu konti ifite uburenganzira bwa User isanzwe, si Admin!");
+          resetBtn(btn);
+        }
+      } else {
+        alert("Nomero cyangwa Password si byo muri Database!");
+        resetBtn(btn);
+      }
+    } catch (error) {
+      console.error("Login Error: ", error);
+      alert("Habaye ikibazo mu guhuza na Database. Gerageza kongera.");
+      resetBtn(btn);
     }
+  }
+
+  function resetBtn(btn) {
+    btn.innerText = "Login to Dashboard";
+    btn.style.opacity = "1";
+    btn.disabled = false;
   }
 
   function calculateTotalStats() {
