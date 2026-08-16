@@ -834,7 +834,7 @@
     }
   }
 
-  function showDashboard() {
+  window.showDashboard = function() {
     document.getElementById('authContainer').style.display = 'none';
     document.getElementById('appBody').style.display = 'block';
     if (window.user) {
@@ -878,16 +878,16 @@
     renderActiveInvestments();
     renderVideos();
     switchTab(currentTab, false);
-  }
+  };
 
-  function showLoginSection() {
+  window.showLoginSection = function() {
     document.getElementById('authContainer').style.display = 'block';
     document.getElementById('appBody').style.display = 'none';
     document.getElementById('loginPage').style.display = 'block';
     document.getElementById('registerPage').style.display = 'none';
   }
 
-  function showRegisterSection() {
+  window.showRegisterSection = function() {
     document.getElementById('authContainer').style.display = 'block';
     document.getElementById('appBody').style.display = 'none';
     document.getElementById('loginPage').style.display = 'none';
@@ -966,7 +966,7 @@
     `).join('');
   }
 
-  function buyInvestment(planId) {
+  window.buyInvestment = function(planId) {
     const plan = plans.find(p => p.id === planId);
     if (!plan || !window.user) return;
 
@@ -1104,7 +1104,7 @@
     container.innerHTML = html;
   }
 
-  function watchVideoTask(vidIndex, maxReq) {
+  window.watchVideoTask = function(vidIndex, maxReq) {
     if (!window.user) return;
     window.user.watchedVideosToday[`vid_${vidIndex}`] = true;
     
@@ -1138,7 +1138,7 @@
     showDashboard();
   }
 
-  function openDepositFlow(initialAmount = 0) {
+  window.openDepositFlow = function(initialAmount = 0) {
     selectedDepositAmount = initialAmount;
     const modal = document.getElementById('generalModal');
     const content = document.getElementById('modalCardContent');
@@ -1184,7 +1184,7 @@
     `;
   }
 
-  function setDepositAmount(val, btnEl) {
+  window.setDepositAmount = function(val, btnEl) {
     selectedDepositAmount = val;
     document.getElementById('depositAmountInput').value = val;
     document.querySelectorAll('.recharge-btn').forEach(b => b.classList.remove('active'));
@@ -1192,7 +1192,7 @@
     updateConfirmButton();
   }
 
-  function handleCustomAmountInput(val) {
+  window.handleCustomAmountInput = function(val) {
     selectedDepositAmount = Number(val);
     document.querySelectorAll('.recharge-btn').forEach(b => {
       const numVal = Number(b.innerText.replace(/,/g, ''));
@@ -1214,7 +1214,7 @@
     }
   }
 
-  function proceedToPayModal() {
+  window.proceedToPayModal = function() {
     if (!selectedDepositAmount || selectedDepositAmount <= 0) return;
 
     const modal = document.getElementById('generalModal');
@@ -1271,7 +1271,7 @@
     `;
   }
 
-  function openWithdrawModal() {
+  window.openWithdrawModal = function() {
     const modal = document.getElementById('generalModal');
     const content = document.getElementById('modalCardContent');
     modal.style.display = 'flex';
@@ -1307,7 +1307,7 @@
     `;
   }
 
-  function openHistoryModal() {
+  window.openHistoryModal = function() {
     const modal = document.getElementById('generalModal');
     const content = document.getElementById('modalCardContent');
     modal.style.display = 'flex';
@@ -1330,7 +1330,7 @@
     `;
   }
 
-  function openBonusModal() {
+  window.openBonusModal = function() {
     const modal = document.getElementById('generalModal');
     const content = document.getElementById('modalCardContent');
     modal.style.display = 'flex';
@@ -1355,7 +1355,7 @@
     `;
   }
 
-  function claimBonus() {
+  window.claimBonus = function() {
     const inv = (window.user ? window.user.investedAmount || 0 : 0);
     if (inv >= 200000) {
       alert("Ibusabe bwawe bwa Bonus bwoherejwe!");
@@ -1365,7 +1365,7 @@
     }
   }
 
-  function openRewardsModal() {
+  window.openRewardsModal = function() {
     const modal = document.getElementById('generalModal');
     const content = document.getElementById('modalCardContent');
     modal.style.display = 'flex';
@@ -1390,7 +1390,7 @@
     `;
   }
 
-  function claimReward() {
+  window.claimReward = function() {
     const count = (window.user ? window.user.totalInvestments || 0 : 0);
     if (count >= 3) {
       alert("Ibusabe bwawe bw'Igihembo bwoherejwe!");
@@ -1400,7 +1400,7 @@
     }
   }
 
-  function openSupport() {
+  window.openSupport = function() {
     const modal = document.getElementById('generalModal');
     const content = document.getElementById('modalCardContent');
     modal.style.display = 'flex';
@@ -1427,7 +1427,7 @@
     `;
   }
 
-  function copyRefLink() {
+  window.copyRefLink = function() {
     const realLink = getReferralLink();
     navigator.clipboard.writeText(realLink).then(() => {
       alert("Ihuriro ryo kutumira ryakoporowe neza:\n" + realLink);
@@ -1442,12 +1442,12 @@
     });
   }
 
-  function copyText(text) {
+  window.copyText = function(text) {
     navigator.clipboard.writeText(text);
     alert("Yakoporowe: " + text);
   }
 
-  function closeModal() {
+  window.closeModal = function() {
     document.getElementById('generalModal').style.display = 'none';
   }
 </script>
