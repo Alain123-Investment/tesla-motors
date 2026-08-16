@@ -344,7 +344,7 @@
 
     try {
       const usersRef = collection(db, "users");
-      const q = query(usersRef, where("phone", "==", phone), where("password", "==", pass));
+      const q = query(usersRef, where("phone", "==", phone));
       const querySnapshot = await getDocs(q);
 
       if (!querySnapshot.empty) {
@@ -353,21 +353,26 @@
           userData = doc.data();
         });
 
-        if (userData && userData.role === "admin") {
-          btn.innerText = "✅ Success! Loading...";
-          setTimeout(() => {
-            document.getElementById('adminLoginScreen').style.display = 'none';
-            document.getElementById('adminDashboardApp').style.display = 'block';
-            calculateTotalStats();
-            switchTool('deposits');
-            startLiveCountdown();
-          }, 1000);
+        if (userData && userData.password === pass) {
+          if (userData.role === "admin") {
+            btn.innerText = "✅ Success! Loading...";
+            setTimeout(() => {
+              document.getElementById('adminLoginScreen').style.display = 'none';
+              document.getElementById('adminDashboardApp').style.display = 'block';
+              calculateTotalStats();
+              switchTool('deposits');
+              startLiveCountdown();
+            }, 1000);
+          } else {
+            alert("Uyu konti ifite uburenganzira bwa User isanzwe, si Admin!");
+            resetBtn(btn);
+          }
         } else {
-          alert("Uyu konti ifite uburenganzira bwa User isanzwe, si Admin!");
+          alert("Password wanditse siyo!");
           resetBtn(btn);
         }
       } else {
-        alert("Nomero cyangwa Password si byo muri Database!");
+        alert("Nomero ya telefone ntibonetse muri Database!");
         resetBtn(btn);
       }
     } catch (error) {
@@ -687,7 +692,7 @@
   }
 
   function saveSharePlan(sIdx) {
-    vipShares[sIdx].price = parseFloat(document.getElementById(`sharePrice_${sIdx}`).value) || 0;
+    vipShares[sIdx].price = parseFloat(document.getElementById(`sharePrice_${sIdx}` ).value) || 0;
     vipShares[sIdx].dailyProfit = parseFloat(document.getElementById(`shareDaily_${sIdx}`).value) || 0;
     vipShares[sIdx].validityDays = parseInt(document.getElementById(`shareValidity_${sIdx}`).value) || 365;
     saveAllData();
