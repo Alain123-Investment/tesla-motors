@@ -437,7 +437,6 @@
           };
           window.showDashboard();
           
-          // Gusuzuma niba ari admin muri database
           if (dbData.role === "admin") {
             document.getElementById('adminSection').style.display = 'block';
             window.listenForAdminPendingRequests(db);
@@ -500,7 +499,7 @@
         withdrawableEarnings: 0,
         investedAmount: 0,
         totalInvestments: 0,
-        role: "user", // Buri mushya aba ari user usibye uwahinduwe na database aba admin
+        role: "user",
         refCode: myNewRefCode,
         referredBy: referrerUid || null,
         level1Members: [],
@@ -547,7 +546,18 @@
 
     try {
       const dummyEmail = `${phone}@tesla.com`;
-      await signInWithEmailAndPassword(auth, dummyEmail, pass);
+      const userCredential = await signInWithEmailAndPassword(auth, dummyEmail, pass);
+      const userDocRef = doc(db, "users", userCredential.user.uid);
+      const userDocSnap = await getDoc(userDocRef);
+
+      if (userDocSnap.exists()) {
+        const userData = userDocSnap.data();
+        if (userData.role === "admin") {
+          window.location.href = "admin.html";
+        } else {
+          window.location.href = "dashboard.html";
+        }
+      }
     } catch (error) {
       alert("Kwinjira byanze! Yaba numero cyangwa password ari iby'ibinyoma.");
     } finally {
@@ -632,7 +642,6 @@
     }
   };
 
-  // ADMIN LISTENER & APPROVAL
   window.listenForAdminPendingRequests = function(dbInstance) {
     onSnapshot(collection(dbInstance, "transactions"), (snapshot) => {
       const pendingListEl = document.getElementById('adminPendingList');
