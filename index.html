@@ -125,8 +125,10 @@
     .team-member { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid #1f2937; font-size: 12px; }
 
     /* Admin Styles */
-    .admin-container { background: #111827; border-radius: 16px; padding: 16px; margin: 0 16px 20px; border: 1px solid #dc2626; text-align: left; }
-    .admin-item-box { background: #0b0f19; border: 1px solid #1f2937; border-radius: 10px; padding: 10px; margin-bottom: 10px; font-size: 12px; }
+    .admin-card { background: #111827; border-radius: 16px; padding: 20px; border: 1px solid #dc2626; margin: 0 16px 20px; text-align: left; }
+    .admin-item-box { background: #0b0f19; border: 1px solid #1f2937; border-radius: 10px; padding: 14px; margin-bottom: 12px; font-size: 13px; text-align: left; }
+    .btn-approve { background: #059669; color: #fff; border: none; padding: 6px 12px; border-radius: 6px; cursor: pointer; font-weight: 800; font-size: 12px; }
+    .btn-reject { background: #dc2626; color: #fff; border: none; padding: 6px 12px; border-radius: 6px; cursor: pointer; font-weight: 800; font-size: 12px; }
   </style>
 </head>
 <body>
@@ -288,10 +290,14 @@
 
       <!-- ADMIN PANEL SECTION (Visible only if user role is admin) -->
       <div id="adminSection" style="display: none;">
-        <div class="admin-container">
-          <div style="font-size: 14px; font-weight: 900; color: #f87171; margin-bottom: 10px;">🛠️ ADMIN CONTROL PANEL</div>
-          <div style="font-size: 11px; color: #9ca3af; margin-bottom: 10px;">Ubusabe bwa Users busaba kwemezwa (Deposit/Withdrawal):</div>
-          <div id="adminPendingList"></div>
+        <div class="admin-card">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+            <h3 style="font-size: 15px; color: #f87171;">🛠️ TESLA MOTORS ADMIN PORTAL</h3>
+          </div>
+          <div style="font-size: 11px; color: #9ca3af; margin-bottom: 10px;">Genzura ubwishyu n'ubusabe bwa Users (Deposits & Withdrawals):</div>
+          <div id="adminPendingList">
+            <div style="font-size: 12px; color: #9ca3af;">Birimo gushakisha...</div>
+          </div>
         </div>
       </div>
     </div>
@@ -424,6 +430,14 @@
   onAuthStateChanged(auth, async (firebaseUser) => {
     if (firebaseUser) {
       currentFirebaseUid = firebaseUser.uid;
+      const userSnap = await getDoc(doc(db, "users", firebaseUser.uid));
+      if (userSnap.exists() && userSnap.data().role === "admin") {
+        document.getElementById('adminSection').style.display = 'block';
+        loadAdminTransactions(db);
+      } else {
+        document.getElementById('adminSection').style.display = 'none';
+      }
+
       onSnapshot(doc(db, "users", firebaseUser.uid), (docSnap) => {
         if (docSnap.exists()) {
           const dbData = docSnap.data();
@@ -439,7 +453,6 @@
           
           if (dbData.role === "admin") {
             document.getElementById('adminSection').style.display = 'block';
-            window.listenForAdminPendingRequests(db);
           } else {
             document.getElementById('adminSection').style.display = 'none';
           }
@@ -637,90 +650,88 @@
     }
   };
 
-  window.listenForAdminPendingRequests = function(dbInstance) {
+  function loadAdminTransactions(dbInstance) {
     onSnapshot(collection(dbInstance, "transactions"), (snapshot) => {
-      const pendingListEl = document.getElementById('adminPendingList');
+      const listEl = document.getElementById('adminPendingList');
+      if (!listEl) return;
       let html = '';
-      let pendingDocs = [];
+      let pendingItems = [];
 
       snapshot.forEach((docSnap) => {
         const data = docSnap.data();
         if (data.status === "pending") {
-          pendingDocs.push({ id: docSnap.id, ...data });
+          pendingItems.push({ id: docSnap.id, ...data });
         }
       });
 
-      if (pendingDocs.length === 0) {
-        pendingListEl.innerHTML = `<div style="font-size:11px; color:#9ca3af;">Nta busabe buri pending ubu.</div>`;
+      if (pendingItems.length === 0) {
+        listEl.innerHTML = `<div style="font-size:12px; color:#9ca3af;">Nta busabe buri pending ubu.</div>`;
         return;
       }
 
-      pendingDocs.forEach(item => {
+      pendingItems.forEach(item => {
         html += `
           <div class="admin-item-box">
-            <div><b>User:</b> ${item.userName} (${item.userPhone})</div>
+            <div><b>Izina:</b> ${item.userName}</div>
+            <div><b>Telefoni:</b> ${item.userPhone}</div>
             <div><b>Ubwoko:</b> <span style="color:${item.type==='deposit'?'#34d399':'#fbbf24'}">${item.type.toUpperCase()}</span></div>
             <div><b>Amafaranga:</b> ${Number(item.amount).toLocaleString()} RWF</div>
-            <div style="margin-top:8px; display:flex; gap:6px;">
-              <button onclick="adminApprove('${item.id}', '${item.userId}', '${item.type}', ${item.amount})" style="background:#059669; color:#fff; border:none; padding:4px 10px; border-radius:6px; cursor:pointer; font-weight:800;">Emeza (Approve)</button>
-              <button onclick="adminReject('${item.id}', '${item.userId}', '${item.type}', ${item.amount})" style="background:#dc2626; color:#fff; border:none; padding:4px 10px; border-radius:6px; cursor:pointer; font-weight:800;">Hagarika</button>
+            <div style="margin-top:10px; display:flex; gap:8px;">
+              <button class="btn-approve" onclick="adminApproveTx('${item.id}', '${item.userId}', '${item.type}', ${item.amount})">Emeza</button>
+              <button class="btn-reject" onclick="adminRejectTx('${item.id}', '${item.userId}', '${item.type}', ${item.amount})">Hagarika</button>
             </div>
           </div>
         `;
       });
-      pendingListEl.innerHTML = html;
+      listEl.innerHTML = html;
     });
-  };
+  }
 
-  window.adminApprove = async function(txId, targetUserId, type, amount) {
+  window.adminApproveTx = async function(txId, targetUserId, type, amount) {
     try {
       await updateDoc(doc(db, "transactions", txId), { status: "approved" });
 
       if (type === "deposit") {
-        const targetUserRef = doc(db, "users", targetUserId);
-        const targetSnap = await getDoc(targetUserRef);
+        const targetRef = doc(db, "users", targetUserId);
+        const targetSnap = await getDoc(targetRef);
         if (targetSnap.exists()) {
           const tData = targetSnap.data();
-          const currentBal = tData.balance || 0;
-          await updateDoc(targetUserRef, { balance: currentBal + amount });
+          await updateDoc(targetRef, { balance: (tData.balance || 0) + amount });
 
           if (tData.referredBy) {
-            const referrerRef = doc(db, "users", tData.referredBy);
-            const refSnap = await getDoc(referrerRef);
+            const refRef = doc(db, "users", tData.referredBy);
+            const refSnap = await getDoc(refRef);
             if (refSnap.exists()) {
-              const refData = refSnap.data();
-              const commission = amount * 0.35;
-              const currentCommEarnings = refData.level1Earnings || 0;
-              const currentWithdrawable = refData.withdrawableEarnings || 0;
-              
-              await updateDoc(referrerRef, {
-                level1Earnings: currentCommEarnings + commission,
-                withdrawableEarnings: currentWithdrawable + commission
+              const rData = refSnap.data();
+              const comm = amount * 0.35;
+              await updateDoc(refRef, {
+                level1Earnings: (rData.level1Earnings || 0) + comm,
+                withdrawableEarnings: (rData.withdrawableEarnings || 0) + comm
               });
             }
           }
         }
       }
       alert("Byemejwe neza!");
-    } catch (err) {
-      alert("Ikosa: " + err.message);
+    } catch (e) {
+      alert("Ikosa: " + e.message);
     }
   };
 
-  window.adminReject = async function(txId, targetUserId, type, amount) {
+  window.adminRejectTx = async function(txId, targetUserId, type, amount) {
     try {
       await updateDoc(doc(db, "transactions", txId), { status: "rejected" });
       if (type === "withdrawal") {
-        const targetUserRef = doc(db, "users", targetUserId);
-        const targetSnap = await getDoc(targetUserRef);
+        const targetRef = doc(db, "users", targetUserId);
+        const targetSnap = await getDoc(targetRef);
         if (targetSnap.exists()) {
           const tData = targetSnap.data();
-          await updateDoc(targetUserRef, { withdrawableEarnings: (tData.withdrawableEarnings || 0) + amount });
+          await updateDoc(targetRef, { withdrawableEarnings: (tData.withdrawableEarnings || 0) + amount });
         }
       }
       alert("Ubusabe bwanzwe!");
-    } catch (err) {
-      alert("Ikosa: " + err.message);
+    } catch (e) {
+      alert("Ikosa: " + e.message);
     }
   };
 
