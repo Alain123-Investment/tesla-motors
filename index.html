@@ -141,7 +141,7 @@
     <!-- REGISTER PAGE -->
     <div id="registerPage">
       <div style="text-align: center; padding: 35px 15px 10px;">
-        <div style="font-size:26px; font-weight:900; color:#0284c7;">🌿 GAFE ENERGY & ASSETS</div>
+        <div style="font-size:26px; font-weight:900; color:#0284c7;">⚡ TESLA MOTORS</div>
         <div style="font-size:13px; color:#64748b; margin-top:4px;">Fungura Konti Nshya yo Gufatanya Nacu</div>
       </div>
       <div class="auth-card">
@@ -169,7 +169,7 @@
         </div>
         <div class="form-group">
           <label class="form-label">KODE Y'UBUTUMIRE (REF CODE)</label>
-          <input type="text" id="regRefCode" class="input-box-normal" placeholder="Urugero: GAF-XXXXXX" style="text-transform:uppercase;">
+          <input type="text" id="regRefCode" class="input-box-normal" placeholder="Urugero: TS-XXXXXX" style="text-transform:uppercase;">
         </div>
         <button id="regBtn" class="btn-main" onclick="handleRegister()">Iyandikishe nonaha ➔</button>
         <button class="btn-back" onclick="showLoginSection()">Ufite konti? Injira hano</button>
@@ -179,7 +179,7 @@
     <!-- LOGIN PAGE -->
     <div id="loginPage" style="display: none;">
       <div style="text-align: center; padding: 35px 15px 10px;">
-        <div style="font-size:26px; font-weight:900; color:#0284c7;">🌿 GAFE ENERGY & ASSETS</div>
+        <div style="font-size:26px; font-weight:900; color:#0284c7;">⚡ TESLA MOTORS</div>
         <div style="font-size:13px; color:#64748b; margin-top:4px;">Injira muri Konti yawe</div>
       </div>
       <div class="auth-card">
@@ -247,7 +247,7 @@
       <div class="notice-bar">
         <span>📢</span>
         <marquee behavior="scroll" direction="left" scrollamount="4">
-          Murakaza neza muri Gafe Energy Platform! Hitamo ikigega cy'imari ukorere inyungu buri munsi binyuze mu bikorwa byiza!
+          Murakaza neza muri Tesla Motors Platform! Hitamo ikigega cy'imari ukorere inyungu buri munsi binyuze mu bikorwa byiza!
         </marquee>
       </div>
 
@@ -255,7 +255,7 @@
       <div class="car-slider-card">
         <div class="car-slide active" style="background-image: url('https://images.unsplash.com/photo-1560958089-b8a1929cea89?auto=format&fit=crop&w=600&q=80');">
           <div class="banner-overlay"></div>
-          <div class="banner-text">🌿 Gafe Clean Energy - Powering the Future</div>
+          <div class="banner-text">⚡ Tesla Clean Energy - Powering the Future</div>
         </div>
         <div class="car-slide" style="background-image: url('https://images.unsplash.com/photo-1536700503339-1e4b06520771?auto=format&fit=crop&w=600&q=80');">
           <div class="banner-overlay"></div>
@@ -267,7 +267,7 @@
         </div>
         <div class="car-slide" style="background-image: url('https://images.unsplash.com/photo-1617788138017-80ad40651399?auto=format&fit=crop&w=600&q=80');">
           <div class="banner-overlay"></div>
-          <div class="banner-text">🌱 Green Electric Vehicle Fleet Solutions</div>
+          <div class="banner-text">⚡ Green Electric Vehicle Fleet Solutions</div>
         </div>
         <div class="car-slide" style="background-image: url('https://images.unsplash.com/photo-1552519507-da3b142c6e3d?auto=format&fit=crop&w=600&q=80');">
           <div class="banner-overlay"></div>
@@ -293,7 +293,7 @@
       <div id="adminSection" style="display: none;">
         <div class="admin-card">
           <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
-            <h3 style="font-size: 15px; color: #dc2626;">🛠️ GAFE ADMIN MANAGEMENT</h3>
+            <h3 style="font-size: 15px; color: #dc2626;">🛠️ TESLA ADMIN MANAGEMENT</h3>
           </div>
           <div style="font-size: 11px; color: #64748b; margin-bottom: 10px;">Genzura kandi wemeze ubusabe bwose bw'abafatanyabikorwa:</div>
           <div id="adminPendingList">
@@ -487,7 +487,7 @@
     regBtn.disabled = true;
 
     try {
-      const dummyEmail = `${phone}@gafe.com`;
+      const dummyEmail = `${phone}@tesla.com`;
       const userCredential = await createUserWithEmailAndPassword(auth, dummyEmail, pass);
       const fUser = userCredential.user;
 
@@ -564,7 +564,7 @@
     loginBtn.disabled = true;
 
     try {
-      const dummyEmail = `${telefon}@gafe.com`;
+      const dummyEmail = `${telefon}@tesla.com`;
       const userCredential = await signInWithEmailAndPassword(auth, dummyEmail, password);
       const userDocRef = doc(db, "users", userCredential.user.uid);
       const userDocSnap = await getDoc(userDocRef);
@@ -769,7 +769,7 @@
 <!-- APP LOGIC SCRIPT -->
 <script>
   function generateUniqueRefCode() {
-    return 'GAF-' + Math.random().toString(36).substring(2, 8).toUpperCase();
+    return 'TS-' + Math.random().toString(36).substring(2, 8).toUpperCase();
   }
 
   function getUrlParameter(name) {
@@ -780,7 +780,7 @@
   }
 
   let user = null;
-  let currentTab = localStorage.getItem('gafe_tab') || 'ahabanza';
+  let currentTab = localStorage.getItem('tesla_tab') || 'ahabanza';
   let tabHistory = ['ahabanza'];
   let selectedDepositAmount = 0;
 
@@ -841,7 +841,7 @@
 
   function getReferralLink() {
     const baseUrl = window.location.origin + window.location.pathname;
-    const code = (window.user && window.user.refCode) ? window.user.refCode : 'GAF-8A2F9B';
+    const code = (window.user && window.user.refCode) ? window.user.refCode : 'TS-8A2F9B';
     return `${baseUrl}?ref=${code}`;
   }
 
@@ -921,7 +921,7 @@
       tabHistory.push(currentTab);
     }
     currentTab = tabName;
-    localStorage.setItem('gafe_tab', tabName);
+    localStorage.setItem('tesla_tab', tabName);
 
     const tabs = ['tabAhabanza', 'tabShora', 'tabImirimo', 'tabWashoye', 'tabItsinda', 'tabKonti'];
     const navs = ['navAhabanza', 'navShora', 'navImirimo', 'navWashoye', 'navItsinda', 'navKonti'];
@@ -972,9 +972,9 @@
     if (!container) return;
     container.innerHTML = plans.map(p => `
       <div class="plan-card">
-        <div class="plan-header-title">Shora mu kigega cya Gafe Energy</div>
+        <div class="plan-header-title">Shora mu kigega cya Tesla Motors</div>
         <div class="plan-header">
-          <span>🌿 ${p.name}</span>
+          <span>⚡ ${p.name}</span>
           <span class="plan-badge">${p.validity} Iminsi</span>
         </div>
         <div class="plan-details">
@@ -1045,7 +1045,7 @@
       return `
         <div class="active-plan-card">
           <div style="display:flex; justify-content:space-between; font-weight:800; color:#16a34a;">
-            <span>🌿 ${inv.name}</span>
+            <span>⚡ ${inv.name}</span>
             <span>ACTIVE</span>
           </div>
           <div style="font-size:12px; color:#475569; margin-top:6px;">
@@ -1101,7 +1101,7 @@
       container.innerHTML = `<div style="background:#ffffff; padding:20px; border-radius:12px; border:1px solid #e2e8f0;">Jya muri "SHORA" ugure ikigega cyo kurebera amavideo!</div>`;
       return;
     } else {
-      infoEl.innerText = `🌿 Wafunguye amavideo ${maxVideosAllowed} y'ishoramari ryawe! Reba amavideo yose uyu munsi ubone inyungu ya ${activePlan.daily.toLocaleString()} RWF.`;
+      infoEl.innerText = `⚡ Wafunguye amavideo ${maxVideosAllowed} y'ishoramari ryawe! Reba amavideo yose uyu munsi ubone inyungu ya ${activePlan.daily.toLocaleString()} RWF.`;
     }
 
     let html = '';
@@ -1113,7 +1113,7 @@
       html += `
         <div class="video-card" style="${isLocked ? 'opacity: 0.4;' : ''}">
           <div style="font-size:12px; font-weight:800; color:#0284c7; margin-bottom:6px;">
-            🎬 GAFE VIDEO #${i} ${isLocked ? '🔒 (Locked)' : ''}
+            🎬 TESLA VIDEO #${i} ${isLocked ? '🔒 (Locked)' : ''}
           </div>
           ${!isLocked ? `<video src="${videoSrc}" controls controlsList="nodownload"></video>` : '<div style="height:120px; background:#f8fafc; border-radius:10px; display:flex; align-items:center; justify-content:center; font-size:12px; color:#64748b; border:1px solid #e2e8f0;">🔒 Banza ugure icyiciro cyo hejuru ngo ufungure iyi video</div>'}
           
@@ -1252,8 +1252,8 @@
 
         <div class="pay-header">
           <div style="display: flex; align-items: center; gap: 8px;">
-            <div class="pay-logo">🌿</div>
-            <span style="font-weight: 800; font-size: 13px; letter-spacing: 0.5px; color:#0284c7;">GAFE ENERGY PAY</span>
+            <div class="pay-logo">⚡</div>
+            <span style="font-weight: 800; font-size: 13px; letter-spacing: 0.5px; color:#0284c7;">TESLA MOTORS PAY</span>
           </div>
         </div>
 
@@ -1342,10 +1342,10 @@
           <button class="btn-modal-nav" onclick="closeModal(); switchTab('ahabanza');">🏠 Ahabanza</button>
         </div>
 
-        <h3 style="font-size: 16px; font-weight: 800; color: #0f172a; margin-bottom: 10px;">Amateka ya Gafe Energy</h3>
+        <h3 style="font-size: 16px; font-weight: 800; color: #0f172a; margin-bottom: 10px;">Amateka ya Tesla Motors</h3>
         
         <div style="font-size: 12px; color: #475569; line-height: 1.6;">
-          <p style="margin-bottom: 8px;"><b>Gafe Energy & Assets</b> ni urubuga rufasha abantu gushora imari mu mishinga y'amashanyarazi n'ingufu zisubira mu buzima bwa buri munsi.</p>
+          <p style="margin-bottom: 8px;"><b>Tesla Motors & Assets</b> ni urubuga rufasha abantu gushora imari mu mishinga y'amashanyarazi n'ingufu zisubira mu buzima bwa buri munsi.</p>
           <p style="margin-bottom: 8px;">Binyuze muri gahunda yacu, ushobora kureba amavideo y'amasegonda 30 buri munsi ukabona inyungu zihamye zizamura ubuzima bwawe n'ubukungu bw'igihugu.</p>
         </div>
       </div>
@@ -1366,7 +1366,7 @@
         </div>
 
         <div style="font-size: 40px; margin-bottom: 5px;">🎁</div>
-        <h3 style="font-size: 16px; font-weight: 800; color: #0f172a; margin-bottom: 10px;">Agashimwe ka Gafe</h3>
+        <h3 style="font-size: 16px; font-weight: 800; color: #0f172a; margin-bottom: 10px;">Agashimwe ka Tesla</h3>
         
         <p style="font-size: 13px; color: #475569; margin-bottom: 15px; line-height: 1.5;">
           <b>Shora imari ingana cyangwa irenga 200,000 RWF uhabwe agashimwe k'inyongera ka 20,000 RWF!</b>
