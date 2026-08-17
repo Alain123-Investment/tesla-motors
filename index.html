@@ -610,18 +610,17 @@
         date: new Date().toISOString()
       });
 
-      btn.innerHTML = `✓ Byoherejwe Neza!`;
-      btn.style.background = "#16a34a";
-      
-      setTimeout(() => {
-        alert("Ubusabe bwawe bwo kubitsa RWF " + Number(window.selectedDepositAmount).toLocaleString() + " bwoherejwe kuri Admin. Buzemezwa nyuma y'igenzura!");
-        window.closeModal();
-        switchTab('ahabanza');
-      }, 500);
+      alert(
+        "✅ Byemejwe!\n\n" +
+        "Tegereza gato, Admin ari kugenzura ubwishyu bwawe."
+      );
+      window.closeModal();
+      switchTab('ahabanza');
 
-    } catch (error) {
-      alert("Ikosa mu kubitsa: " + error.message);
-      btn.innerHTML = "Emeza ko wishyuye";
+    } catch (e) {
+      console.error(e);
+      alert("❌ Ubusabe ntibwoherejwe: " + e.message);
+      btn.innerHTML = "Emeza ko umaze kwishyura";
       btn.disabled = false;
     }
   };
