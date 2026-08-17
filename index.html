@@ -6,128 +6,128 @@
   <title>TESLA MOTORS - Investment Platform & Admin Portal</title>
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
-    body { background-color: #f0fdf4; color: #1e293b; display: flex; justify-content: center; }
-    .app-container { width: 100%; max-width: 480px; background: #ffffff; min-height: 100vh; position: relative; padding-bottom: 85px; box-shadow: 0 0 25px rgba(0,0,0,0.05); }
+    body { background-color: #0b0f19; color: #f8fafc; display: flex; justify-content: center; }
+    .app-container { width: 100%; max-width: 480px; background: #0f172a; min-height: 100vh; position: relative; padding-bottom: 85px; box-shadow: 0 0 25px rgba(0,0,0,0.5); }
 
-    /* Header Modern Bright */
-    .dash-header { background: linear-gradient(135deg, #0284c7, #0369a1); color: white; padding: 18px 20px 45px; border-bottom-left-radius: 28px; border-bottom-right-radius: 28px; box-shadow: 0 8px 25px rgba(2, 132, 199, 0.25); }
+    /* Header Modern Bright - Dark Theme */
+    .dash-header { background: linear-gradient(135deg, #1e293b, #0f172a); color: white; padding: 18px 20px 45px; border-bottom-left-radius: 28px; border-bottom-right-radius: 28px; border-bottom: 1px solid #1e293b; box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4); }
     .dash-user { display: flex; justify-content: space-between; align-items: center; }
     .user-name { font-size: 18px; font-weight: 800; color: #ffffff; }
-    .user-phone { font-size: 12px; color: #e0f2fe; }
+    .user-phone { font-size: 12px; color: #94a3b8; }
 
     .nav-top-btns { display: flex; gap: 8px; margin-bottom: 12px; }
-    .btn-step-back { background: rgba(255,255,255,0.2); border: 1px solid rgba(255,255,255,0.3); color: white; padding: 6px 12px; border-radius: 8px; font-size: 12px; font-weight: 700; cursor: pointer; }
-    .btn-step-back:hover { background: rgba(255,255,255,0.3); }
+    .btn-step-back { background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.15); color: #cbd5e1; padding: 6px 12px; border-radius: 8px; font-size: 12px; font-weight: 700; cursor: pointer; }
+    .btn-step-back:hover { background: rgba(255,255,255,0.15); color: #fff; }
 
-    /* Balance Card Custom */
-    .balance-card { background: #ffffff; margin: -35px 16px 15px; border-radius: 20px; padding: 20px; border: 1px solid #e2e8f0; box-shadow: 0 10px 30px rgba(0,0,0,0.08); }
-    .balance-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; border-bottom: 1px solid #f1f5f9; padding-bottom: 12px; }
-    .bal-title { font-size: 10px; color: #64748b; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; }
-    .bal-num { font-size: 16px; font-weight: 900; color: #0f172a; margin-top: 4px; }
-    .bal-num span { font-size: 11px; color: #0284c7; }
+    /* Balance Card Custom - Dark Theme */
+    .balance-card { background: #1e293b; margin: -35px 16px 15px; border-radius: 20px; padding: 20px; border: 1px solid #334155; box-shadow: 0 10px 30px rgba(0,0,0,0.3); }
+    .balance-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; border-bottom: 1px solid #334155; padding-bottom: 12px; }
+    .bal-title { font-size: 10px; color: #94a3b8; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; }
+    .bal-num { font-size: 16px; font-weight: 900; color: #ffffff; margin-top: 4px; }
+    .bal-num span { font-size: 11px; color: #38bdf8; }
 
     .action-btns { display: flex; gap: 10px; margin-top: 14px; }
-    .btn-act { flex: 1; background: #f0fdf4; border: 1px solid #bbf7d0; padding: 12px; border-radius: 12px; font-weight: 800; color: #15803d; font-size: 12px; cursor: pointer; text-align: center; }
-    .btn-act:hover { background: #dcfce7; }
+    .btn-act { flex: 1; background: #0284c7; border: none; padding: 12px; border-radius: 12px; font-weight: 800; color: #ffffff; font-size: 12px; cursor: pointer; text-align: center; box-shadow: 0 4px 12px rgba(2, 132, 199, 0.3); }
+    .btn-act:hover { background: #0369a1; }
 
-    /* Notice */
-    .notice-bar { background: #f0fdf4; margin: 0 16px 15px; padding: 12px 14px; border-radius: 14px; font-size: 12px; color: #166534; display: flex; align-items: center; gap: 8px; border: 1px solid #bbf7d0; }
+    /* Notice - Dark Theme */
+    .notice-bar { background: #1e293b; margin: 0 16px 15px; padding: 12px 14px; border-radius: 14px; font-size: 12px; color: #38bdf8; display: flex; align-items: center; gap: 8px; border: 1px solid #334155; }
 
     /* CAR SLIDER */
-    .car-slider-card { margin: 0 16px 15px; height: 180px; border-radius: 18px; position: relative; overflow: hidden; border: 1px solid #e2e8f0; box-shadow: 0 4px 12px rgba(0,0,0,0.05); }
+    .car-slider-card { margin: 0 16px 15px; height: 180px; border-radius: 18px; position: relative; overflow: hidden; border: 1px solid #334155; box-shadow: 0 4px 12px rgba(0,0,0,0.2); }
     .car-slide { position: absolute; inset: 0; background-size: cover; background-position: center; transition: opacity 0.8s ease-in-out; opacity: 0; display: flex; align-items: flex-end; padding: 15px; }
     .car-slide.active { opacity: 1; }
-    .banner-overlay { position: absolute; inset: 0; background: linear-gradient(to top, rgba(0,0,0,0.85), transparent); }
+    .banner-overlay { position: absolute; inset: 0; background: linear-gradient(to top, rgba(15,23,42,0.9), transparent); }
     .banner-text { position: relative; z-index: 2; font-size: 14px; font-weight: 800; color: #ffffff; }
 
-    /* Grid Menu */
+    /* Grid Menu - Dark Theme */
     .grid-menu { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin: 0 16px 20px; }
-    .menu-item { background: #ffffff; padding: 14px 6px; border-radius: 16px; text-align: center; border: 1px solid #e2e8f0; cursor: pointer; box-shadow: 0 2px 6px rgba(0,0,0,0.02); }
-    .menu-item:hover { border-color: #0284c7; background: #f0f9ff; }
+    .menu-item { background: #1e293b; padding: 14px 6px; border-radius: 16px; text-align: center; border: 1px solid #334155; cursor: pointer; box-shadow: 0 2px 6px rgba(0,0,0,0.2); }
+    .menu-item:hover { border-color: #38bdf8; background: #0f172a; }
     .menu-icon { font-size: 22px; margin-bottom: 4px; }
-    .menu-label { font-size: 11px; font-weight: 700; color: #334155; }
+    .menu-label { font-size: 11px; font-weight: 700; color: #cbd5e1; }
 
-    /* Forms & Inputs */
-    .auth-card { background: #ffffff; margin: 15px 16px; padding: 24px 20px; border-radius: 20px; border: 1px solid #e2e8f0; box-shadow: 0 10px 25px rgba(0,0,0,0.05); }
+    /* Forms & Inputs - Dark Theme */
+    .auth-card { background: #1e293b; margin: 15px 16px; padding: 24px 20px; border-radius: 20px; border: 1px solid #334155; box-shadow: 0 10px 25px rgba(0,0,0,0.3); }
     .form-group { margin-bottom: 14px; text-align: left; }
-    .form-label { font-size: 11px; font-weight: 800; color: #64748b; letter-spacing: 0.5px; margin-bottom: 6px; display: block; }
+    .form-label { font-size: 11px; font-weight: 800; color: #94a3b8; letter-spacing: 0.5px; margin-bottom: 6px; display: block; }
     
     .input-container { position: relative; width: 100%; }
-    .input-box { width: 100%; background: #f8fafc; border: 1px solid #cbd5e1; border-radius: 12px; padding: 14px 45px 14px 16px; font-size: 14px; color: #0f172a; outline: none; }
-    .input-box:focus { border-color: #0284c7; background: #fff; }
-    .input-box-normal { width: 100%; background: #f8fafc; border: 1px solid #cbd5e1; border-radius: 12px; padding: 14px 16px; font-size: 14px; color: #0f172a; outline: none; }
-    .input-box-normal:focus { border-color: #0284c7; background: #fff; }
-    .input-box-normal:read-only { background: #f1f5f9; color: #94a3b8; cursor: not-allowed; }
+    .input-box { width: 100%; background: #0f172a; border: 1px solid #334155; border-radius: 12px; padding: 14px 45px 14px 16px; font-size: 14px; color: #ffffff; outline: none; }
+    .input-box:focus { border-color: #38bdf8; background: #0b0f19; }
+    .input-box-normal { width: 100%; background: #0f172a; border: 1px solid #334155; border-radius: 12px; padding: 14px 16px; font-size: 14px; color: #ffffff; outline: none; }
+    .input-box-normal:focus { border-color: #38bdf8; background: #0b0f19; }
+    .input-box-normal:read-only { background: #1e293b; color: #64748b; cursor: not-allowed; }
     
-    .eye-btn { position: absolute; right: 15px; top: 50%; transform: translateY(-50%); background: none; border: none; cursor: pointer; font-size: 16px; color: #64748b; }
+    .eye-btn { position: absolute; right: 15px; top: 50%; transform: translateY(-50%); background: none; border: none; cursor: pointer; font-size: 16px; color: #94a3b8; }
 
     .btn-main { width: 100%; background: linear-gradient(135deg, #0284c7, #0369a1); color: white; border: none; padding: 14px; border-radius: 12px; font-size: 15px; font-weight: 800; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; margin-top: 10px; box-shadow: 0 4px 12px rgba(2, 132, 199, 0.3); }
     .btn-main:hover { background: linear-gradient(135deg, #0369a1, #075985); }
-    .btn-back { width: 100%; background: #f0fdf4; color: #15803d; border: 1px solid #bbf7d0; padding: 12px; border-radius: 12px; font-size: 13px; font-weight: 700; cursor: pointer; margin-top: 8px; text-align: center; }
+    .btn-back { width: 100%; background: #1e293b; color: #38bdf8; border: 1px solid #334155; padding: 12px; border-radius: 12px; font-size: 13px; font-weight: 700; cursor: pointer; margin-top: 8px; text-align: center; }
 
     /* Loading Spinner */
     .spinner { display: inline-block; width: 18px; height: 18px; border: 3px solid rgba(255,255,255,0.3); border-radius: 50%; border-top-color: #fff; animation: spin 0.8s ease-in-out infinite; }
     @keyframes spin { to { transform: rotate(360deg); } }
 
-    /* Plans Card */
-    .plan-card { background: #ffffff; border-radius: 16px; padding: 16px; margin: 0 16px 16px; border: 1px solid #e2e8f0; box-shadow: 0 4px 12px rgba(0,0,0,0.04); }
-    .plan-header-title { background: #f0fdf4; color: #15803d; padding: 8px 12px; border-radius: 10px; font-size: 12px; font-weight: 800; margin-bottom: 12px; text-align: center; letter-spacing: 0.5px; border: 1px solid #bbf7d0; }
-    .plan-header { display: flex; justify-content: space-between; align-items: center; font-weight: 800; font-size: 16px; color: #0f172a; margin-bottom: 10px; }
-    .plan-badge { background: #e0f2fe; color: #0284c7; font-size: 11px; padding: 4px 10px; border-radius: 8px; border: 1px solid #bae6fd; }
-    .plan-details { font-size: 12px; color: #475569; line-height: 1.8; margin-bottom: 14px; text-align: left; background: #f8fafc; padding: 10px 12px; border-radius: 10px; border: 1px solid #e2e8f0; }
+    /* Plans Card - Dark Theme */
+    .plan-card { background: #1e293b; border-radius: 16px; padding: 16px; margin: 0 16px 16px; border: 1px solid #334155; box-shadow: 0 4px 12px rgba(0,0,0,0.2); }
+    .plan-header-title { background: #0f172a; color: #38bdf8; padding: 8px 12px; border-radius: 10px; font-size: 12px; font-weight: 800; margin-bottom: 12px; text-align: center; letter-spacing: 0.5px; border: 1px solid #334155; }
+    .plan-header { display: flex; justify-content: space-between; align-items: center; font-weight: 800; font-size: 16px; color: #ffffff; margin-bottom: 10px; }
+    .plan-badge { background: #0284c7; color: #ffffff; font-size: 11px; padding: 4px 10px; border-radius: 8px; }
+    .plan-details { font-size: 12px; color: #94a3b8; line-height: 1.8; margin-bottom: 14px; text-align: left; background: #0f172a; padding: 10px 12px; border-radius: 10px; border: 1px solid #334155; }
 
-    /* Active Investment Card */
-    .active-plan-card { background: #ffffff; border-radius: 16px; padding: 16px; margin-bottom: 12px; border: 2px solid #38bdf8; text-align: left; box-shadow: 0 4px 12px rgba(56, 189, 248, 0.1); }
-    .active-timer { font-size: 14px; font-weight: 800; color: #d97706; margin-top: 6px; }
+    /* Active Investment Card - Dark Theme */
+    .active-plan-card { background: #1e293b; border-radius: 16px; padding: 16px; margin-bottom: 12px; border: 2px solid #0284c7; text-align: left; box-shadow: 0 4px 12px rgba(2, 132, 199, 0.2); }
+    .active-timer { font-size: 14px; font-weight: 800; color: #f59e0b; margin-top: 6px; }
 
-    /* Video Task Styles */
-    .video-card { background: #ffffff; border-radius: 16px; padding: 14px; margin-bottom: 15px; border: 1px solid #e2e8f0; box-shadow: 0 4px 10px rgba(0,0,0,0.02); }
+    /* Video Task Styles - Dark Theme */
+    .video-card { background: #1e293b; border-radius: 16px; padding: 14px; margin-bottom: 15px; border: 1px solid #334155; box-shadow: 0 4px 10px rgba(0,0,0,0.2); }
     .video-card video { width: 100%; border-radius: 12px; max-height: 200px; background: #000; }
-    .video-btn { width: 100%; background: #16a34a; color: white; border: none; padding: 12px; border-radius: 10px; font-size: 13px; font-weight: 800; margin-top: 10px; cursor: pointer; box-shadow: 0 4px 10px rgba(22, 163, 74, 0.2); }
-    .video-btn:disabled { background: #cbd5e1; cursor: not-allowed; box-shadow: none; }
+    .video-btn { width: 100%; background: #16a34a; color: white; border: none; padding: 12px; border-radius: 10px; font-size: 13px; font-weight: 800; margin-top: 10px; cursor: pointer; box-shadow: 0 4px 10px rgba(22, 163, 74, 0.3); }
+    .video-btn:disabled { background: #334155; color: #94a3b8; cursor: not-allowed; box-shadow: none; }
 
-    /* Modal Styles */
-    .modal-overlay { position: fixed; inset: 0; background: rgba(15, 23, 42, 0.6); backdrop-filter: blur(4px); display: flex; align-items: center; justify-content: center; z-index: 100; padding: 15px; }
-    .modal-card { background: #ffffff; width: 100%; max-width: 420px; border-radius: 20px; padding: 20px; color: #0f172a; max-height: 90vh; overflow-y: auto; position: relative; box-shadow: 0 20px 40px rgba(0,0,0,0.15); }
+    /* Modal Styles - Dark Theme */
+    .modal-overlay { position: fixed; inset: 0; background: rgba(11, 15, 25, 0.8); backdrop-filter: blur(4px); display: flex; align-items: center; justify-content: center; z-index: 100; padding: 15px; }
+    .modal-card { background: #1e293b; width: 100%; max-width: 420px; border-radius: 20px; padding: 20px; color: #f8fafc; max-height: 90vh; overflow-y: auto; position: relative; border: 1px solid #334155; box-shadow: 0 20px 40px rgba(0,0,0,0.5); }
 
-    .modal-nav-btns { display: flex; gap: 8px; margin-bottom: 15px; border-bottom: 1px solid #f1f5f9; padding-bottom: 10px; }
-    .btn-modal-nav { background: #f0fdf4; border: 1px solid #bbf7d0; color: #15803d; padding: 6px 12px; border-radius: 8px; font-size: 11px; font-weight: 800; cursor: pointer; flex: 1; }
+    .modal-nav-btns { display: flex; gap: 8px; margin-bottom: 15px; border-bottom: 1px solid #334155; padding-bottom: 10px; }
+    .btn-modal-nav { background: #0f172a; border: 1px solid #334155; color: #38bdf8; padding: 6px 12px; border-radius: 8px; font-size: 11px; font-weight: 800; cursor: pointer; flex: 1; }
 
-    /* Deposit UI */
+    /* Deposit UI - Dark Theme */
     .recharge-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin: 15px 0; }
-    .recharge-btn { background: #f8fafc; border: 1px solid #cbd5e1; border-radius: 12px; padding: 14px 5px; font-size: 14px; font-weight: 700; color: #0f172a; cursor: pointer; text-align: center; }
-    .recharge-btn.active { border: 2px solid #16a34a; background: #f0fdf4; color: #16a34a; }
+    .recharge-btn { background: #0f172a; border: 1px solid #334155; border-radius: 12px; padding: 14px 5px; font-size: 14px; font-weight: 700; color: #f8fafc; cursor: pointer; text-align: center; }
+    .recharge-btn.active { border: 2px solid #22c55e; background: #052e16; color: #22c55e; }
     
-    .recharge-input-box { background: #f8fafc; border: 1px solid #cbd5e1; border-radius: 12px; padding: 12px 15px; display: flex; align-items: center; gap: 10px; font-size: 15px; font-weight: 700; color: #0f172a; margin-top: 8px; }
-    .recharge-input-box input { border: none; background: transparent; outline: none; font-size: 15px; font-weight: 700; color: #0f172a; width: 100%; }
+    .recharge-input-box { background: #0f172a; border: 1px solid #334155; border-radius: 12px; padding: 12px 15px; display: flex; align-items: center; gap: 10px; font-size: 15px; font-weight: 700; color: #f8fafc; margin-top: 8px; }
+    .recharge-input-box input { border: none; background: transparent; outline: none; font-size: 15px; font-weight: 700; color: #f8fafc; width: 100%; }
 
-    .btn-confirm-deposit { width: 100%; background: #e2e8f0; color: #94a3b8; border: none; padding: 14px; border-radius: 25px; font-size: 16px; font-weight: 800; cursor: not-allowed; transition: all 0.3s ease; margin-top: 15px; }
-    .btn-confirm-deposit.active { background: #16a34a; color: #ffffff; cursor: pointer; box-shadow: 0 4px 15px rgba(22, 163, 74, 0.3); }
+    .btn-confirm-deposit { width: 100%; background: #334155; color: #94a3b8; border: none; padding: 14px; border-radius: 25px; font-size: 16px; font-weight: 800; cursor: not-allowed; transition: all 0.3s ease; margin-top: 15px; }
+    .btn-confirm-deposit.active { background: #22c55e; color: #ffffff; cursor: pointer; box-shadow: 0 4px 15px rgba(34, 197, 94, 0.4); }
 
-    /* Modal Pay Card */
-    .pay-card-modal { background: #ffffff; color: #0f172a; width: 100%; max-width: 400px; border-radius: 20px; padding: 20px; position: relative; border: 1px solid #e2e8f0; box-shadow: 0 20px 40px rgba(0,0,0,0.15); }
+    /* Modal Pay Card - Dark Theme */
+    .pay-card-modal { background: #1e293b; color: #f8fafc; width: 100%; max-width: 400px; border-radius: 20px; padding: 20px; position: relative; border: 1px solid #334155; box-shadow: 0 20px 40px rgba(0,0,0,0.5); }
     .pay-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
     .pay-logo { background: #0284c7; color: #fff; width: 28px; height: 28px; border-radius: 50%; font-weight: 900; display: flex; align-items: center; justify-content: center; font-size: 14px; }
     
-    .pay-box { background: #f8fafc; border-radius: 16px; padding: 18px; color: #0f172a; margin-top: 10px; border: 1px solid #e2e8f0; }
-    .pay-row-title { font-size: 11px; color: #64748b; font-weight: 700; margin-bottom: 2px; }
-    .pay-row-val { font-size: 18px; font-weight: 900; color: #0284c7; margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center; }
-    .copy-icon { cursor: pointer; color: #64748b; font-size: 16px; }
+    .pay-box { background: #0f172a; border-radius: 16px; padding: 18px; color: #f8fafc; margin-top: 10px; border: 1px solid #334155; }
+    .pay-row-title { font-size: 11px; color: #94a3b8; font-weight: 700; margin-bottom: 2px; }
+    .pay-row-val { font-size: 18px; font-weight: 900; color: #38bdf8; margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center; }
+    .copy-icon { cursor: pointer; color: #94a3b8; font-size: 16px; }
 
-    .btn-confirm-payment { width: 100%; background: #16a34a; color: #ffffff; border: none; padding: 14px; border-radius: 14px; font-size: 15px; font-weight: 800; cursor: pointer; margin-top: 12px; display: flex; align-items: center; justify-content: center; gap: 6px; box-shadow: 0 4px 12px rgba(22, 163, 74, 0.25); }
+    .btn-confirm-payment { width: 100%; background: #22c55e; color: #ffffff; border: none; padding: 14px; border-radius: 14px; font-size: 15px; font-weight: 800; cursor: pointer; margin-top: 12px; display: flex; align-items: center; justify-content: center; gap: 6px; box-shadow: 0 4px 12px rgba(34, 197, 94, 0.3); }
 
-    /* Bottom Nav */
-    .bottom-nav { position: fixed; bottom: 0; left: 50%; transform: translateX(-50%); width: 100%; max-width: 480px; background: #ffffff; border-top: 1px solid #e2e8f0; display: flex; justify-content: space-around; padding: 10px 0; z-index: 90; box-shadow: 0 -4px 15px rgba(0,0,0,0.03); }
-    .nav-item { text-align: center; color: #64748b; font-size: 10px; font-weight: 700; cursor: pointer; flex: 1; }
-    .nav-item.active { color: #0284c7; }
+    /* Bottom Nav - Dark Theme */
+    .bottom-nav { position: fixed; bottom: 0; left: 50%; transform: translateX(-50%); width: 100%; max-width: 480px; background: #1e293b; border-top: 1px solid #334155; display: flex; justify-content: space-around; padding: 10px 0; z-index: 90; box-shadow: 0 -4px 15px rgba(0,0,0,0.3); }
+    .nav-item { text-align: center; color: #94a3b8; font-size: 10px; font-weight: 700; cursor: pointer; flex: 1; }
+    .nav-item.active { color: #38bdf8; }
     .nav-icon { font-size: 18px; display: block; margin-bottom: 2px; }
     
-    .team-card { background: #f8fafc; padding: 12px; border-radius: 12px; margin-top: 10px; border: 1px solid #e2e8f0; text-align: left; }
-    .team-member { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid #e2e8f0; font-size: 12px; color: #334155; }
+    .team-card { background: #0f172a; padding: 12px; border-radius: 12px; margin-top: 10px; border: 1px solid #334155; text-align: left; }
+    .team-member { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid #334155; font-size: 12px; color: #cbd5e1; }
 
-    /* Admin Styles */
-    .admin-card { background: #ffffff; border-radius: 16px; padding: 20px; border: 1px solid #fecaca; margin: 0 16px 20px; text-align: left; box-shadow: 0 4px 12px rgba(239,68,68,0.05); }
-    .admin-item-box { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 10px; padding: 14px; margin-bottom: 12px; font-size: 13px; text-align: left; }
+    /* Admin Styles - Dark Theme */
+    .admin-card { background: #1e293b; border-radius: 16px; padding: 20px; border: 1px solid #7f1d1d; margin: 0 16px 20px; text-align: left; box-shadow: 0 4px 12px rgba(239,68,68,0.1); }
+    .admin-item-box { background: #0f172a; border: 1px solid #334155; border-radius: 10px; padding: 14px; margin-bottom: 12px; font-size: 13px; text-align: left; }
     .btn-approve { background: #16a34a; color: #fff; border: none; padding: 6px 12px; border-radius: 6px; cursor: pointer; font-weight: 800; font-size: 12px; }
     .btn-reject { background: #dc2626; color: #fff; border: none; padding: 6px 12px; border-radius: 6px; cursor: pointer; font-weight: 800; font-size: 12px; }
   </style>
@@ -141,8 +141,8 @@
     <!-- REGISTER PAGE -->
     <div id="registerPage">
       <div style="text-align: center; padding: 35px 15px 10px;">
-        <div style="font-size:26px; font-weight:900; color:#0284c7;">⚡ TESLA MOTORS</div>
-        <div style="font-size:13px; color:#64748b; margin-top:4px;">Fungura Konti Nshya yo Gufatanya Nacu</div>
+        <div style="font-size:26px; font-weight:900; color:#38bdf8;">⚡ TESLA MOTORS</div>
+        <div style="font-size:13px; color:#94a3b8; margin-top:4px;">Fungura Konti Nshya yo Gufatanya Nacu</div>
       </div>
       <div class="auth-card">
         <div class="form-group">
@@ -179,8 +179,8 @@
     <!-- LOGIN PAGE -->
     <div id="loginPage" style="display: none;">
       <div style="text-align: center; padding: 35px 15px 10px;">
-        <div style="font-size:26px; font-weight:900; color:#0284c7;">⚡ TESLA MOTORS</div>
-        <div style="font-size:13px; color:#64748b; margin-top:4px;">Injira muri Konti yawe</div>
+        <div style="font-size:26px; font-weight:900; color:#38bdf8;">⚡ TESLA MOTORS</div>
+        <div style="font-size:13px; color:#94a3b8; margin-top:4px;">Injira muri Konti yawe</div>
       </div>
       <div class="auth-card">
         <div class="form-group">
@@ -196,7 +196,7 @@
         </div>
         <button id="loginBtn" class="btn-main" onclick="handleLogin()">Injira muri Konti ➔</button>
         <div style="text-align: center; margin-top: 15px;">
-          <span style="font-size: 13px; color: #16a34a; font-weight: 800; cursor: pointer; text-decoration: underline;" onclick="showRegisterSection()">Nta konti ufite? Iyandikishe hano</span>
+          <span style="font-size: 13px; color: #38bdf8; font-weight: 800; cursor: pointer; text-decoration: underline;" onclick="showRegisterSection()">Nta konti ufite? Iyandikishe hano</span>
         </div>
       </div>
     </div>
@@ -216,7 +216,7 @@
           <div class="user-name" id="dispName">User</div>
           <div class="user-phone" id="dispPhone">Konti - 078xxxxxxx</div>
         </div>
-        <div style="cursor:pointer; font-size:20px; background:rgba(255,255,255,0.2); padding:6px 10px; border-radius:10px;" onclick="openDepositFlow()">🔔</div>
+        <div style="cursor:pointer; font-size:20px; background:rgba(255,255,255,0.08); padding:6px 10px; border-radius:10px; border: 1px solid rgba(255,255,255,0.15);" onclick="openDepositFlow()">🔔</div>
       </div>
     </div>
 
@@ -232,13 +232,13 @@
           <div class="bal-num"><span id="userDepositBalance">0</span> <span>RWF</span></div>
         </div>
       </div>
-      <div style="margin-top: 10px; border-bottom: 1px solid #f1f5f9; padding-bottom: 10px;">
+      <div style="margin-top: 10px; border-bottom: 1px solid #334155; padding-bottom: 10px;">
         <div class="bal-title">Inyungu Ziboneka</div>
-        <div class="bal-num" style="color:#16a34a;"><span id="userWithdrawableEarnings">0</span> <span>RWF</span></div>
+        <div class="bal-num" style="color:#22c55e;"><span id="userWithdrawableEarnings">0</span> <span>RWF</span></div>
       </div>
       <div class="action-btns">
         <button class="btn-act" onclick="switchTab('shora')">👑 Gura Ibyiciro</button>
-        <button class="btn-act" onclick="openDepositFlow()">💵 Kongera Amafaranga</button>
+        <button class="btn-act" onclick="openDepositFlow()" style="background:#1e293b; border: 1px solid #334155; color:#38bdf8;">💵 Kongera Amafaranga</button>
       </div>
     </div>
 
@@ -275,7 +275,7 @@
         </div>
       </div>
 
-      <div style="margin: 0 16px 10px; font-size: 11px; font-weight: 800; color: #64748b; text-transform: uppercase; text-align:left;">IBIKORWA BY'INGENZI</div>
+      <div style="margin: 0 16px 10px; font-size: 11px; font-weight: 800; color: #94a3b8; text-transform: uppercase; text-align:left;">IBIKORWA BY'INGENZI</div>
       
       <div class="grid-menu">
         <div class="menu-item" onclick="openDepositFlow()"><div class="menu-icon">💵</div><div class="menu-label">Kubitsa</div></div>
@@ -293,11 +293,11 @@
       <div id="adminSection" style="display: none;">
         <div class="admin-card">
           <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
-            <h3 style="font-size: 15px; color: #dc2626;">🛠️ TESLA ADMIN MANAGEMENT</h3>
+            <h3 style="font-size: 15px; color: #ef4444;">🛠️ TESLA ADMIN MANAGEMENT</h3>
           </div>
-          <div style="font-size: 11px; color: #64748b; margin-bottom: 10px;">Genzura kandi wemeze ubusabe bwose bw'abafatanyabikorwa:</div>
+          <div style="font-size: 11px; color: #94a3b8; margin-bottom: 10px;">Genzura kandi wemeze ubusabe bwose bw'abafatanyabikorwa:</div>
           <div id="adminPendingList">
-            <div style="font-size: 12px; color: #64748b;">Birimo gushakisha amakuru...</div>
+            <div style="font-size: 12px; color: #94a3b8;">Birimo gushakisha amakuru...</div>
           </div>
         </div>
       </div>
@@ -310,9 +310,9 @@
 
     <!-- TAB 3: IMIRIMO (41 TESLA VIDEOS) -->
     <div id="tabImirimo" style="display: none; padding: 0 16px;">
-      <div style="margin-bottom: 15px; background:#f0fdf4; padding:12px; border-radius:12px; border:1px solid #bbf7d0; text-align:left;">
-        <h3 style="font-size:14px; color:#15803d;">🎬 Reba Amavidewo Ubone Inyungu</h3>
-        <p style="font-size:11px; color:#334155; margin-top:4px;" id="tasksInfoText">Shyira mu bikorwa ishoramari ryawe hanyuma urebe amavideo ajyanye n'urwego rwawe!</p>
+      <div style="margin-bottom: 15px; background:#1e293b; padding:12px; border-radius:12px; border:1px solid #334155; text-align:left;">
+        <h3 style="font-size:14px; color:#38bdf8;">🎬 Reba Amavidewo Ubone Inyungu</h3>
+        <p style="font-size:11px; color:#94a3b8; margin-top:4px;" id="tasksInfoText">Shyira mu bikorwa ishoramari ryawe hanyuma urebe amavideo ajyanye n'urwego rwawe!</p>
       </div>
       <div id="videosContainer"></div>
     </div>
@@ -320,37 +320,37 @@
     <!-- TAB 4: AHO WASHOYE (ACTIVE INVESTMENTS) -->
     <div id="tabWashoye" style="display: none; padding: 0 16px;">
       <div style="margin-bottom: 15px; text-align:left;">
-        <h3 style="font-size:16px; color:#0f172a;">📈 Imigabane Uri Gukurikirana</h3>
-        <p style="font-size:12px; color:#64748b;">Aha hagaragaza igihe gisigaye ngo inyungu zawe ziyongere.</p>
+        <h3 style="font-size:16px; color:#ffffff;">📈 Imigabane Uri Gukurikirana</h3>
+        <p style="font-size:12px; color:#94a3b8;">Aha hagaragaza igihe gisigaye ngo inyungu zawe ziyongere.</p>
       </div>
       <div id="activeInvestmentsContainer"></div>
     </div>
 
     <!-- TAB 5: ITSINDA (TEAM) -->
     <div id="tabItsinda" style="display: none; padding: 0 16px;">
-      <div style="background:#ffffff; border-radius:20px; padding:20px; text-align:center; border:1px solid #e2e8f0; box-shadow: 0 4px 12px rgba(0,0,0,0.03);">
+      <div style="background:#1e293b; border-radius:20px; padding:20px; text-align:center; border:1px solid #334155; box-shadow: 0 4px 12px rgba(0,0,0,0.3);">
         <div style="font-size:36px; margin-bottom:6px;">👥</div>
-        <h3 style="font-size:18px; color:#0f172a;">Itsinda Ryanjye</h3>
+        <h3 style="font-size:18px; color:#ffffff;">Itsinda Ryanjye</h3>
         
         <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px; margin: 15px 0;">
-          <div style="background:#f8fafc; padding:10px; border-radius:12px; border:1px solid #e2e8f0;">
-            <div style="font-size:11px; color:#64748b;">Abafatanyabikorwa (L1)</div>
-            <div style="font-size:16px; font-weight:800; color:#16a34a;" id="teamL1Count">0 Abantu</div>
+          <div style="background:#0f172a; padding:10px; border-radius:12px; border:1px solid #334155;">
+            <div style="font-size:11px; color:#94a3b8;">Abafatanyabikorwa (L1)</div>
+            <div style="font-size:16px; font-weight:800; color:#22c55e;" id="teamL1Count">0 Abantu</div>
           </div>
-          <div style="background:#f8fafc; padding:10px; border-radius:12px; border:1px solid #e2e8f0;">
-            <div style="font-size:11px; color:#64748b;">Inyungu Z'itsinda (35%)</div>
-            <div style="font-size:16px; font-weight:800; color:#d97706;" id="teamL1Earnings">0 RWF</div>
+          <div style="background:#0f172a; padding:10px; border-radius:12px; border:1px solid #334155;">
+            <div style="font-size:11px; color:#94a3b8;">Inyungu Z'itsinda (35%)</div>
+            <div style="font-size:16px; font-weight:800; color:#f59e0b;" id="teamL1Earnings">0 RWF</div>
           </div>
         </div>
 
-        <p style="font-size:12px; color:#475569; margin: 10px 0; line-height: 1.5; text-align: left;" id="teamStatusText">
+        <p style="font-size:12px; color:#94a3b8; margin: 10px 0; line-height: 1.5; text-align: left;" id="teamStatusText">
           Nta muntu uraza muri level 1 yawe. Tumira abandi uyu munsi ukomeze kunguka byinshi!
         </p>
 
         <!-- Referral Link Box -->
         <div style="margin-top:15px; text-align:left;">
-          <label style="font-size:11px; font-weight:800; color:#64748b; display:block; margin-bottom:4px;">IHURO RYO GUTUMIRA (REFERRAL LINK)</label>
-          <div style="background:#f8fafc; padding:10px 12px; border-radius:12px; font-size:12px; font-weight:700; color:#0284c7; display:flex; justify-content:space-between; align-items:center; border:1px solid #e2e8f0;">
+          <label style="font-size:11px; font-weight:800; color:#94a3b8; display:block; margin-bottom:4px;">IHURO RYO GUTUMIRA (REFERRAL LINK)</label>
+          <div style="background:#0f172a; padding:10px 12px; border-radius:12px; font-size:12px; font-weight:700; color:#38bdf8; display:flex; justify-content:space-between; align-items:center; border:1px solid #334155;">
             <span id="refLinkText" style="word-break:break-all; margin-right:8px;">Loading link...</span>
             <span style="cursor:pointer; font-size:18px;" onclick="copyRefLink()">📋</span>
           </div>
@@ -362,28 +362,28 @@
 
     <!-- TAB 6: KONTI -->
     <div id="tabKonti" style="display: none; padding: 0 16px;">
-      <div style="background:#ffffff; border-radius:20px; padding:20px; border:1px solid #e2e8f0; box-shadow: 0 4px 12px rgba(0,0,0,0.03);">
+      <div style="background:#1e293b; border-radius:20px; padding:20px; border:1px solid #334155; box-shadow: 0 4px 12px rgba(0,0,0,0.3);">
         <div style="text-align:center; margin-bottom:15px;">
-          <div style="width:60px; height:60px; background:#e0f2fe; color:#0284c7; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:24px; font-weight:800; margin:0 auto 10px; border:1px solid #bae6fd;">👤</div>
-          <h3 style="font-size:18px; color:#0f172a;" id="profileName">User</h3>
-          <p style="font-size:13px; color:#64748b;" id="profilePhone">078xxxxxxx</p>
-          <span style="font-size:11px; background:#f0fdf4; color:#15803d; padding:4px 10px; border-radius:6px; margin-top:6px; display:inline-block; border:1px solid #bbf7d0;" id="profileRefCode">Ref Code: ...</span>
+          <div style="width:60px; height:60px; background:#0f172a; color:#38bdf8; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:24px; font-weight:800; margin:0 auto 10px; border:1px solid #334155;">👤</div>
+          <h3 style="font-size:18px; color:#ffffff;" id="profileName">User</h3>
+          <p style="font-size:13px; color:#94a3b8;" id="profilePhone">078xxxxxxx</p>
+          <span style="font-size:11px; background:#052e16; color:#22c55e; padding:4px 10px; border-radius:6px; margin-top:6px; display:inline-block; border:1px solid #14532d;" id="profileRefCode">Ref Code: ...</span>
         </div>
-        <hr style="border:none; border-top:1px solid #f1f5f9; margin:15px 0;">
+        <hr style="border:none; border-top:1px solid #334155; margin:15px 0;">
         <div style="display:flex; justify-content:space-between; margin-bottom:10px;">
-          <span style="font-size:13px; color:#64748b;">Ubwizigame bwose:</span>
-          <span style="font-size:14px; font-weight:800; color:#0284c7;"><span id="accDepBal">0</span> RWF</span>
-        </div>
-        <div style="display:flex; justify-content:space-between; margin-bottom:10px;">
-          <span style="font-size:13px; color:#64748b;">Inyungu ziboneka:</span>
-          <span style="font-size:14px; font-weight:800; color:#16a34a;"><span id="accWithdrawable">0</span> RWF</span>
+          <span style="font-size:13px; color:#94a3b8;">Ubwizigame bwose:</span>
+          <span style="font-size:14px; font-weight:800; color:#38bdf8;"><span id="accDepBal">0</span> RWF</span>
         </div>
         <div style="display:flex; justify-content:space-between; margin-bottom:10px;">
-          <span style="font-size:13px; color:#64748b;">Inyungu z'itsinda:</span>
-          <span style="font-size:14px; font-weight:800; color:#d97706;"><span id="accTeamEarnings">0</span> RWF</span>
+          <span style="font-size:13px; color:#94a3b8;">Inyungu ziboneka:</span>
+          <span style="font-size:14px; font-weight:800; color:#22c55e;"><span id="accWithdrawable">0</span> RWF</span>
         </div>
-        <button class="btn-main" onclick="openWithdrawModal()" style="background:#16a34a;">📲 Bikuza Inyungu Zawe</button>
-        <button class="btn-back" onclick="handleLogout()" style="margin-top:15px; background:#fef2f2; color:#dc2626; border:1px solid #fecaca;">Gusohoka muri Konti</button>
+        <div style="display:flex; justify-content:space-between; margin-bottom:10px;">
+          <span style="font-size:13px; color:#94a3b8;">Inyungu z'itsinda:</span>
+          <span style="font-size:14px; font-weight:800; color:#f59e0b;"><span id="accTeamEarnings">0</span> RWF</span>
+        </div>
+        <button class="btn-main" onclick="openWithdrawModal()" style="background:#22c55e;">📲 Bikuza Inyungu Zawe</button>
+        <button class="btn-back" onclick="handleLogout()" style="margin-top:15px; background:#450a0a; color:#ef4444; border:1px solid #7f1d1d;">Gusohoka muri Konti</button>
       </div>
     </div>
 
@@ -680,7 +680,7 @@
       });
 
       if (pendingItems.length === 0) {
-        listEl.innerHTML = `<div style="font-size:12px; color:#64748b;">Nta busabe buri pending ubu.</div>`;
+        listEl.innerHTML = `<div style="font-size:12px; color:#94a3b8;">Nta busabe buri pending ubu.</div>`;
         return;
       }
 
@@ -689,7 +689,7 @@
           <div class="admin-item-box">
             <div><b>Izina:</b> ${item.userName}</div>
             <div><b>Telefoni:</b> ${item.userPhone}</div>
-            <div><b>Ubwoko:</b> <span style="color:${item.type==='deposit'?'#16a34a':'#d97706'}">${item.type.toUpperCase()}</span></div>
+            <div><b>Ubwoko:</b> <span style="color:${item.type==='deposit'?'#22c55e':'#f59e0b'}">${item.type.toUpperCase()}</span></div>
             <div><b>Amafaranga:</b> ${Number(item.amount).toLocaleString()} RWF</div>
             <div style="margin-top:10px; display:flex; gap:8px;">
               <button class="btn-approve" onclick="adminApproveTx('${item.id}', '${item.userId}', '${item.type}', ${item.amount})">Emeza</button>
@@ -885,7 +885,7 @@
           memberHtml += `
             <div class="team-member">
               <span>👤 ${m.phone}</span>
-              <span style="color:#16a34a;">+${(m.commission || 0).toLocaleString()} RWF</span>
+              <span style="color:#22c55e;">+${(m.commission || 0).toLocaleString()} RWF</span>
             </div>
           `;
         });
@@ -1036,18 +1036,18 @@
     if (!container) return;
 
     if (!window.user || !window.user.activeInvestments || window.user.activeInvestments.length === 0) {
-      container.innerHTML = `<div style="background:#ffffff; padding:20px; border-radius:12px; border:1px solid #e2e8f0;">Nta kigega uragura. Hitamo ishoramari ryawe muri SHORA nonaha!</div>`;
+      container.innerHTML = `<div style="background:#1e293b; padding:20px; border-radius:12px; border:1px solid #334155; color:#94a3b8;">Nta kigega uragura. Hitamo ishoramari ryawe muri SHORA nonaha!</div>`;
       return;
     }
 
     container.innerHTML = window.user.activeInvestments.map((inv, index) => {
       return `
         <div class="active-plan-card">
-          <div style="display:flex; justify-content:space-between; font-weight:800; color:#16a34a;">
+          <div style="display:flex; justify-content:space-between; font-weight:800; color:#38bdf8;">
             <span>⚡ ${inv.name}</span>
             <span>ACTIVE</span>
           </div>
-          <div style="font-size:12px; color:#475569; margin-top:6px;">
+          <div style="font-size:12px; color:#94a3b8; margin-top:6px;">
             • Inyungu ya buri munsi: <b>${inv.daily.toLocaleString()} RWF</b><br>
             • Video wagaragaje uyu munsi: <b>${inv.completedToday || 0} / ${inv.reqVideos}</b>
           </div>
@@ -1067,7 +1067,7 @@
       const timeLeft = inv.expiryTime - now;
       if (timeLeft <= 0) {
         el.innerText = "ISHORAMARI RYARANGIYE (CLOSED)";
-        el.style.color = "#dc2626";
+        el.style.color = "#ef4444";
       } else {
         const days = Math.floor(timeLeft / (1000 * 60 * 60 * 24));
         const hours = Math.floor((timeLeft % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
@@ -1097,7 +1097,7 @@
     const infoEl = document.getElementById('tasksInfoText');
     if (maxVideosAllowed === 0) {
       infoEl.innerText = "⚠️ Nta kigega gikorera active ufite. Banza ushore imari ngo amavideo afunguke!";
-      container.innerHTML = `<div style="background:#ffffff; padding:20px; border-radius:12px; border:1px solid #e2e8f0;">Jya muri "SHORA" ugure ikigega cyo kurebera amavideo!</div>`;
+      container.innerHTML = `<div style="background:#1e293b; padding:20px; border-radius:12px; border:1px solid #334155; color:#94a3b8;">Jya muri "SHORA" ugure ikigega cyo kurebera amavideo!</div>`;
       return;
     } else {
       infoEl.innerText = `⚡ Wafunguye amavideo ${maxVideosAllowed} y'ishoramari ryawe! Reba amavideo yose uyu munsi ubone inyungu ya ${activePlan.daily.toLocaleString()} RWF.`;
@@ -1111,10 +1111,10 @@
 
       html += `
         <div class="video-card" style="${isLocked ? 'opacity: 0.4;' : ''}">
-          <div style="font-size:12px; font-weight:800; color:#0284c7; margin-bottom:6px;">
+          <div style="font-size:12px; font-weight:800; color:#38bdf8; margin-bottom:6px;">
             🎬 TESLA VIDEO #${i} ${isLocked ? '🔒 (Locked)' : ''}
           </div>
-          ${!isLocked ? `<video src="${videoSrc}" controls controlsList="nodownload"></video>` : '<div style="height:120px; background:#f8fafc; border-radius:10px; display:flex; align-items:center; justify-content:center; font-size:12px; color:#64748b; border:1px solid #e2e8f0;">🔒 Banza ugure icyiciro cyo hejuru ngo ufungure iyi video</div>'}
+          ${!isLocked ? `<video src="${videoSrc}" controls controlsList="nodownload"></video>` : '<div style="height:120px; background:#0f172a; border-radius:10px; display:flex; align-items:center; justify-content:center; font-size:12px; color:#94a3b8; border:1px solid #334155;">🔒 Banza ugure icyiciro cyo hejuru ngo ufungure iyi video</div>'}
           
           <button class="video-btn" ${isLocked || isWatched ? 'disabled' : ''} onclick="watchVideoTask(${i}, ${maxVideosAllowed})">
             ${isWatched ? '✓ Yarebwe Uyu Munsi' : (isLocked ? '🔒 Ifunze' : 'Emeza ko Wairebye (30s)')}
@@ -1173,7 +1173,7 @@
           <button class="btn-modal-nav" onclick="closeModal(); switchTab('ahabanza');">🏠 Ahabanza</button>
         </div>
 
-        <h4 style="font-size: 15px; font-weight: 800; color: #0f172a; margin-bottom: 12px; text-align: left;">Hitamo umubare w'amafaranga yo kubitsa</h4>
+        <h4 style="font-size: 15px; font-weight: 800; color: #ffffff; margin-bottom: 12px; text-align: left;">Hitamo umubare w'amafaranga yo kubitsa</h4>
         
         <div class="recharge-grid">
           <button class="recharge-btn ${initialAmount === 5000 ? 'active' : ''}" onclick="setDepositAmount(5000, this)">5,000</button>
@@ -1187,15 +1187,15 @@
           <button class="recharge-btn ${initialAmount === 500000 ? 'active' : ''}" onclick="setDepositAmount(500000, this)">500,000</button>
         </div>
 
-        <div style="font-size: 13px; font-weight: 800; color: #0f172a; margin-top: 15px; text-align: left;">Cungura cyangwa wandike andi mafaranga</div>
+        <div style="font-size: 13px; font-weight: 800; color: #ffffff; margin-top: 15px; text-align: left;">Cungura cyangwa wandike andi mafaranga</div>
         
         <div class="recharge-input-box">
           <span>RWF</span>
           <input type="number" id="depositAmountInput" placeholder="Andika umubare w'amafaranga" value="${initialAmount > 0 ? initialAmount : ''}" oninput="handleCustomAmountInput(this.value)">
         </div>
 
-        <div style="font-size: 13px; font-weight: 800; color: #0f172a; margin-top: 15px; text-align: left;">Uburyo bwo kwishyura</div>
-        <div style="background: #f8fafc; color: #0f172a; padding: 12px 16px; border-radius: 12px; margin-top: 8px; display: flex; justify-content: space-between; align-items: center; font-weight: 700; font-size: 14px; border: 1px solid #e2e8f0;">
+        <div style="font-size: 13px; font-weight: 800; color: #ffffff; margin-top: 15px; text-align: left;">Uburyo bwo kwishyura</div>
+        <div style="background: #0f172a; color: #ffffff; padding: 12px 16px; border-radius: 12px; margin-top: 8px; display: flex; justify-content: space-between; align-items: center; font-weight: 700; font-size: 14px; border: 1px solid #334155;">
           <span>💳 Mobile Money / Banki</span>
           <span>✓</span>
         </div>
@@ -1244,7 +1244,7 @@
     content.className = '';
     content.innerHTML = `
       <div class="pay-card-modal">
-        <div class="modal-nav-btns" style="border-color: #f1f5f9;">
+        <div class="modal-nav-btns" style="border-color: #334155;">
           <button class="btn-modal-nav" onclick="openDepositFlow(${selectedDepositAmount})">⬅ Subira inyuma</button>
           <button class="btn-modal-nav" onclick="closeModal(); switchTab('ahabanza');">🏠 Ahabanza</button>
         </div>
@@ -1252,33 +1252,33 @@
         <div class="pay-header">
           <div style="display: flex; align-items: center; gap: 8px;">
             <div class="pay-logo">⚡</div>
-            <span style="font-weight: 800; font-size: 13px; letter-spacing: 0.5px; color:#0284c7;">TESLA MOTORS PAY</span>
+            <span style="font-weight: 800; font-size: 13px; letter-spacing: 0.5px; color:#38bdf8;">TESLA MOTORS PAY</span>
           </div>
         </div>
 
-        <div style="font-size: 11px; font-weight: 800; margin-bottom: 2px; color:#475569;">KOPORA KODE YO KWISHYURA</div>
-        <div style="font-size: 10px; color: #64748b; margin-bottom: 10px;">Kopora iyi kode ya MoMo Pay maze wishyure amafaranga yagenwe.</div>
+        <div style="font-size: 11px; font-weight: 800; margin-bottom: 2px; color:#94a3b8;">KOPORA KODE YO KWISHYURA</div>
+        <div style="font-size: 10px; color: #94a3b8; margin-bottom: 10px;">Kopora iyi kode ya MoMo Pay maze wishyure amafaranga yagenwe.</div>
 
         <div class="pay-box">
           <div class="pay-row-title">Amafaranga yo Kwishyura:</div>
-          <div class="pay-row-val" style="color: #16a34a;">RWF ${Number(selectedDepositAmount).toLocaleString()}</div>
+          <div class="pay-row-val" style="color: #22c55e;">RWF ${Number(selectedDepositAmount).toLocaleString()}</div>
 
           <div class="pay-row-title">MOMO PAY:</div>
-          <div class="pay-row-val" style="color: #0f172a;">
+          <div class="pay-row-val" style="color: #ffffff;">
             <span>000564</span>
             <span class="copy-icon" onclick="copyText('000564')">📋</span>
           </div>
 
           <div class="pay-row-title">Izina rya Konti:</div>
-          <div class="pay-row-val" style="color: #0284c7; font-size: 16px;">
+          <div class="pay-row-val" style="color: #38bdf8; font-size: 16px;">
             <span>N AND M SHOP LTD</span>
             <span class="copy-icon" onclick="copyText('N AND M SHOP LTD')">📋</span>
           </div>
         </div>
 
         <div style="text-align: center; margin: 15px 0 10px;">
-          <span style="color: #15803d; font-size: 14px; font-weight: 800; letter-spacing: 0.5px;">Cangwa kanda *182*8*1*000564#</span>
-          <span class="copy-icon" style="color: #0f172a; margin-left: 6px;" onclick="copyText('*182*8*1*000564#')">📋</span>
+          <span style="color: #22c55e; font-size: 14px; font-weight: 800; letter-spacing: 0.5px;">Cangwa kanda *182*8*1*000564#</span>
+          <span class="copy-icon" style="color: #ffffff; margin-left: 6px;" onclick="copyText('*182*8*1*000564#')">📋</span>
         </div>
 
         <button id="btnEmezaPayment" class="btn-confirm-payment" onclick="confirmPaymentAction()">
@@ -1305,25 +1305,25 @@
           <button class="btn-modal-nav" onclick="closeModal(); switchTab('ahabanza');">🏠 Ahabanza</button>
         </div>
 
-        <h3 style="font-size: 16px; font-weight: 800; color: #0f172a; margin-bottom: 8px;">Bikuza Inyungu Zawe</h3>
+        <h3 style="font-size: 16px; font-weight: 800; color: #ffffff; margin-bottom: 8px;">Bikuza Inyungu Zawe</h3>
         
-        <div style="background: #f0fdf4; border: 1px solid #bbf7d0; padding: 10px; border-radius: 10px; font-size: 12px; color: #166534; margin-bottom: 15px;">
+        <div style="background: #052e16; border: 1px solid #14532d; padding: 10px; border-radius: 10px; font-size: 12px; color: #4ade80; margin-bottom: 15px;">
           <b>Amabwiriza yo kubikuza:</b><br>
           • Amafaranga make yo kubikuza ni <b>2,000 RWF</b><br>
           • Inyungu ufite ubu: <b>${(window.user ? window.user.withdrawableEarnings || 0 : 0).toLocaleString()} RWF</b>
         </div>
 
         <div style="margin-bottom: 12px;">
-          <label style="font-size: 11px; font-weight: 800; color: #64748b; display: block; margin-bottom: 4px;">UMUBARE W'AMAFARANGA (RWF)</label>
-          <input type="number" id="withdrawAmount" placeholder="Urugero: 2000" class="input-box-normal" style="background:#f8fafc; color:#0f172a; border:1px solid #cbd5e1;">
+          <label style="font-size: 11px; font-weight: 800; color: #94a3b8; display: block; margin-bottom: 4px;">UMUBARE W'AMAFARANGA (RWF)</label>
+          <input type="number" id="withdrawAmount" placeholder="Urugero: 2000" class="input-box-normal" style="background:#0f172a; color:#ffffff; border:1px solid #334155;">
         </div>
 
         <div style="margin-bottom: 15px;">
-          <label style="font-size: 11px; font-weight: 800; color: #64748b; display: block; margin-bottom: 4px;">NUMERO Y'AKIRA AMAFARANGA (MoMo/Airtel)</label>
-          <input type="tel" id="withdrawPhone" value="${window.user ? window.user.phone : ''}" placeholder="078xxxxxxx" class="input-box-normal" style="background:#f8fafc; color:#0f172a; border:1px solid #cbd5e1;">
+          <label style="font-size: 11px; font-weight: 800; color: #94a3b8; display: block; margin-bottom: 4px;">NUMERO Y'AKIRA AMAFARANGA (MoMo/Airtel)</label>
+          <input type="tel" id="withdrawPhone" value="${window.user ? window.user.phone : ''}" placeholder="078xxxxxxx" class="input-box-normal" style="background:#0f172a; color:#ffffff; border:1px solid #334155;">
         </div>
 
-        <button class="btn-main" onclick="submitWithdrawal()" style="background:#16a34a;">Emeza Kubikuza</button>
+        <button class="btn-main" onclick="submitWithdrawal()" style="background:#22c55e;">Emeza Kubikuza</button>
       </div>
     `;
   }
@@ -1341,9 +1341,9 @@
           <button class="btn-modal-nav" onclick="closeModal(); switchTab('ahabanza');">🏠 Ahabanza</button>
         </div>
 
-        <h3 style="font-size: 16px; font-weight: 800; color: #0f172a; margin-bottom: 10px;">Amateka ya Tesla Motors</h3>
+        <h3 style="font-size: 16px; font-weight: 800; color: #ffffff; margin-bottom: 10px;">Amateka ya Tesla Motors</h3>
         
-        <div style="font-size: 12px; color: #475569; line-height: 1.6;">
+        <div style="font-size: 12px; color: #94a3b8; line-height: 1.6;">
           <p style="margin-bottom: 8px;"><b>Tesla Motors & Assets</b> ni urubuga rufasha abantu gushora imari mu mishinga y'amashanyarazi n'ingufu zisubira mu buzima bwa buri munsi.</p>
           <p style="margin-bottom: 8px;">Binyuze muri gahunda yacu, ushobora kureba amavideo y'amasegonda 30 buri munsi ukabona inyungu zihamye zizamura ubuzima bwawe n'ubukungu bw'igihugu.</p>
         </div>
@@ -1365,9 +1365,9 @@
         </div>
 
         <div style="font-size: 40px; margin-bottom: 5px;">🎁</div>
-        <h3 style="font-size: 16px; font-weight: 800; color: #0f172a; margin-bottom: 10px;">Agashimwe ka Tesla</h3>
+        <h3 style="font-size: 16px; font-weight: 800; color: #ffffff; margin-bottom: 10px;">Agashimwe ka Tesla</h3>
         
-        <p style="font-size: 13px; color: #475569; margin-bottom: 15px; line-height: 1.5;">
+        <p style="font-size: 13px; color: #94a3b8; margin-bottom: 15px; line-height: 1.5;">
           <b>Shora imari ingana cyangwa irenga 200,000 RWF uhabwe agashimwe k'inyongera ka 20,000 RWF!</b>
         </p>
 
@@ -1400,9 +1400,9 @@
         </div>
 
         <div style="font-size: 40px; margin-bottom: 5px;">🏆</div>
-        <h3 style="font-size: 16px; font-weight: 800; color: #0f172a; margin-bottom: 10px;">Ibihembo by'Abahiga Abandi</h3>
+        <h3 style="font-size: 16px; font-weight: 800; color: #ffffff; margin-bottom: 10px;">Ibihembo by'Abahiga Abandi</h3>
         
-        <p style="font-size: 13px; color: #475569; margin-bottom: 15px; line-height: 1.5;">
+        <p style="font-size: 13px; color: #94a3b8; margin-bottom: 15px; line-height: 1.5;">
           <b>Gura imigabane nibura 3 ukaba watsindira igihembo cyihariye cya 10,000 RWF!</b>
         </p>
 
@@ -1435,9 +1435,9 @@
         </div>
 
         <div style="font-size: 40px; margin-bottom: 5px;">🎧</div>
-        <h3 style="font-size: 16px; font-weight: 800; color: #0f172a; margin-bottom: 8px;">Serivisi y'Ubufasha</h3>
+        <h3 style="font-size: 16px; font-weight: 800; color: #ffffff; margin-bottom: 8px;">Serivisi y'Ubufasha</h3>
         
-        <p style="font-size: 13px; color: #475569; margin-bottom: 15px;">
+        <p style="font-size: 13px; color: #94a3b8; margin-bottom: 15px;">
           Ukeneye ubufasha bwihuse? Andikira umuyobozi wacu kuri Telegram!
         </p>
 
