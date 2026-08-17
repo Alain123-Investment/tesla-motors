@@ -87,33 +87,28 @@
 
     /* Modal Styles */
     .modal-overlay { position: fixed; inset: 0; background: rgba(0, 0, 0, 0.85); backdrop-filter: blur(6px); display: flex; align-items: center; justify-content: center; z-index: 100; padding: 15px; }
-    .modal-card { background: #ffffff; width: 100%; max-width: 420px; border-radius: 20px; padding: 20px; color: #111827; max-height: 90vh; overflow-y: auto; position: relative; }
+    .modal-card { background: #1e293b; width: 100%; max-width: 420px; border-radius: 20px; padding: 20px; border: 1px solid #334155; color: white; max-height: 90vh; overflow-y: auto; position: relative; }
 
-    .modal-nav-btns { display: flex; gap: 8px; margin-bottom: 15px; border-bottom: 1px solid #e5e7eb; padding-bottom: 10px; }
-    .btn-modal-nav { background: #f3f4f6; border: none; color: #111827; padding: 6px 12px; border-radius: 8px; font-size: 11px; font-weight: 800; cursor: pointer; flex: 1; }
+    .modal-nav-btns { display: flex; gap: 8px; margin-bottom: 15px; border-bottom: 1px solid #334155; padding-bottom: 10px; }
+    .btn-modal-nav { background: #334155; border: none; color: white; padding: 6px 12px; border-radius: 8px; font-size: 11px; font-weight: 800; cursor: pointer; flex: 1; }
 
-    /* Deposit UI */
-    .recharge-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin: 15px 0; }
-    .recharge-btn { background: #f9fafb; border: 1px solid #e5e7eb; border-radius: 12px; padding: 14px 5px; font-size: 14px; font-weight: 700; color: #111827; cursor: pointer; text-align: center; }
-    .recharge-btn.active { border: 2px solid #059669; background: #ecfdf5; color: #059669; }
-    
-    .recharge-input-box { background: #f3f4f6; border: 1px solid #d1d5db; border-radius: 12px; padding: 12px 15px; display: flex; align-items: center; gap: 10px; font-size: 15px; font-weight: 700; color: #111827; margin-top: 8px; }
-    .recharge-input-box input { border: none; background: transparent; outline: none; font-size: 15px; font-weight: 700; color: #111827; width: 100%; }
-
-    .btn-confirm-deposit { width: 100%; background: #e5e7eb; color: #9ca3af; border: none; padding: 14px; border-radius: 25px; font-size: 16px; font-weight: 800; cursor: not-allowed; transition: all 0.3s ease; margin-top: 15px; }
-    .btn-confirm-deposit.active { background: #059669; color: #ffffff; cursor: pointer; box-shadow: 0 4px 12px rgba(5, 150, 105, 0.3); }
+    /* Deposit UI Specifics */
+    .amount-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-top: 10px; }
+    .amount-btn { background: #0f172a; border: 1px solid #334155; color: white; padding: 12px 5px; border-radius: 10px; font-weight: 700; font-size: 13px; cursor: pointer; text-align: center; transition: all 0.2s ease; }
+    .amount-btn.selected { border: 2px solid #10b981; background: rgba(16, 185, 129, 0.1); color: #10b981; }
+    .btn-confirm-green { width: 100%; background: #10b981; color: white; border: none; padding: 14px; border-radius: 14px; font-size: 15px; font-weight: 800; cursor: pointer; margin-top: 15px; }
 
     /* Modal Pay Card */
-    .pay-card-modal { background: #111827; color: #ffffff; width: 100%; max-width: 400px; border-radius: 20px; padding: 20px; position: relative; }
+    .pay-card-modal { background: #1e293b; color: #ffffff; width: 100%; max-width: 400px; border-radius: 20px; padding: 20px; position: relative; border: 1px solid #334155; }
     .pay-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
     .pay-logo { background: #ef4444; color: #fff; width: 28px; height: 28px; border-radius: 50%; font-weight: 900; display: flex; align-items: center; justify-content: center; font-size: 14px; }
     
-    .pay-box { background: #f9fafb; border-radius: 16px; padding: 18px; color: #111827; margin-top: 10px; }
-    .pay-row-title { font-size: 11px; color: #6b7280; font-weight: 700; margin-bottom: 2px; }
-    .pay-row-val { font-size: 18px; font-weight: 900; color: #d97706; margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center; }
-    .copy-icon { cursor: pointer; color: #6b7280; font-size: 16px; }
+    .pay-box { background: #0f172a; border-radius: 16px; padding: 18px; color: #ffffff; margin-top: 10px; border: 1px solid #334155; }
+    .pay-row-title { font-size: 11px; color: #94a3b8; font-weight: 700; margin-bottom: 2px; }
+    .pay-row-val { font-size: 18px; font-weight: 900; color: #34d399; margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center; }
+    .copy-icon { cursor: pointer; color: #94a3b8; font-size: 16px; }
 
-    .btn-confirm-payment { width: 100%; background: #059669; color: #ffffff; border: none; padding: 14px; border-radius: 14px; font-size: 15px; font-weight: 800; cursor: pointer; margin-top: 12px; display: flex; align-items: center; justify-content: center; gap: 6px; }
+    .btn-confirm-payment { width: 100%; background: #10b981; color: #ffffff; border: none; padding: 14px; border-radius: 14px; font-size: 15px; font-weight: 800; cursor: pointer; margin-top: 12px; display: flex; align-items: center; justify-content: center; gap: 6px; }
 
     /* Bottom Nav */
     .bottom-nav { position: fixed; bottom: 0; left: 50%; transform: translateX(-50%); width: 100%; max-width: 480px; background: #111827; border-top: 1px solid #1f2937; display: flex; justify-content: space-around; padding: 10px 0; z-index: 90; }
@@ -400,7 +395,7 @@
 
   <!-- GENERAL MODAL -->
   <div id="generalModal" class="modal-overlay" style="display: none;">
-    <div id="modalCardContent"></div>
+    <div class="modal-card" id="modalCardContent"></div>
   </div>
 
 </div>
@@ -595,8 +590,10 @@
     }
 
     const btn = document.getElementById('btnEmezaPayment');
-    btn.innerHTML = `<span class="spinner"></span> Birimo koherezwa...`;
-    btn.disabled = true;
+    if (btn) {
+      btn.innerHTML = `<span class="spinner"></span> Birimo koherezwa...`;
+      btn.disabled = true;
+    }
 
     try {
       await addDoc(collection(db, "transactions"), {
@@ -609,8 +606,10 @@
         date: new Date().toISOString()
       });
 
-      btn.innerHTML = `✓ Byoherejwe Neza!`;
-      btn.style.background = "#059669";
+      if (btn) {
+        btn.innerHTML = `✓ Byoherejwe Neza!`;
+        btn.style.background = "#059669";
+      }
       
       setTimeout(() => {
         alert("Ubusabe bwawe bwo kubitsa RWF " + Number(window.selectedDepositAmount).toLocaleString() + " bwoherejwe kuri Admin. Buzemezwa nyuma y'igenzura!");
@@ -620,8 +619,10 @@
 
     } catch (error) {
       alert("Ikosa mu kubitsa: " + error.message);
-      btn.innerHTML = "Emeza ko wishyuye";
-      btn.disabled = false;
+      if (btn) {
+        btn.innerHTML = "Emeza ko wishyuye";
+        btn.disabled = false;
+      }
     }
   };
 
@@ -1159,84 +1160,87 @@
     showDashboard();
   }
 
-  window.openDepositFlow = function(initialAmount = 0) {
-    selectedDepositAmount = initialAmount;
-    const modal = document.getElementById('generalModal');
-    const content = document.getElementById('modalCardContent');
-    modal.style.display = 'flex';
+  // UPDATED DEPOSIT FLOW INTEGRATION
+  function openDepositFlow(initialAmount) {
+    selectedDepositAmount = initialAmount || 0;
     
-    content.className = 'modal-card';
-    content.innerHTML = `
+    const modalContent = `
       <div style="position: relative;">
         <div class="modal-nav-btns">
           <button class="btn-modal-nav" onclick="closeModal()">⬅ Subira inyuma</button>
           <button class="btn-modal-nav" onclick="closeModal(); switchTab('ahabanza');">🏠 Subira ahabanza</button>
         </div>
 
-        <h4 style="font-size: 15px; font-weight: 800; color: #111827; margin-bottom: 12px; text-align: left;">Hitamo umubare w'amafaranga ubitsa</h4>
-        
-        <div class="recharge-grid">
-          <button class="recharge-btn ${initialAmount === 5000 ? 'active' : ''}" onclick="setDepositAmount(5000, this)">5,000</button>
-          <button class="recharge-btn ${initialAmount === 10000 ? 'active' : ''}" onclick="setDepositAmount(10000, this)">10,000</button>
-          <button class="recharge-btn ${initialAmount === 20000 ? 'active' : ''}" onclick="setDepositAmount(20000, this)">20,000</button>
-          <button class="recharge-btn ${initialAmount === 30000 ? 'active' : ''}" onclick="setDepositAmount(30000, this)">30,000</button>
-          <button class="recharge-btn ${initialAmount === 50000 ? 'active' : ''}" onclick="setDepositAmount(50000, this)">50,000</button>
-          <button class="recharge-btn ${initialAmount === 100000 ? 'active' : ''}" onclick="setDepositAmount(100000, this)">100,000</button>
-          <button class="recharge-btn ${initialAmount === 200000 ? 'active' : ''}" onclick="setDepositAmount(200000, this)">200,000</button>
-          <button class="recharge-btn ${initialAmount === 300000 ? 'active' : ''}" onclick="setDepositAmount(300000, this)">300,000</button>
-          <button class="recharge-btn ${initialAmount === 500000 ? 'active' : ''}" onclick="setDepositAmount(500000, this)">500,000</button>
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;">
+          <h3 style="font-size:16px; font-weight:800;">💵 Bitsa Amafaranga</h3>
         </div>
 
-        <div style="font-size: 13px; font-weight: 800; color: #111827; margin-top: 15px; text-align: left;">Andika undi mubare</div>
-        
-        <div class="recharge-input-box">
-          <span>RWF</span>
-          <input type="number" id="depositAmountInput" placeholder="Shyiramo amafaranga" value="${initialAmount > 0 ? initialAmount : ''}" oninput="handleCustomAmountInput(this.value)">
+        <!-- Ibyuma by'ibiciro byateguwe (Preset Buttons) -->
+        <div class="amount-grid">
+          <div class="amount-btn ${selectedDepositAmount === 5000 ? 'selected' : ''}" data-amt="5000" onclick="selectDepositPreset(5000)">5,000 RWF</div>
+          <div class="amount-btn ${selectedDepositAmount === 10000 ? 'selected' : ''}" data-amt="10000" onclick="selectDepositPreset(10000)">10,000 RWF</div>
+          <div class="amount-btn ${selectedDepositAmount === 50000 ? 'selected' : ''}" data-amt="50000" onclick="selectDepositPreset(50000)">50,000 RWF</div>
+          <div class="amount-btn ${selectedDepositAmount === 100000 ? 'selected' : ''}" data-amt="100000" onclick="selectDepositPreset(100000)">100,000 RWF</div>
         </div>
 
-        <div style="font-size: 13px; font-weight: 800; color: #111827; margin-top: 15px; text-align: left;">Uburyo bwo kubitsa</div>
-        <div style="background: #111827; color: white; padding: 12px 16px; border-radius: 12px; margin-top: 8px; display: flex; justify-content: space-between; align-items: center; font-weight: 700; font-size: 14px;">
-          <span>💳 Banki / Mobile Money</span>
-          <span>✓</span>
+        <!-- Agasanduku ko kwandikamo umubare ushaka (Custom Input Box) -->
+        <div class="form-group" style="margin-top:15px;">
+          <label class="form-label">ANDIKA UMUBARE WA RWF UGIYE KUBITSA:</label>
+          <input 
+            type="number" 
+            id="customDepositInput" 
+            class="input-box-normal" 
+            placeholder="Andika umubare..." 
+            value="${selectedDepositAmount ? selectedDepositAmount : ''}"
+            oninput="handleCustomDepositInput(this.value)"
+          >
         </div>
 
-        <button id="btnConfirmDeposit" class="btn-confirm-deposit ${initialAmount > 0 ? 'active' : ''}" onclick="proceedToPayModal()">Komeza kwishyura</button>
+        <!-- Ibutoni yo kwemeza cyangwa gukoporora uburyo bwo kwishyura -->
+        <button class="btn-confirm-green" onclick="proceedToPayModal()">
+          Koporora uburyo buhamye ushore
+        </button>
       </div>
     `;
+
+    openModal(modalContent);
   }
 
-  window.setDepositAmount = function(val, btnEl) {
-    selectedDepositAmount = val;
-    document.getElementById('depositAmountInput').value = val;
-    document.querySelectorAll('.recharge-btn').forEach(b => b.classList.remove('active'));
-    if (btnEl) btnEl.classList.add('active');
-    updateConfirmButton();
+  function selectDepositPreset(amount) {
+    selectedDepositAmount = amount;
+    const inputEl = document.getElementById('customDepositInput');
+    if (inputEl) inputEl.value = amount;
+    highlightDepositPresetButtons(amount);
   }
 
-  window.handleCustomAmountInput = function(val) {
-    selectedDepositAmount = Number(val);
-    document.querySelectorAll('.recharge-btn').forEach(b => {
-      const numVal = Number(b.innerText.replace(/,/g, ''));
-      if (numVal === selectedDepositAmount) {
-        b.classList.add('active');
-      } else {
-        b.classList.remove('active');
-      }
-    });
-    updateConfirmButton();
-  }
-
-  function updateConfirmButton() {
-    const btn = document.getElementById('btnConfirmDeposit');
-    if (selectedDepositAmount > 0) {
-      btn.classList.add('active');
+  function handleCustomDepositInput(val) {
+    const inputVal = parseFloat(val);
+    if (!isNaN(inputVal) && inputVal > 0) {
+      selectedDepositAmount = inputVal;
+      highlightDepositPresetButtons(inputVal);
     } else {
-      btn.classList.remove('active');
+      selectedDepositAmount = 0;
+      highlightDepositPresetButtons(null);
     }
   }
 
+  function highlightDepositPresetButtons(amount) {
+    const buttons = document.querySelectorAll('.amount-btn');
+    buttons.forEach(btn => {
+      const btnAmt = parseFloat(btn.getAttribute('data-amt'));
+      if (amount && btnAmt === amount) {
+        btn.classList.add('selected');
+      } else {
+        btn.classList.remove('selected');
+      }
+    });
+  }
+
   window.proceedToPayModal = function() {
-    if (!selectedDepositAmount || selectedDepositAmount <= 0) return;
+    if (!selectedDepositAmount || selectedDepositAmount <= 0) {
+      alert("Nyamuneka banza wandike cyangwa uhitemo umubare w'amafaranga ugiye kubitsa.");
+      return;
+    }
 
     const modal = document.getElementById('generalModal');
     const content = document.getElementById('modalCardContent');
@@ -1244,9 +1248,9 @@
     content.className = '';
     content.innerHTML = `
       <div class="pay-card-modal">
-        <div class="modal-nav-btns" style="border-color: #1f2937;">
-          <button class="btn-modal-nav" style="background:#1f2937; color:#fff;" onclick="openDepositFlow(${selectedDepositAmount})">⬅ Subira inyuma</button>
-          <button class="btn-modal-nav" style="background:#1f2937; color:#fff;" onclick="closeModal(); switchTab('ahabanza');">🏠 Subira ahabanza</button>
+        <div class="modal-nav-btns" style="border-color: #334155;">
+          <button class="btn-modal-nav" style="background:#334155; color:#fff;" onclick="openDepositFlow(${selectedDepositAmount})">⬅ Subira inyuma</button>
+          <button class="btn-modal-nav" style="background:#334155; color:#fff;" onclick="closeModal(); switchTab('ahabanza');">🏠 Subira ahabanza</button>
         </div>
 
         <div class="pay-header">
@@ -1257,27 +1261,27 @@
         </div>
 
         <div style="font-size: 11px; font-weight: 800; margin-bottom: 2px;">KOPORA UZE KWISHYURA</div>
-        <div style="font-size: 10px; color: #9ca3af; margin-bottom: 10px;">Kopora iyi kode ya MOMO PAY maze wishyure amafaranga yakoze.</div>
+        <div style="font-size: 10px; color: #94a3b8; margin-bottom: 10px;">Kopora iyi kode ya MOMO PAY maze wishyure amafaranga yakoze.</div>
 
         <div class="pay-box">
           <div class="pay-row-title">Ayo Kwishyura:</div>
-          <div class="pay-row-val" style="color: #d97706;">RWF ${Number(selectedDepositAmount).toLocaleString()}</div>
+          <div class="pay-row-val" style="color: #34d399;">RWF ${Number(selectedDepositAmount).toLocaleString()}</div>
 
           <div class="pay-row-title">MOMO PAY:</div>
-          <div class="pay-row-val" style="color: #111827;">
+          <div class="pay-row-val" style="color: #ffffff;">
             <span>000564</span>
             <span class="copy-icon" onclick="copyText('000564')">📋</span>
           </div>
 
           <div class="pay-row-title">Izina rya Konti:</div>
-          <div class="pay-row-val" style="color: #d97706; font-size: 16px;">
+          <div class="pay-row-val" style="color: #34d399; font-size: 16px;">
             <span>N AND M SHOP LTD</span>
             <span class="copy-icon" onclick="copyText('N AND M SHOP LTD')">📋</span>
           </div>
         </div>
 
         <div style="text-align: center; margin: 15px 0 10px;">
-          <span style="color: #d97706; font-size: 14px; font-weight: 800; letter-spacing: 0.5px;">Kanda *182*8*1*000564#</span>
+          <span style="color: #34d399; font-size: 14px; font-weight: 800; letter-spacing: 0.5px;">Kanda *182*8*1*000564#</span>
           <span class="copy-icon" style="color: #fff; margin-left: 6px;" onclick="copyText('*182*8*1*000564#')">📋</span>
         </div>
 
@@ -1285,7 +1289,7 @@
           Emeza ko wishyuye
         </button>
 
-        <button class="btn-back" onclick="closeModal(); switchTab('ahabanza');" style="margin-top: 12px; border-radius: 14px;">
+        <button class="btn-back" onclick="closeModal(); switchTab('ahabanza');" style="margin-top: 12px; border-radius: 14px; background:#0f172a; border:1px solid #334155;">
           🏠 Subira ahabanza
         </button>
       </div>
@@ -1305,22 +1309,22 @@
           <button class="btn-modal-nav" onclick="closeModal(); switchTab('ahabanza');">🏠 Subira ahabanza</button>
         </div>
 
-        <h3 style="font-size: 16px; font-weight: 800; color: #111827; margin-bottom: 8px;">Bikuza Inyungu</h3>
+        <h3 style="font-size: 16px; font-weight: 800; color: #ffffff; margin-bottom: 8px;">Bikuza Inyungu</h3>
         
-        <div style="background: #e0f2fe; border: 1px solid #bae6fd; padding: 10px; border-radius: 10px; font-size: 12px; color: #0369a1; margin-bottom: 15px;">
+        <div style="background: rgba(14, 165, 233, 0.1); border: 1px solid rgba(14, 165, 233, 0.3); padding: 10px; border-radius: 10px; font-size: 12px; color: #38bdf8; margin-bottom: 15px;">
           <b>Ibipimo byo kubikuza:</b><br>
           • Amacye yo kubikuza ni <b>2,000 RWF</b><br>
           • Inyungu ushobora kubikuza ubu: <b>${(window.user ? window.user.withdrawableEarnings || 0 : 0).toLocaleString()} RWF</b>
         </div>
 
         <div style="margin-bottom: 12px;">
-          <label style="font-size: 11px; font-weight: 800; color: #6b7280; display: block; margin-bottom: 4px;">UMUBARE W'AMAFARANGA (RWF)</label>
-          <input type="number" id="withdrawAmount" placeholder="Ugereranyo: 2000" class="input-box-normal" style="background:#f3f4f6; color:#111827; border:1px solid #d1d5db;">
+          <label style="font-size: 11px; font-weight: 800; color: #94a3b8; display: block; margin-bottom: 4px;">UMUBARE W'AMAFARANGA (RWF)</label>
+          <input type="number" id="withdrawAmount" placeholder="Ugereranyo: 2000" class="input-box-normal" style="background:#0f172a; color:#ffffff; border:1px solid #334155;">
         </div>
 
         <div style="margin-bottom: 15px;">
-          <label style="font-size: 11px; font-weight: 800; color: #6b7280; display: block; margin-bottom: 4px;">NUMERO Y'IREMEZO (MoMo/Airtel)</label>
-          <input type="tel" id="withdrawPhone" value="${window.user ? window.user.phone : ''}" placeholder="078xxxxxxx" class="input-box-normal" style="background:#f3f4f6; color:#111827; border:1px solid #d1d5db;">
+          <label style="font-size: 11px; font-weight: 800; color: #94a3b8; display: block; margin-bottom: 4px;">NUMERO Y'IREMEZO (MoMo/Airtel)</label>
+          <input type="tel" id="withdrawPhone" value="${window.user ? window.user.phone : ''}" placeholder="078xxxxxxx" class="input-box-normal" style="background:#0f172a; color:#ffffff; border:1px solid #334155;">
         </div>
 
         <button class="btn-main" onclick="submitWithdrawal()" style="background:#059669;">Bikuza</button>
@@ -1341,9 +1345,9 @@
           <button class="btn-modal-nav" onclick="closeModal(); switchTab('ahabanza');">🏠 Subira ahabanza</button>
         </div>
 
-        <h3 style="font-size: 16px; font-weight: 800; color: #111827; margin-bottom: 10px;">Amateka ya Tesla Motors</h3>
+        <h3 style="font-size: 16px; font-weight: 800; color: #ffffff; margin-bottom: 10px;">Amateka ya Tesla Motors</h3>
         
-        <div style="font-size: 12px; color: #374151; line-height: 1.6;">
+        <div style="font-size: 12px; color: #94a3b8; line-height: 1.6;">
           <p style="margin-bottom: 8px;"><b>Tesla Motors</b> yashinzwe ku ntego yo kwihutisha ingufu zirambye ku isi no gukora imodoka zikoresha amashanyarazi akomeye.</p>
           <p style="margin-bottom: 8px;">Ku bw'intego z'iterambere, Tesla yafunguye uburyo bw'ishoramari bwemerera abantu bose gushora imari mu migabane reba video z'amasegonda 30 ubone inyungu buri munsi.</p>
         </div>
@@ -1365,9 +1369,9 @@
         </div>
 
         <div style="font-size: 40px; margin-bottom: 5px;">🎁</div>
-        <h3 style="font-size: 16px; font-weight: 800; color: #111827; margin-bottom: 10px;">Bonus ya Tesla Motors</h3>
+        <h3 style="font-size: 16px; font-weight: 800; color: #ffffff; margin-bottom: 10px;">Bonus ya Tesla Motors</h3>
         
-        <p style="font-size: 13px; color: #4b5563; margin-bottom: 15px; line-height: 1.5;">
+        <p style="font-size: 13px; color: #94a3b8; margin-bottom: 15px; line-height: 1.5;">
           <b>Shora nibura umugabane wa 200,000 RWF ubone bonus ya 20,000 RWF!</b>
         </p>
 
@@ -1400,9 +1404,9 @@
         </div>
 
         <div style="font-size: 40px; margin-bottom: 5px;">🏆</div>
-        <h3 style="font-size: 16px; font-weight: 800; color: #111827; margin-bottom: 10px;">Ibihembo bya Tesla</h3>
+        <h3 style="font-size: 16px; font-weight: 800; color: #ffffff; margin-bottom: 10px;">Ibihembo bya Tesla</h3>
         
-        <p style="font-size: 13px; color: #4b5563; margin-bottom: 15px; line-height: 1.5;">
+        <p style="font-size: 13px; color: #94a3b8; margin-bottom: 15px; line-height: 1.5;">
           <b>Shora mu migabane nibura 3 ubundi uhabwe igihembo cya 10,000 RWF!</b>
         </p>
 
@@ -1435,9 +1439,9 @@
         </div>
 
         <div style="font-size: 40px; margin-bottom: 5px;">🎧</div>
-        <h3 style="font-size: 16px; font-weight: 800; color: #111827; margin-bottom: 8px;">Customer Care Service</h3>
+        <h3 style="font-size: 16px; font-weight: 800; color: #ffffff; margin-bottom: 8px;">Customer Care Service</h3>
         
-        <p style="font-size: 13px; color: #4b5563; margin-bottom: 15px;">
+        <p style="font-size: 13px; color: #94a3b8; margin-bottom: 15px;">
           Ukeneye ubufasha? Andikira umuyobozi agufashe kuri Telegram!
         </p>
 
@@ -1466,6 +1470,11 @@
   window.copyText = function(text) {
     navigator.clipboard.writeText(text);
     alert("Yakoporowe: " + text);
+  }
+
+  window.openModal = function(contentHtml) {
+    document.getElementById('modalCardContent').innerHTML = contentHtml;
+    document.getElementById('generalModal').style.display = 'flex';
   }
 
   window.closeModal = function() {
