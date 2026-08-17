@@ -158,6 +158,10 @@
       <span class="tool-icon">⚙️</span>
       <span class="tool-title">Shares & Banners</span>
     </div>
+    <div class="tool-btn" onclick="switchTool('videos')">
+      <span class="tool-icon">🎬</span>
+      <span class="tool-title">Videos Manager</span>
+    </div>
     <div class="tool-btn" onclick="switchTool('investments')">
       <span class="tool-icon">📈</span>
       <span class="tool-title">Live Investments</span>
@@ -193,6 +197,7 @@
       <button class="btn-act-blue" style="width:100%; margin-bottom:8px; padding:12px;" onclick="switchTool('users'); closeMenuModal();">👥 Users Management</button>
       <button class="btn-act-blue" style="width:100%; margin-bottom:8px; padding:12px;" onclick="switchTool('referrals'); closeMenuModal();">🏆 Team & Referrals</button>
       <button class="btn-act-blue" style="width:100%; margin-bottom:8px; padding:12px;" onclick="switchTool('shares'); closeMenuModal();">⚙️ Shares & Banners Editor</button>
+      <button class="btn-act-blue" style="width:100%; margin-bottom:8px; padding:12px;" onclick="switchTool('videos'); closeMenuModal();">🎬 Videos & Daily Tasks Manager</button>
       <button class="btn-act-blue" style="width:100%; margin-bottom:8px; padding:12px;" onclick="switchTool('investments'); closeMenuModal();">📈 Active Live Investments</button>
     </div>
   </div>
@@ -283,7 +288,7 @@
 </script>
 
 <script>
-  let firebaseUsersCache = []; // Ububiko bw'agateganyo bw'abakoresha bavanwe muri Firebase
+  let firebaseUsersCache = [];
 
   let depositRequests = JSON.parse(localStorage.getItem('tesla_deposits')) || [
     { id: 1, userId: 101, user: "Bruno Alain", amount: 50000, status: "pending", date: "10 mins ago", code: "TXN-99812" }
@@ -305,8 +310,23 @@
     { id: "m3", name: "M3 Share", price: 250000, dailyProfit: 8325, validityDays: 365 }
   ];
 
+  // Default 41 videos associated with shares (can be customized per share type)
+  let platformVideos = JSON.parse(localStorage.getItem('tesla_platform_videos')) || (() => {
+    let defaultVids = [];
+    for(let i = 1; i <= 41; i++) {
+      defaultVids.push({
+        id: i,
+        title: `Tesla Daily Watch Video #${i}`,
+        shareId: i <= 10 ? "m0" : i <= 25 ? "m1" : i <= 35 ? "m2" : "m3",
+        videoUrl: "https://www.w3schools.com/html/mov_bbb.mp4",
+        reward: 100
+      });
+    }
+    return defaultVids;
+  })();
+
   let liveInvestments = JSON.parse(localStorage.getItem('tesla_live_investments')) || [
-    { id: 1, user: "Eric Manzi", share: "M1 Share", amount: 20000, daily: 675, remainingSeconds: 31536000, status: "Active" }
+    { id: 1, user: "Eric Manzi", share: "M1 Share", amount: 20000, daily: 675, startTime: Date.now() - 3600000, durationSeconds: 31536000, status: "Active" }
   ];
 
   let currentTool = "deposits";
@@ -326,13 +346,11 @@
     btn.style.opacity = "0.7";
     btn.disabled = true;
 
-    // 1. Uburyo bwihuse bwa Admin (Direct Admin Bypass)
     if (phone === "0789681391" && pass === "admin123") {
       successLogin(btn);
       return;
     }
 
-    // 2. Gusuzuma muri Firebase Firestore
     try {
       const usersRef = collection(window.db, "users");
       const q = query(usersRef, where("phone", "==", phone));
@@ -415,13 +433,15 @@
     } else if (tool === 'shares') {
       title.innerText = "Edit Shares & Dashboard Banners";
       renderSharesEditor(container);
+    } else if (tool === 'videos') {
+      title.innerText = "Manage 41 Share Videos & Tasks";
+      renderVideosManager(container);
     } else if (tool === 'investments') {
       title.innerText = "Live Shares Performance Tracking";
       renderInvestments(container);
     }
   }
 
-  // --- GUKURURA ABAKORESHA BOSE MURI FIREBASE FIRESTORE ---
   async function loadAllFirebaseUsers(container) {
     container.innerHTML = `<p style="color:#3b82f6; font-size:12px; text-align:center; padding:20px;">Tegereza gato turakurura amakuru muri Firebase...</p>`;
 
@@ -436,9 +456,7 @@
         });
       });
 
-      // Hindura ku mubare w'abakoresha muri stats
       document.getElementById('statUsers').innerText = firebaseUsersCache.length;
-
       renderUsersTable(container, firebaseUsersCache);
 
     } catch (error) {
@@ -686,10 +704,76 @@
     switchTool('shares');
   }
 
+  // --- VIDEOS & DAILY TASKS MANAGER TOOL ---
+  function renderVideosManager(container) {
+    let html = `
+      <div class="item-card" style="margin-bottom:20px;">
+        <div class="item-name" style="margin-bottom:12px; color:#3b82f6;">🎬 Manage Share Videos (Total: ${platformVideos.length})</div>
+        <button class="btn-act-blue" style="width:100%; padding:10px; margin-bottom:15px;" onclick="addNewVideoField()">➕ Add New Video Task</button>
+    `;
+
+    platformVideos.forEach((vid, index) => {
+      html += `
+        <div style="background:#0b1329; padding:12px; border-radius:10px; margin-bottom:12px; border:1px solid #1e2d52;">
+          <div class="form-group">
+            <label class="form-label">Video #${vid.id} Title</label>
+            <input type="text" id="vidTitle_${index}" class="input-box" value="${vid.title}">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Associated Share ID (e.g. m0, m1, m2, m3)</label>
+            <input type="text" id="vidShare_${index}" class="input-box" value="${vid.shareId}">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Video URL / Source</label>
+            <input type="text" id="vidUrl_${index}" class="input-box" value="${vid.videoUrl}">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Reward (RWF)</label>
+            <input type="number" id="vidReward_${index}" class="input-box" value="${vid.reward}">
+          </div>
+          <button class="btn-act-green" style="width:100%; padding:10px;" onclick="saveSingleVideo(${index})">💾 Save Video #${vid.id}</button>
+        </div>
+      `;
+    });
+
+    html += `</div>`;
+    container.innerHTML = html;
+  }
+
+  function saveSingleVideo(index) {
+    platformVideos[index].title = document.getElementById(`vidTitle_${index}`).value;
+    platformVideos[index].shareId = document.getElementById(`vidShare_${index}`).value;
+    platformVideos[index].videoUrl = document.getElementById(`vidUrl_${index}`).value;
+    platformVideos[index].reward = parseFloat(document.getElementById(`vidReward_${index}`).value) || 0;
+    
+    localStorage.setItem('tesla_platform_videos', JSON.stringify(platformVideos));
+    alert(`Video #${platformVideos[index].id} updated successfully!`);
+  }
+
+  function addNewVideoField() {
+    let newId = platformVideos.length + 1;
+    platformVideos.push({
+      id: newId,
+      title: `Tesla Daily Watch Video #${newId}`,
+      shareId: "m1",
+      videoUrl: "https://www.w3schools.com/html/mov_bbb.mp4",
+      reward: 100
+    });
+    localStorage.setItem('tesla_platform_videos', JSON.stringify(platformVideos));
+    renderVideosManager(document.getElementById('dynamicContentArea'));
+  }
+
+  // --- LIVE INVESTMENTS TRACKING ---
   function renderInvestments(container) {
     container.innerHTML = '';
     liveInvestments.forEach(inv => {
-      let isExpired = inv.remainingSeconds <= 0;
+      let now = Date.now();
+      let elapsedSeconds = Math.floor((now - (inv.startTime || now)) / 1000);
+      let remaining = (inv.durationSeconds || 31536000) - elapsedSeconds;
+      if(remaining < 0) remaining = 0;
+      inv.remainingSeconds = remaining;
+
+      let isExpired = remaining <= 0;
       let badgeClass = isExpired ? 'badge-closed' : 'badge-approved';
       let statusText = isExpired ? 'CLOSED' : inv.status;
 
@@ -703,7 +787,7 @@
             Share: <b>${inv.share}</b> | Amount: <b>${inv.amount.toLocaleString()} RWF</b>
           </div>
           <div style="font-size:13px; font-weight:800; color:${isExpired ? '#ef4444' : '#f59e0b'}; margin-top:6px; background:#0b1329; padding:6px 10px; border-radius:8px; display:inline-block;">
-            ⏳ Remaining Time: <span id="countdown_timer_${inv.id}">${formatTimeLeft(inv.remainingSeconds)}</span>
+            ⏳ Remaining Time: <span id="countdown_timer_${inv.id}">${formatTimeLeft(remaining)}</span>
           </div>
           <div class="action-btn-group">
             <button class="btn-act-blue" onclick="openEditInvestmentModal(${inv.id})">✏️ Edit Live Investment</button>
@@ -716,12 +800,18 @@
   function startLiveCountdown() {
     if (countdownTimerInterval) clearInterval(countdownTimerInterval);
     countdownTimerInterval = setInterval(() => {
+      let now = Date.now();
       liveInvestments.forEach(inv => {
-        if (inv.remainingSeconds > 0) {
-          inv.remainingSeconds--;
-          let el = document.getElementById(`countdown_timer_${inv.id}`);
-          if (el) el.innerText = formatTimeLeft(inv.remainingSeconds);
-        } else {
+        let elapsedSeconds = Math.floor((now - (inv.startTime || now)) / 1000);
+        let remaining = (inv.durationSeconds || 31536000) - elapsedSeconds;
+        if (remaining < 0) remaining = 0;
+        inv.remainingSeconds = remaining;
+
+        let el = document.getElementById(`countdown_timer_${inv.id}`);
+        if (el) {
+          el.innerText = formatTimeLeft(remaining);
+        }
+        if (remaining <= 0) {
           inv.status = "CLOSED";
         }
       });
@@ -756,8 +846,12 @@
       inv.share = document.getElementById('editInvShare').value;
       inv.amount = parseFloat(document.getElementById('editInvAmount').value) || 0;
       inv.daily = parseFloat(document.getElementById('editInvDaily').value) || 0;
-      inv.remainingSeconds = parseInt(document.getElementById('editInvSeconds').value) || 0;
-      if (inv.remainingSeconds > 0) inv.status = "Active";
+      let newRemSeconds = parseInt(document.getElementById('editInvSeconds').value) || 0;
+      inv.durationSeconds = newRemSeconds;
+      inv.startTime = Date.now(); // reset start so countdown calculates properly
+      inv.remainingSeconds = newRemSeconds;
+      if (newRemSeconds > 0) inv.status = "Active";
+      
       saveAllData();
       closeEditInvestmentModal();
       switchTool('investments');
@@ -774,6 +868,7 @@
     localStorage.setItem('tesla_withdrawals', JSON.stringify(withdrawalRequests));
     localStorage.setItem('tesla_banners', JSON.stringify(dashboardBanners));
     localStorage.setItem('tesla_vip_shares', JSON.stringify(vipShares));
+    localStorage.setItem('tesla_platform_videos', JSON.stringify(platformVideos));
     localStorage.setItem('tesla_live_investments', JSON.stringify(liveInvestments));
     calculateTotalStats();
   }
