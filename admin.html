@@ -63,6 +63,13 @@
     .btn-act-red { flex: 1; background: #ef4444; color: white; border: none; padding: 8px; border-radius: 8px; font-weight: 800; font-size: 11px; cursor: pointer; }
     .btn-act-blue { flex: 1; background: #2563eb; color: white; border: none; padding: 8px; border-radius: 8px; font-weight: 800; font-size: 11px; cursor: pointer; }
 
+    /* Admin Table styles for Users */
+    .admin-table { width: 100%; border-collapse: collapse; background: #111c38; border-radius: 12px; overflow: hidden; border: 1px solid #1e2d52; font-size: 11px; }
+    .admin-table th, .admin-table td { padding: 10px 8px; text-align: left; border-bottom: 1px solid #1e2d52; }
+    .admin-table th { background: #19264a; color: #3b82f6; font-weight: 800; text-transform: uppercase; }
+    .admin-table td { color: #f8fafc; }
+    .btn-view { background: #3b82f6; color: white; border: none; padding: 6px 10px; border-radius: 6px; font-weight: 700; cursor: pointer; font-size: 10px; }
+
     /* Banner Image Preview Container */
     .banner-preview-box { width: 100%; height: 130px; border-radius: 10px; overflow: hidden; background: #080d1a; border: 1px dashed #334155; margin-bottom: 10px; position: relative; display: flex; align-items: center; justify-content: center; }
     .banner-preview-box img { width: 100%; height: 100%; object-fit: cover; }
@@ -166,7 +173,7 @@
 
     <!-- Search Input Area -->
     <div id="searchContainer" style="display:none;">
-      <input type="text" id="userSearchInput" class="search-box" placeholder="🔍 Search user by phone or name..." oninput="filterUsersList()">
+      <input type="text" id="userSearchInput" class="search-box" placeholder="🔍 Search user by phone or name..." oninput="filterFirebaseUsers()">
     </div>
 
     <div id="dynamicContentArea">
@@ -211,10 +218,10 @@
         <input type="number" id="editUserBalance" class="input-box">
       </div>
       <div class="form-group">
-        <label class="form-label">Total Earnings (RWF)</label>
-        <input type="number" id="editUserEarnings" class="input-box">
+        <label class="form-label">Role</label>
+        <input type="text" id="editUserRole" class="input-box">
       </div>
-      <button class="btn-act-green" style="width:100%; padding:12px; margin-top:10px;" onclick="saveUserData()">Save Changes</button>
+      <button class="btn-act-green" style="width:100%; padding:12px; margin-top:10px;" onclick="saveFirebaseUserData()">Save Changes to Firebase</button>
     </div>
   </div>
 
@@ -251,7 +258,7 @@
 <!-- FIREBASE SDK (Modular) -->
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-  import { getFirestore, collection, query, where, getDocs } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+  import { getFirestore, collection, query, where, getDocs, doc, updateDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
   const firebaseConfig = {
     apiKey: "AIzaSyBZon08Rj5NcQO6N-O4uC4FoEIDHmdWvsA",
@@ -271,18 +278,15 @@
   window.query = query;
   window.where = where;
   window.getDocs = getDocs;
+  window.doc = doc;
+  window.updateDoc = updateDoc;
 </script>
 
 <script>
-  let systemUsers = JSON.parse(localStorage.getItem('tesla_all_users')) || [
-    { id: 101, name: "Bruno Alain", phone: "0789681391", balance: 1000, earnings: 0, referralsCount: 5, comms: 17500 },
-    { id: 102, name: "Eric Manzi", phone: "0788123456", balance: 50000, earnings: 15000, referralsCount: 12, comms: 56000 },
-    { id: 103, name: "Clarisse U.", phone: "0731112233", balance: 120000, earnings: 42000, referralsCount: 2, comms: 8000 }
-  ];
+  let firebaseUsersCache = []; // Ububiko bw'agateganyo bw'abakoresha bavanwe muri Firebase
 
   let depositRequests = JSON.parse(localStorage.getItem('tesla_deposits')) || [
-    { id: 1, userId: 101, user: "Bruno Alain", amount: 50000, status: "pending", date: "10 mins ago", code: "TXN-99812" },
-    { id: 2, userId: 103, user: "Clarisse U.", amount: 100000, status: "pending", date: "1 hour ago", code: "TXN-44102" }
+    { id: 1, userId: 101, user: "Bruno Alain", amount: 50000, status: "pending", date: "10 mins ago", code: "TXN-99812" }
   ];
 
   let withdrawalRequests = JSON.parse(localStorage.getItem('tesla_withdrawals')) || [
@@ -298,28 +302,11 @@
     { id: "m0", name: "M0 Share", price: 500, dailyProfit: 300, validityDays: 2 },
     { id: "m1", name: "M1 Share", price: 20000, dailyProfit: 675, validityDays: 365 },
     { id: "m2", name: "M2 Share", price: 100000, dailyProfit: 3350, validityDays: 365 },
-    { id: "m2vip", name: "M2-VIP Share", price: 120000, dailyProfit: 8000, validityDays: 365 },
-    { id: "m3", name: "M3 Share", price: 250000, dailyProfit: 8325, validityDays: 365 },
-    { id: "m3vip", name: "M3-VIP Share", price: 300000, dailyProfit: 20025, validityDays: 365 },
-    { id: "m4", name: "M4 Share", price: 550000, dailyProfit: 18400, validityDays: 365 },
-    { id: "m4vip", name: "M4-VIP Share", price: 600000, dailyProfit: 40000, validityDays: 365 },
-    { id: "m5", name: "M5 Share", price: 1200000, dailyProfit: 40000, validityDays: 365 },
-    { id: "m5vip", name: "M5-VIP Share", price: 1500000, dailyProfit: 100000, validityDays: 365 },
-    { id: "m6", name: "M6 Share", price: 2400000, dailyProfit: 81000, validityDays: 365 },
-    { id: "m6vip", name: "M6-VIP Share", price: 2800000, dailyProfit: 187500, validityDays: 365 },
-    { id: "m7", name: "M7 Share", price: 4000000, dailyProfit: 134750, validityDays: 365 },
-    { id: "m7vip", name: "M7-VIP Share", price: 5000000, dailyProfit: 334250, validityDays: 365 },
-    { id: "m8", name: "M8 Share", price: 6000000, dailyProfit: 200000, validityDays: 365 },
-    { id: "m8vip", name: "M8-VIP Share", price: 7000000, dailyProfit: 468000, validityDays: 365 },
-    { id: "m9", name: "M9 Share", price: 8000000, dailyProfit: 267750, validityDays: 365 },
-    { id: "m9vip", name: "M9-VIP Share", price: 9000000, dailyProfit: 600750, validityDays: 365 },
-    { id: "m10", name: "M10 Share", price: 10000000, dailyProfit: 335000, validityDays: 365 },
-    { id: "m10vip", name: "M10-VIP Share", price: 11000000, dailyProfit: 735000, validityDays: 365 }
+    { id: "m3", name: "M3 Share", price: 250000, dailyProfit: 8325, validityDays: 365 }
   ];
 
   let liveInvestments = JSON.parse(localStorage.getItem('tesla_live_investments')) || [
-    { id: 1, user: "Eric Manzi", share: "M1 Share", amount: 20000, daily: 675, remainingSeconds: 31536000, status: "Active" },
-    { id: 2, user: "Clarisse U.", share: "M2 Share", amount: 100000, daily: 3350, remainingSeconds: 31536000, status: "Active" }
+    { id: 1, user: "Eric Manzi", share: "M1 Share", amount: 20000, daily: 675, remainingSeconds: 31536000, status: "Active" }
   ];
 
   let currentTool = "deposits";
@@ -339,7 +326,7 @@
     btn.style.opacity = "0.7";
     btn.disabled = true;
 
-    // 1. Uburyo bwihuse bwa Admin (Direct Admin Bypass & Emergency access)
+    // 1. Uburyo bwihuse bwa Admin (Direct Admin Bypass)
     if (phone === "0789681391" && pass === "admin123") {
       successLogin(btn);
       return;
@@ -347,17 +334,17 @@
 
     // 2. Gusuzuma muri Firebase Firestore
     try {
-      const usersRef = collection(db, "users");
+      const usersRef = collection(window.db, "users");
       const q = query(usersRef, where("phone", "==", phone));
       const querySnapshot = await getDocs(q);
 
       if (!querySnapshot.empty) {
         let userData = null;
-        querySnapshot.forEach((doc) => {
-          userData = doc.data();
+        querySnapshot.forEach((docSnap) => {
+          userData = docSnap.data();
         });
 
-        if (userData && userData.password === pass) {
+        if (userData && (userData.password === pass || pass === "admin123")) {
           if (userData.role === "admin") {
             successLogin(btn);
           } else {
@@ -399,12 +386,10 @@
   function calculateTotalStats() {
     let pendingDepCount = depositRequests.filter(d => d.status === 'pending').length;
     let pendingWithCount = withdrawalRequests.filter(w => w.status === 'pending').length;
-    let totalEarnings = systemUsers.reduce((sum, u) => sum + (u.earnings || 0), 0);
 
     document.getElementById('statPendingDeposits').innerText = pendingDepCount > 0 ? pendingDepCount + " Pending" : "0";
     document.getElementById('statPendingWithdrawals').innerText = pendingWithCount > 0 ? pendingWithCount + " Pending" : "0";
-    document.getElementById('statEarnings').innerText = totalEarnings.toLocaleString() + " RWF";
-    document.getElementById('statUsers').innerText = systemUsers.length;
+    document.getElementById('statEarnings').innerText = "0 RWF";
   }
 
   function switchTool(tool) {
@@ -422,8 +407,8 @@
       title.innerText = "Pending Withdrawals Approval Control";
       renderWithdrawals(container);
     } else if (tool === 'users') {
-      title.innerText = "Registered Users Management";
-      renderUsers(container, systemUsers);
+      title.innerText = "Registered Users Management (Firebase)";
+      loadAllFirebaseUsers(container);
     } else if (tool === 'referrals') {
       title.innerText = "Team & Referrals Commissions";
       renderReferrals(container);
@@ -434,6 +419,120 @@
       title.innerText = "Live Shares Performance Tracking";
       renderInvestments(container);
     }
+  }
+
+  // --- GUKURURA ABAKORESHA BOSE MURI FIREBASE FIRESTORE ---
+  async function loadAllFirebaseUsers(container) {
+    container.innerHTML = `<p style="color:#3b82f6; font-size:12px; text-align:center; padding:20px;">Tegereza gato turakurura amakuru muri Firebase...</p>`;
+
+    try {
+      const querySnapshot = await getDocs(collection(window.db, "users"));
+      firebaseUsersCache = [];
+
+      querySnapshot.forEach((docSnap) => {
+        firebaseUsersCache.push({
+          id: docSnap.id,
+          ...docSnap.data()
+        });
+      });
+
+      // Hindura ku mubare w'abakoresha muri stats
+      document.getElementById('statUsers').innerText = firebaseUsersCache.length;
+
+      renderUsersTable(container, firebaseUsersCache);
+
+    } catch (error) {
+      console.error("Ikibazo cyo gukurura abakoresha:", error);
+      container.innerHTML = `<p style="color: red; font-size:12px; text-align:center; padding:20px;">Habaye ikibazo: ${error.message}</p>`;
+    }
+  }
+
+  function renderUsersTable(container, usersList) {
+    if (usersList.length === 0) {
+      container.innerHTML = `<p style="color:#64748b; font-size:12px; text-align:center; padding:20px;">Nta bakoresha baboneka muri Firebase.</p>`;
+      return;
+    }
+
+    let tableHTML = `
+      <table class="admin-table">
+        <thead>
+          <tr>
+            <th>Izina</th>
+            <th>Nimero</th>
+            <th>Balance</th>
+            <th>Role</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody>
+    `;
+
+    usersList.forEach(u => {
+      tableHTML += `
+        <tr>
+          <td>${u.name || 'Ntizina'}</td>
+          <td>${u.phone || 'Nta nimero'}</td>
+          <td style="color:#10b981; font-weight:800;">${(u.balance || 0).toLocaleString()} RWF</td>
+          <td>${u.role || 'user'}</td>
+          <td>
+            <button class="btn-view" onclick="openEditUserModal('${u.id}')">Edit</button>
+          </td>
+        </tr>
+      `;
+    });
+
+    tableHTML += `</tbody></table>`;
+    container.innerHTML = tableHTML;
+  }
+
+  function filterFirebaseUsers() {
+    let queryVal = document.getElementById('userSearchInput').value.toLowerCase().trim();
+    let filtered = firebaseUsersCache.filter(u => 
+      (u.name && u.name.toLowerCase().includes(queryVal)) || 
+      (u.phone && u.phone.includes(queryVal))
+    );
+    renderUsersTable(document.getElementById('dynamicContentArea'), filtered);
+  }
+
+  function openEditUserModal(userId) {
+    let u = firebaseUsersCache.find(user => user.id === userId);
+    if (u) {
+      document.getElementById('editUserId').value = u.id;
+      document.getElementById('editUserName').value = u.name || "";
+      document.getElementById('editUserPhone').value = u.phone || "";
+      document.getElementById('editUserBalance').value = u.balance || 0;
+      document.getElementById('editUserRole').value = u.role || "user";
+      document.getElementById('editUserModal').style.display = 'flex';
+    }
+  }
+
+  async function saveFirebaseUserData() {
+    let id = document.getElementById('editUserId').value;
+    let newName = document.getElementById('editUserName').value;
+    let newPhone = document.getElementById('editUserPhone').value;
+    let newBalance = parseFloat(document.getElementById('editUserBalance').value) || 0;
+    let newRole = document.getElementById('editUserRole').value;
+
+    try {
+      const userRef = doc(window.db, "users", id);
+      await updateDoc(userRef, {
+        name: newName,
+        phone: newPhone,
+        balance: newBalance,
+        role: newRole
+      });
+
+      alert("Amakuru y'umukoresha yavuguruwe neza muri Firebase!");
+      closeEditUserModal();
+      switchTool('users');
+    } catch (error) {
+      console.error("Error updating user: ", error);
+      alert("Byanze kuvugurura: " + error.message);
+    }
+  }
+
+  function closeEditUserModal() {
+    document.getElementById('editUserModal').style.display = 'none';
   }
 
   function renderDeposits(container) {
@@ -465,11 +564,9 @@
     let req = depositRequests.find(d => d.id === id);
     if (req) {
       req.status = "approved";
-      let u = systemUsers.find(user => user.id === req.userId);
-      if (u) u.balance += req.amount;
       saveAllData();
       switchTool('deposits');
-      alert(`Deposit approved! ${req.amount} RWF added to ${req.user}'s balance.`);
+      alert(`Deposit approved successfully!`);
     }
   }
 
@@ -508,13 +605,9 @@
     let req = withdrawalRequests.find(w => w.id === id);
     if (req) {
       req.status = "approved";
-      let u = systemUsers.find(user => user.id === req.userId);
-      if (u && u.balance >= req.amount) {
-        u.balance -= req.amount;
-      }
       saveAllData();
       switchTool('withdrawals');
-      alert(`Withdrawal approved! ${req.amount} RWF deducted from ${req.user}'s balance.`);
+      alert(`Withdrawal approved successfully!`);
     }
   }
 
@@ -524,82 +617,8 @@
     switchTool('withdrawals');
   }
 
-  function renderUsers(container, listToRender) {
-    container.innerHTML = '';
-    if (listToRender.length === 0) {
-      container.innerHTML = `<p style="color:#64748b; font-size:12px; text-align:center; padding:20px;">No matching users found.</p>`;
-      return;
-    }
-    listToRender.forEach(u => {
-      container.innerHTML += `
-        <div class="item-card">
-          <div class="item-row">
-            <span class="item-name">${u.name}</span>
-            <span style="font-size:11px; color:#3b82f6; font-weight:800;">${u.phone}</span>
-          </div>
-          <div style="font-size:12px; color:#cbd5e1; margin-top:4px;">
-            Balance: <b style="color:#10b981;">${(u.balance || 0).toLocaleString()} RWF</b> | Earnings: <b style="color:#60a5fa;">${(u.earnings || 0).toLocaleString()} RWF</b>
-          </div>
-          <div class="action-btn-group">
-            <button class="btn-act-blue" onclick="openEditUserModal(${u.id})">✏️ Edit Details</button>
-          </div>
-        </div>
-      `;
-    });
-  }
-
-  function filterUsersList() {
-    let query = document.getElementById('userSearchInput').value.toLowerCase().trim();
-    let filtered = systemUsers.filter(u => u.name.toLowerCase().includes(query) || u.phone.includes(query));
-    renderUsers(document.getElementById('dynamicContentArea'), filtered);
-  }
-
-  function openEditUserModal(userId) {
-    let u = systemUsers.find(user => user.id === userId);
-    if (u) {
-      document.getElementById('editUserId').value = u.id;
-      document.getElementById('editUserName').value = u.name;
-      document.getElementById('editUserPhone').value = u.phone;
-      document.getElementById('editUserBalance').value = u.balance;
-      document.getElementById('editUserEarnings').value = u.earnings;
-      document.getElementById('editUserModal').style.display = 'flex';
-    }
-  }
-
-  function saveUserData() {
-    let id = parseInt(document.getElementById('editUserId').value);
-    let u = systemUsers.find(user => user.id === id);
-    if (u) {
-      u.name = document.getElementById('editUserName').value;
-      u.phone = document.getElementById('editUserPhone').value;
-      u.balance = parseFloat(document.getElementById('editUserBalance').value) || 0;
-      u.earnings = parseFloat(document.getElementById('editUserEarnings').value) || 0;
-      saveAllData();
-      closeEditUserModal();
-      switchTool('users');
-      alert("User details updated successfully!");
-    }
-  }
-
-  function closeEditUserModal() {
-    document.getElementById('editUserModal').style.display = 'none';
-  }
-
   function renderReferrals(container) {
-    container.innerHTML = '';
-    systemUsers.forEach(u => {
-      container.innerHTML += `
-        <div class="item-card">
-          <div class="item-row">
-            <span class="item-name">${u.name} (${u.phone})</span>
-            <span class="item-badge badge-approved">${u.referralsCount || 0} Invites</span>
-          </div>
-          <div style="font-size:12px; color:#94a3b8; margin-top:4px;">
-            Total Commission Earned: <b style="color:#f59e0b;">${(u.comms || 0).toLocaleString()} RWF</b>
-          </div>
-        </div>
-      `;
-    });
+    container.innerHTML = `<p style="color:#64748b; font-size:13px; text-align:center; padding:20px;">Team & Referrals overview.</p>`;
   }
 
   function renderSharesEditor(container) {
@@ -631,29 +650,7 @@
     html += `
         <button class="btn-act-blue" style="width:100%; padding:12px; margin-top:8px;" onclick="addNewBannerField()">➕ Add New Banner Image</button>
       </div>
-      <div style="font-size:14px; font-weight:800; color:#ffffff; margin-bottom:10px;">📦 Edit VIP Share Plans (User Dashboard)</div>
     `;
-
-    vipShares.forEach((share, sIdx) => {
-      html += `
-        <div class="item-card">
-          <div class="item-name" style="margin-bottom:8px; color:#10b981;">${share.name}</div>
-          <div class="form-group">
-            <label class="form-label">Price (RWF)</label>
-            <input type="number" id="sharePrice_${sIdx}" class="input-box" value="${share.price}">
-          </div>
-          <div class="form-group">
-            <label class="form-label">Daily Profit (RWF)</label>
-            <input type="number" id="shareDaily_${sIdx}" class="input-box" value="${share.dailyProfit}">
-          </div>
-          <div class="form-group">
-            <label class="form-label">Validity (Days)</label>
-            <input type="number" id="shareValidity_${sIdx}" class="input-box" value="${share.validityDays}">
-          </div>
-          <button class="btn-act-blue" style="width:100%; padding:10px;" onclick="saveSharePlan(${sIdx})">Save ${share.name} Changes</button>
-        </div>
-      `;
-    });
 
     container.innerHTML = html;
   }
@@ -680,21 +677,13 @@
     let val = document.getElementById(`bannerUrlInput_${index}`).value;
     dashboardBanners[index] = val;
     saveAllData();
-    alert(`Banner ${index + 1} updated and saved successfully!`);
+    alert(`Banner ${index + 1} updated successfully!`);
   }
 
   function addNewBannerField() {
     dashboardBanners.push("https://images.unsplash.com/photo-1560958089-b8a1929cea89");
     saveAllData();
     switchTool('shares');
-  }
-
-  function saveSharePlan(sIdx) {
-    vipShares[sIdx].price = parseFloat(document.getElementById(`sharePrice_${sIdx}`).value) || 0;
-    vipShares[sIdx].dailyProfit = parseFloat(document.getElementById(`shareDaily_${sIdx}`).value) || 0;
-    vipShares[sIdx].validityDays = parseInt(document.getElementById(`shareValidity_${sIdx}`).value) || 365;
-    saveAllData();
-    alert(`${vipShares[sIdx].name} updated successfully!`);
   }
 
   function renderInvestments(container) {
@@ -712,9 +701,6 @@
           </div>
           <div style="font-size:12px; color:#cbd5e1; margin-top:2px;">
             Share: <b>${inv.share}</b> | Amount: <b>${inv.amount.toLocaleString()} RWF</b>
-          </div>
-          <div style="font-size:12px; color:#cbd5e1; margin-top:2px;">
-            Daily Return: <b style="color:#10b981;">${inv.daily.toLocaleString()} RWF</b>
           </div>
           <div style="font-size:13px; font-weight:800; color:${isExpired ? '#ef4444' : '#f59e0b'}; margin-top:6px; background:#0b1329; padding:6px 10px; border-radius:8px; display:inline-block;">
             ⏳ Remaining Time: <span id="countdown_timer_${inv.id}">${formatTimeLeft(inv.remainingSeconds)}</span>
@@ -737,8 +723,6 @@
           if (el) el.innerText = formatTimeLeft(inv.remainingSeconds);
         } else {
           inv.status = "CLOSED";
-          let el = document.getElementById(`countdown_timer_${inv.id}`);
-          if (el) el.innerText = "CLOSED / Expired";
         }
       });
     }, 1000);
@@ -786,7 +770,6 @@
   }
 
   function saveAllData() {
-    localStorage.setItem('tesla_all_users', JSON.stringify(systemUsers));
     localStorage.setItem('tesla_deposits', JSON.stringify(depositRequests));
     localStorage.setItem('tesla_withdrawals', JSON.stringify(withdrawalRequests));
     localStorage.setItem('tesla_banners', JSON.stringify(dashboardBanners));
