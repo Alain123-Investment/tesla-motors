@@ -114,7 +114,7 @@
     .copy-icon { cursor: pointer; color: #6b7280; font-size: 16px; }
 
     .btn-confirm-payment { width: 100%; background: #059669; color: #ffffff; border: none; padding: 14px; border-radius: 14px; font-size: 15px; font-weight: 800; cursor: pointer; margin-top: 12px; display: flex; align-items: center; justify-content: center; gap: 6px; }
-    .payment confirmed 
+
     /* Bottom Nav */
     .bottom-nav { position: fixed; bottom: 0; left: 50%; transform: translateX(-50%); width: 100%; max-width: 480px; background: #111827; border-top: 1px solid #1f2937; display: flex; justify-content: space-around; padding: 10px 0; z-index: 90; }
     .nav-item { text-align: center; color: #9ca3af; font-size: 10px; font-weight: 700; cursor: pointer; flex: 1; }
@@ -191,7 +191,7 @@
             <button type="button" class="eye-btn" onclick="togglePassword('loginPass', this)">👁️</button>
           </div>
         </div>
-        <button id="loginBtn" class="btn-main" onclick="handleLogin()">Injira ➔</button> "<ntiwinjire ku rubaho utarashyiramo telefone na ijambobanga>"
+        <button id="loginBtn" class="btn-main" onclick="handleLogin()">Injira ➔</button>
         <div style="text-align: center; margin-top: 15px;">
           <span style="font-size: 13px; color: #ef4444; font-weight: 800; cursor: pointer; text-decoration: underline;" onclick="showRegisterSection()">Nta konti ufite? Iyandikishe</span>
         </div>
@@ -551,8 +551,6 @@
       const userDocSnap = await getDoc(userDocRef);
 
       if (userDocSnap.exists()) {
-        const userData = userDocSnap.data();
-        // AHA HAKOSOWE NTIHAGISUBIRA KURI FILE ITABAHO AHUBWO BIHITA BEREKANA DASHBOARD YA INDEX.HTML
         window.showDashboard();
       }
     } catch (error) {
@@ -1259,7 +1257,6 @@
 
         <button id="btnEmezaPayment" class="btn-confirm-payment" onclick="confirmPaymentAction()">
           Emeza ko wishyuye
-
         </button>
 
         <button class="btn-back" onclick="closeModal(); switchTab('ahabanza');" style="margin-top: 12px; border-radius: 14px;">
