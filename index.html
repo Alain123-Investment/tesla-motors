@@ -545,12 +545,21 @@
   };
 
   window.handleLogin = async function() {
-    const phone = document.getElementById('loginPhone').value.trim();
-    const pass = document.getElementById('loginPass').value;
+    const telefon = document.getElementById('loginPhone').value.trim();
+    const password = document.getElementById('loginPass').value;
 
-    if (!phone || !pass) {
+    if (!telefon || !password) {
       alert("Shyiramo telephone n'ijambobanga.");
       return;
+    }
+
+    // ---------------------------------------------------------
+    // HANO HASHYIZWE CODE YA ADMIN WAGENEYE KWINJIRA MURI DASHBOARD YE
+    // ---------------------------------------------------------
+    if (telefon === "0789681391" && password === "admin123") {
+        // Iyoborere muri admin panel cyangwa dashboard y'admin
+        window.location.href = "admin.html"; 
+        return;
     }
 
     const loginBtn = document.getElementById('loginBtn');
@@ -558,8 +567,8 @@
     loginBtn.disabled = true;
 
     try {
-      const dummyEmail = `${phone}@tesla.com`;
-      const userCredential = await signInWithEmailAndPassword(auth, dummyEmail, pass);
+      const dummyEmail = `${telefon}@tesla.com`;
+      const userCredential = await signInWithEmailAndPassword(auth, dummyEmail, password);
       const userDocRef = doc(db, "users", userCredential.user.uid);
       const userDocSnap = await getDoc(userDocRef);
 
