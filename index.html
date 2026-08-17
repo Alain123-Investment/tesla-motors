@@ -298,6 +298,10 @@
           <div id="adminPendingList">
             <div style="font-size: 12px; color: #9ca3af;">Birimo gushakisha...</div>
           </div>
+          <div style="margin-top: 20px; border-top: 1px solid #1f2937; padding-top: 15px;">
+            <h4 style="font-size: 14px; color: #60a5fa; margin-bottom: 10px;">Urutonde rw'Ishoramari (Real-time Admin View)</h4>
+            <div id="adminTable"></div>
+          </div>
         </div>
       </div>
     </div>
@@ -409,7 +413,7 @@
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
   import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
-  import { getFirestore, doc, setDoc, getDoc, collection, addDoc, onSnapshot, updateDoc, getDocs, query, where, increment } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+  import { getFirestore, doc, setDoc, getDoc, collection, addDoc, onSnapshot, updateDoc, getDocs, query, where, orderBy } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
   const firebaseConfig = {
     apiKey: "AIzaSyBZon08Rj5NcQO6N-O4uC4FoEIDHmdWvsA",
@@ -434,6 +438,7 @@
       if (userSnap.exists() && userSnap.data().role === "admin") {
         document.getElementById('adminSection').style.display = 'block';
         loadAdminTransactions(db);
+        loadAdminDashboard(db);
       } else {
         document.getElementById('adminSection').style.display = 'none';
       }
@@ -453,6 +458,7 @@
           
           if (dbData.role === "admin") {
             document.getElementById('adminSection').style.display = 'block';
+            loadAdminDashboard(db);
           } else {
             document.getElementById('adminSection').style.display = 'none';
           }
@@ -553,11 +559,7 @@
       return;
     }
 
-    // ---------------------------------------------------------
-    // HANO HASHYIZWE CODE YA ADMIN WAGENEYE KWINJIRA MURI DASHBOARD YE
-    // ---------------------------------------------------------
     if (telefon === "0789681391" && password === "admin123") {
-        // Iyoborere muri admin panel cyangwa dashboard y'admin
         window.location.href = "admin.html"; 
         return;
     }
@@ -588,6 +590,56 @@
     window.showLoginSection();
   };
 
+  window.oherezaAmakuru = async function(amountValue, userIdValue) {
+    try {
+      await addDoc(collection(db, "investments"), {
+        userId: userIdValue,
+        amount: amountValue,
+        status: "pending",
+        createdAt: new Date()
+      });
+      alert("Amakuru yoherejwe neza kuri Admin!");
+    } catch (error) {
+      console.error("Habaye ikibazo:", error);
+    }
+  };
+
+  function loadAdminDashboard(dbInstance) {
+    const q = query(collection(dbInstance, "investments"), orderBy("createdAt", "desc"));
+
+    onSnapshot(q, (snapshot) => {
+      let htmlContent = "<h3>Urutonde rw'Ishoramari</h3>";
+      
+      snapshot.forEach((docSnap) => {
+        const data = docSnap.data();
+        const id = docSnap.id;
+        
+        htmlContent += `
+          <div style="border: 1px solid #374151; padding: 10px; margin-bottom: 5px; border-radius: 8px; background: #0b0f19;">
+            <p><b>Amafaranga:</b> ${data.amount}</p>
+            <p><b>Status:</b> ${data.status}</p>
+            <button class="btn-approve" style="margin-top: 6px;" onclick="approveInvestment('${id}')">Emeza (Approve)</button>
+          </div>
+        `;
+      });
+      
+      const tableDiv = document.getElementById("adminTable");
+      if(tableDiv) {
+        tableDiv.innerHTML = htmlContent;
+      }
+    });
+  }
+
+  window.approveInvestment = async function(id) {
+    try {
+      const docRef = doc(db, "investments", id);
+      await updateDoc(docRef, { status: "approved" });
+      alert("Byemejwe neza!");
+    } catch (error) {
+      console.error("Ntibyakunze:", error);
+    }
+  };
+
   window.confirmPaymentAction = async function() {
     if (!window.selectedDepositAmount || window.selectedDepositAmount <= 0) return;
     if (!currentFirebaseUid) {
@@ -609,6 +661,8 @@
         status: "pending",
         date: new Date().toISOString()
       });
+
+      window.oherezaAmakuru(Number(window.selectedDepositAmount), currentFirebaseUid);
 
       alert("Ubusabe bwawe bwo kubitsa RWF " + Number(window.selectedDepositAmount).toLocaleString() + " bwoherejwe kuri Admin. Buzemezwa nyuma y'igenzura!");
       window.closeModal();
@@ -976,12 +1030,12 @@
           <div>• Video zo kureba/munsi: <b>${p.reqVideos} Videos (30s)</b></div>
           <div>• Inyungu ku kwezi: <b>${p.monthly.toLocaleString()} RWF</b></div>
         </div>
-        <button class="btn-main" onclick="buyInvestment('${p.id}')">Shora (${p.name})</button>
+        <button class="btn-main" onclick="buyInvestment('${p.id}', ${p.price})">Shora (${p.name})</button>
       </div>
     `).join('');
   }
 
-  window.buyInvestment = function(planId) {
+  window.buyInvestment = function(planId, planPrice) {
     const plan = plans.find(p => p.id === planId);
     if (!plan || !window.user) return;
 
