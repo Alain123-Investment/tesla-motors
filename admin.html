@@ -35,7 +35,7 @@
     .stat-val { font-size: 16px; font-weight: 900; color: #ffffff; }
 
     /* Quick Tools Navigation Grid */
-    .tools-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; padding: 0 16px 16px; }
+    .tools-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; padding: 0 16px 16px; }
     .tool-btn { background: #111c38; border: 1px solid #1e2d52; padding: 12px 4px; border-radius: 12px; text-align: center; cursor: pointer; transition: 0.2s; }
     .tool-btn:active { background: #1e2d52; }
     .tool-icon { font-size: 20px; display: block; margin-bottom: 4px; }
@@ -56,7 +56,6 @@
     .item-badge { font-size: 10px; font-weight: 800; padding: 3px 8px; border-radius: 6px; text-transform: uppercase; }
     .badge-pending { background: rgba(245, 158, 11, 0.2); color: #f59e0b; }
     .badge-approved { background: rgba(16, 185, 129, 0.2); color: #10b981; }
-    .badge-closed { background: rgba(239, 68, 68, 0.2); color: #ef4444; }
 
     .action-btn-group { display: flex; gap: 8px; margin-top: 10px; }
     .btn-act-green { flex: 1; background: #10b981; color: white; border: none; padding: 8px; border-radius: 8px; font-weight: 800; font-size: 11px; cursor: pointer; }
@@ -162,10 +161,6 @@
       <span class="tool-icon">🎬</span>
       <span class="tool-title">Videos Manager</span>
     </div>
-    <div class="tool-btn" onclick="switchTool('investments')">
-      <span class="tool-icon">📈</span>
-      <span class="tool-title">Live Investments</span>
-    </div>
   </div>
 
   <!-- DYNAMIC PANELS -->
@@ -198,7 +193,6 @@
       <button class="btn-act-blue" style="width:100%; margin-bottom:8px; padding:12px;" onclick="switchTool('referrals'); closeMenuModal();">🏆 Team & Referrals</button>
       <button class="btn-act-blue" style="width:100%; margin-bottom:8px; padding:12px;" onclick="switchTool('shares'); closeMenuModal();">⚙️ Shares & Banners Editor</button>
       <button class="btn-act-blue" style="width:100%; margin-bottom:8px; padding:12px;" onclick="switchTool('videos'); closeMenuModal();">🎬 Videos & Daily Tasks Manager</button>
-      <button class="btn-act-blue" style="width:100%; margin-bottom:8px; padding:12px;" onclick="switchTool('investments'); closeMenuModal();">📈 Active Live Investments</button>
     </div>
   </div>
 
@@ -230,40 +224,12 @@
     </div>
   </div>
 
-  <!-- EDIT LIVE INVESTMENT MODAL -->
-  <div id="editInvestmentModal" class="modal-overlay" style="display: none;">
-    <div class="modal-card">
-      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;">
-        <h3 style="font-size:15px;">Edit Live Investment</h3>
-        <span style="cursor:pointer; font-size:18px;" onclick="closeEditInvestmentModal()">✖</span>
-      </div>
-      <input type="hidden" id="editInvId">
-      <div class="form-group">
-        <label class="form-label">Invested Share Name</label>
-        <input type="text" id="editInvShare" class="input-box">
-      </div>
-      <div class="form-group">
-        <label class="form-label">Invested Amount (RWF)</label>
-        <input type="number" id="editInvAmount" class="input-box">
-      </div>
-      <div class="form-group">
-        <label class="form-label">Daily Return (RWF)</label>
-        <input type="number" id="editInvDaily" class="input-box">
-      </div>
-      <div class="form-group">
-        <label class="form-label">Remaining Seconds</label>
-        <input type="number" id="editInvSeconds" class="input-box">
-      </div>
-      <button class="btn-act-green" style="width:100%; padding:12px; margin-top:10px;" onclick="saveInvestmentData()">Save Investment Changes</button>
-    </div>
-  </div>
-
 </div>
 
 <!-- FIREBASE SDK (Modular) -->
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-  import { getFirestore, collection, query, where, getDocs, doc, updateDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+  import { getFirestore, collection, query, where, getDocs, doc, updateDoc, getDoc, increment } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
   const firebaseConfig = {
     apiKey: "AIzaSyBZon08Rj5NcQO6N-O4uC4FoEIDHmdWvsA",
@@ -283,19 +249,21 @@
   window.query = query;
   window.where = where;
   window.getDocs = getDocs;
+  window.getDoc = getDoc;
   window.doc = doc;
   window.updateDoc = updateDoc;
+  window.increment = increment;
 </script>
 
 <script>
   let firebaseUsersCache = [];
 
   let depositRequests = JSON.parse(localStorage.getItem('tesla_deposits')) || [
-    { id: 1, userId: 101, user: "Bruno Alain", amount: 50000, status: "pending", date: "10 mins ago", code: "TXN-99812" }
+    { id: 1, userId: "LCIfzRK7roXt66...", user: "Bruno Alain", amount: 50000, status: "pending", date: "10 mins ago", code: "TXN-99812" }
   ];
 
   let withdrawalRequests = JSON.parse(localStorage.getItem('tesla_withdrawals')) || [
-    { id: 1, userId: 102, user: "Eric Manzi", amount: 12000, status: "pending", date: "25 mins ago", phone: "0788123456" }
+    { id: 1, userId: "LCIfzRK7roXt66...", user: "Eric Manzi", amount: 12000, status: "pending", date: "25 mins ago", phone: "0788123456" }
   ];
 
   let dashboardBanners = JSON.parse(localStorage.getItem('tesla_banners')) || [
@@ -310,7 +278,6 @@
     { id: "m3", name: "M3 Share", price: 250000, dailyProfit: 8325, validityDays: 365 }
   ];
 
-  // Default 41 videos associated with shares (can be customized per share type)
   let platformVideos = JSON.parse(localStorage.getItem('tesla_platform_videos')) || (() => {
     let defaultVids = [];
     for(let i = 1; i <= 41; i++) {
@@ -325,12 +292,7 @@
     return defaultVids;
   })();
 
-  let liveInvestments = JSON.parse(localStorage.getItem('tesla_live_investments')) || [
-    { id: 1, user: "Eric Manzi", share: "M1 Share", amount: 20000, daily: 675, startTime: Date.now() - 3600000, durationSeconds: 31536000, status: "Active" }
-  ];
-
   let currentTool = "deposits";
-  let countdownTimerInterval = null;
 
   async function performAdminLogin() {
     let phone = document.getElementById('loginPhone').value.trim();
@@ -391,7 +353,6 @@
       document.getElementById('adminDashboardApp').style.display = 'block';
       calculateTotalStats();
       switchTool('deposits');
-      startLiveCountdown();
     }, 1000);
   }
 
@@ -407,7 +368,12 @@
 
     document.getElementById('statPendingDeposits').innerText = pendingDepCount > 0 ? pendingDepCount + " Pending" : "0";
     document.getElementById('statPendingWithdrawals').innerText = pendingWithCount > 0 ? pendingWithCount + " Pending" : "0";
-    document.getElementById('statEarnings').innerText = "0 RWF";
+    
+    let totalApprovedEarnings = depositRequests
+      .filter(d => d.status === 'approved')
+      .reduce((sum, d) => sum + (d.amount || 0), 0);
+    
+    document.getElementById('statEarnings').innerText = totalApprovedEarnings.toLocaleString() + " RWF";
   }
 
   function switchTool(tool) {
@@ -436,9 +402,6 @@
     } else if (tool === 'videos') {
       title.innerText = "Manage 41 Share Videos & Tasks";
       renderVideosManager(container);
-    } else if (tool === 'investments') {
-      title.innerText = "Live Shares Performance Tracking";
-      renderInvestments(container);
     }
   }
 
@@ -578,13 +541,25 @@
     });
   }
 
-  function approveDeposit(id) {
+  async function approveDeposit(id) {
     let req = depositRequests.find(d => d.id === id);
-    if (req) {
+    if (!req) return;
+
+    try {
+      if (req.userId) {
+        const userRef = doc(window.db, "users", req.userId);
+        await updateDoc(userRef, {
+          balance: increment(req.amount)
+        });
+      }
+
       req.status = "approved";
       saveAllData();
       switchTool('deposits');
-      alert(`Deposit approved successfully!`);
+      alert(`Deposit approved successfully and balance added to user account!`);
+    } catch (error) {
+      console.error("Error approving deposit:", error);
+      alert("Habaye ikibazo mu kohereza amafaranga kuri konti y'umukoresha: " + error.message);
     }
   }
 
@@ -704,7 +679,6 @@
     switchTool('shares');
   }
 
-  // --- VIDEOS & DAILY TASKS MANAGER TOOL ---
   function renderVideosManager(container) {
     let html = `
       <div class="item-card" style="margin-bottom:20px;">
@@ -763,113 +737,12 @@
     renderVideosManager(document.getElementById('dynamicContentArea'));
   }
 
-  // --- LIVE INVESTMENTS TRACKING ---
-  function renderInvestments(container) {
-    container.innerHTML = '';
-    liveInvestments.forEach(inv => {
-      let now = Date.now();
-      let elapsedSeconds = Math.floor((now - (inv.startTime || now)) / 1000);
-      let remaining = (inv.durationSeconds || 31536000) - elapsedSeconds;
-      if(remaining < 0) remaining = 0;
-      inv.remainingSeconds = remaining;
-
-      let isExpired = remaining <= 0;
-      let badgeClass = isExpired ? 'badge-closed' : 'badge-approved';
-      let statusText = isExpired ? 'CLOSED' : inv.status;
-
-      container.innerHTML += `
-        <div class="item-card">
-          <div class="item-row">
-            <span class="item-name">${inv.user}</span>
-            <span class="item-badge ${badgeClass}">${statusText}</span>
-          </div>
-          <div style="font-size:12px; color:#cbd5e1; margin-top:2px;">
-            Share: <b>${inv.share}</b> | Amount: <b>${inv.amount.toLocaleString()} RWF</b>
-          </div>
-          <div style="font-size:13px; font-weight:800; color:${isExpired ? '#ef4444' : '#f59e0b'}; margin-top:6px; background:#0b1329; padding:6px 10px; border-radius:8px; display:inline-block;">
-            ⏳ Remaining Time: <span id="countdown_timer_${inv.id}">${formatTimeLeft(remaining)}</span>
-          </div>
-          <div class="action-btn-group">
-            <button class="btn-act-blue" onclick="openEditInvestmentModal(${inv.id})">✏️ Edit Live Investment</button>
-          </div>
-        </div>
-      `;
-    });
-  }
-
-  function startLiveCountdown() {
-    if (countdownTimerInterval) clearInterval(countdownTimerInterval);
-    countdownTimerInterval = setInterval(() => {
-      let now = Date.now();
-      liveInvestments.forEach(inv => {
-        let elapsedSeconds = Math.floor((now - (inv.startTime || now)) / 1000);
-        let remaining = (inv.durationSeconds || 31536000) - elapsedSeconds;
-        if (remaining < 0) remaining = 0;
-        inv.remainingSeconds = remaining;
-
-        let el = document.getElementById(`countdown_timer_${inv.id}`);
-        if (el) {
-          el.innerText = formatTimeLeft(remaining);
-        }
-        if (remaining <= 0) {
-          inv.status = "CLOSED";
-        }
-      });
-    }, 1000);
-  }
-
-  function formatTimeLeft(totalSeconds) {
-    if (totalSeconds <= 0) return "CLOSED / Expired";
-    let days = Math.floor(totalSeconds / (3600 * 24));
-    let hours = Math.floor((totalSeconds % (3600 * 24)) / 3600);
-    let minutes = Math.floor((totalSeconds % 3600) / 60);
-    let seconds = Math.floor(totalSeconds % 60);
-    return `${days}d ${hours}h ${minutes}m ${seconds}s`;
-  }
-
-  function openEditInvestmentModal(invId) {
-    let inv = liveInvestments.find(i => i.id === invId);
-    if (inv) {
-      document.getElementById('editInvId').value = inv.id;
-      document.getElementById('editInvShare').value = inv.share;
-      document.getElementById('editInvAmount').value = inv.amount;
-      document.getElementById('editInvDaily').value = inv.daily;
-      document.getElementById('editInvSeconds').value = inv.remainingSeconds;
-      document.getElementById('editInvestmentModal').style.display = 'flex';
-    }
-  }
-
-  function saveInvestmentData() {
-    let id = parseInt(document.getElementById('editInvId').value);
-    let inv = liveInvestments.find(i => i.id === id);
-    if (inv) {
-      inv.share = document.getElementById('editInvShare').value;
-      inv.amount = parseFloat(document.getElementById('editInvAmount').value) || 0;
-      inv.daily = parseFloat(document.getElementById('editInvDaily').value) || 0;
-      let newRemSeconds = parseInt(document.getElementById('editInvSeconds').value) || 0;
-      inv.durationSeconds = newRemSeconds;
-      inv.startTime = Date.now(); // reset start so countdown calculates properly
-      inv.remainingSeconds = newRemSeconds;
-      if (newRemSeconds > 0) inv.status = "Active";
-      
-      saveAllData();
-      closeEditInvestmentModal();
-      switchTool('investments');
-      alert("Live investment details updated successfully!");
-    }
-  }
-
-  function closeEditInvestmentModal() {
-    document.getElementById('editInvestmentModal').style.display = 'none';
-  }
-
   function saveAllData() {
     localStorage.setItem('tesla_deposits', JSON.stringify(depositRequests));
     localStorage.setItem('tesla_withdrawals', JSON.stringify(withdrawalRequests));
     localStorage.setItem('tesla_banners', JSON.stringify(dashboardBanners));
     localStorage.setItem('tesla_vip_shares', JSON.stringify(vipShares));
     localStorage.setItem('tesla_platform_videos', JSON.stringify(platformVideos));
-    localStorage.setItem('tesla_live_investments', JSON.stringify(liveInvestments));
     calculateTotalStats();
   }
 
