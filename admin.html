@@ -87,7 +87,7 @@
   <!-- FIREBASE SDK & GLOBAL FUNCTIONS INITIALIZATION -->
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-    import { getFirestore, collection, query, where, getDocs, doc, updateDoc, getDoc, increment } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+    import { getFirestore, collection, query, where, getDocs, doc, updateDoc, getDoc, increment, onSnapshot } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
     const firebaseConfig = {
       apiKey: "AIzaSyBZon08Rj5NcQO6N-O4uC4FoEIDHmdWvsA",
@@ -112,6 +112,7 @@
     window.doc = doc;
     window.updateDoc = updateDoc;
     window.increment = increment;
+    window.onSnapshot = onSnapshot;
   </script>
 </head>
 <body>
@@ -147,17 +148,17 @@
 
   <!-- OVERVIEW PLATFORM STATS -->
   <div class="overview-section">
-    <div class="stat-card green" onclick="switchTool('deposits')">
-      <div class="stat-lbl">Total Pending Deposits</div>
-      <div class="stat-val" id="statPendingDeposits">0 RWF</div>
+    <div class="stat-card green" onclick="switchTool('transactions')">
+      <div class="stat-lbl">Pending Transactions</div>
+      <div class="stat-val" id="statPendingDeposits">Active</div>
     </div>
-    <div class="stat-card red" onclick="switchTool('withdrawals')">
-      <div class="stat-lbl">Total Pending Withdrawals</div>
-      <div class="stat-val" id="statPendingWithdrawals">0 RWF</div>
+    <div class="stat-card red" onclick="switchTool('transactions')">
+      <div class="stat-lbl">Approvals Panel</div>
+      <div class="stat-val" id="statPendingWithdrawals">Firestore</div>
     </div>
     <div class="stat-card blue">
       <div class="stat-lbl">Total Platform Earnings</div>
-      <div class="stat-val" id="statEarnings">0 RWF</div>
+      <div class="stat-val" id="statEarnings">Active</div>
     </div>
     <div class="stat-card purple" onclick="switchTool('users')">
       <div class="stat-lbl">Total Registered Users</div>
@@ -167,13 +168,9 @@
 
   <!-- QUICK TOOLS NAVIGATION GRID -->
   <div class="tools-grid">
-    <div class="tool-btn" onclick="switchTool('deposits')">
+    <div class="tool-btn" onclick="switchTool('transactions')">
       <span class="tool-icon">💵</span>
-      <span class="tool-title">Deposits</span>
-    </div>
-    <div class="tool-btn" onclick="switchTool('withdrawals')">
-      <span class="tool-icon">📲</span>
-      <span class="tool-title">Withdrawals</span>
+      <span class="tool-title">Transactions</span>
     </div>
     <div class="tool-btn" onclick="switchTool('users')">
       <span class="tool-icon">👥</span>
@@ -196,7 +193,7 @@
   <!-- DYNAMIC PANELS -->
   <div class="panel-container">
     <div class="panel-header">
-      <div class="panel-title" id="panelTitle">Deposits Approval Panel</div>
+      <div class="panel-title" id="panelTitle">Transactions Approval Panel</div>
       <button style="background:none; border:none; color:#3b82f6; font-size:11px; font-weight:700; cursor:pointer;" onclick="reloadAdminData()">Refresh 🔄</button>
     </div>
 
@@ -217,8 +214,7 @@
         <h3 style="font-size:16px;">Admin Tools Navigation</h3>
         <span style="cursor:pointer; font-size:18px;" onclick="closeMenuModal()">✖</span>
       </div>
-      <button class="btn-act-blue" style="width:100%; margin-bottom:8px; padding:12px;" onclick="switchTool('deposits'); closeMenuModal();">💵 Deposits Approval</button>
-      <button class="btn-act-blue" style="width:100%; margin-bottom:8px; padding:12px;" onclick="switchTool('withdrawals'); closeMenuModal();">📲 Withdrawals Approval</button>
+      <button class="btn-act-blue" style="width:100%; margin-bottom:8px; padding:12px;" onclick="switchTool('transactions'); closeMenuModal();">💵 Transactions Approval</button>
       <button class="btn-act-blue" style="width:100%; margin-bottom:8px; padding:12px;" onclick="switchTool('users'); closeMenuModal();">👥 Users Management</button>
       <button class="btn-act-blue" style="width:100%; margin-bottom:8px; padding:12px;" onclick="switchTool('investment_tiers'); closeMenuModal();">📦 Investment Tiers (Bigega)</button>
       <button class="btn-act-blue" style="width:100%; margin-bottom:8px; padding:12px;" onclick="switchTool('shares'); closeMenuModal();">⚙️ Shares & Banners Editor</button>
@@ -258,14 +254,7 @@
 
 <script>
   let firebaseUsersCache = [];
-
-  let depositRequests = JSON.parse(localStorage.getItem('tesla_deposits')) || [
-    { id: 1, userId: "LCIfzRK7roXt66...", user: "Bruno Alain", amount: 50000, status: "pending", date: "10 mins ago", code: "TXN-99812" }
-  ];
-
-  let withdrawalRequests = JSON.parse(localStorage.getItem('tesla_withdrawals')) || [
-    { id: 1, userId: "LCIfzRK7roXt66...", user: "Eric Manzi", amount: 12000, status: "pending", date: "25 mins ago", phone: "0788123456" }
-  ];
+  let adminTransactionsUnsubscribe = null;
 
   let dashboardBanners = JSON.parse(localStorage.getItem('tesla_banners')) || [
     "https://images.unsplash.com/photo-1560958089-b8a1929cea89",
@@ -309,7 +298,7 @@
     return defaultVids;
   })();
 
-  let currentTool = "deposits";
+  let currentTool = "transactions";
 
   async function performAdminLogin() {
     let phone = document.getElementById('loginPhone').value.trim();
@@ -368,8 +357,7 @@
     setTimeout(() => {
       document.getElementById('adminLoginScreen').style.display = 'none';
       document.getElementById('adminDashboardApp').style.display = 'block';
-      calculateTotalStats();
-      switchTool('deposits');
+      switchTool('transactions');
     }, 1000);
   }
 
@@ -377,20 +365,6 @@
     btn.innerText = "Login to Dashboard";
     btn.style.opacity = "1";
     btn.disabled = false;
-  }
-
-  function calculateTotalStats() {
-    let pendingDepCount = depositRequests.filter(d => d.status === 'pending').length;
-    let pendingWithCount = withdrawalRequests.filter(w => w.status === 'pending').length;
-
-    document.getElementById('statPendingDeposits').innerText = pendingDepCount > 0 ? pendingDepCount + " Pending" : "0";
-    document.getElementById('statPendingWithdrawals').innerText = pendingWithCount > 0 ? pendingWithCount + " Pending" : "0";
-    
-    let totalApprovedEarnings = depositRequests
-      .filter(d => d.status === 'approved')
-      .reduce((sum, d) => sum + (d.amount || 0), 0);
-    
-    document.getElementById('statEarnings').innerText = totalApprovedEarnings.toLocaleString() + " RWF";
   }
 
   function switchTool(tool) {
@@ -401,21 +375,21 @@
 
     searchContainer.style.display = (tool === 'users') ? 'block' : 'none';
 
-    if (tool === 'deposits') {
-      title.innerText = "Pending Deposits Approval Control";
-      renderDeposits(container);
-    } else if (tool === 'withdrawals') {
-      title.innerText = "Pending Withdrawals Approval Control";
-      renderWithdrawals(container);
+    // Clear active transaction listener if we navigate away from transactions
+    if (tool !== 'transactions' && adminTransactionsUnsubscribe) {
+      adminTransactionsUnsubscribe();
+      adminTransactionsUnsubscribe = null;
+    }
+
+    if (tool === 'transactions') {
+      title.innerText = "Transactions Approval Panel (Firestore)";
+      loadAdminTransactions(window.db);
     } else if (tool === 'users') {
       title.innerText = "Registered Users Management (Firebase)";
       loadAllFirebaseUsers(container);
     } else if (tool === 'investment_tiers') {
       title.innerText = "Manage Investment Tiers (Bigega byo Gushoramo)";
       renderInvestmentTiers(container);
-    } else if (tool === 'referrals') {
-      title.innerText = "Team & Referrals Commissions";
-      renderReferrals(container);
     } else if (tool === 'shares') {
       title.innerText = "Edit Shares & Dashboard Banners";
       renderSharesEditor(container);
@@ -424,6 +398,110 @@
       renderVideosManager(container);
     }
   }
+
+  // --- FIRESTORE TRANSACTIONS MANAGER ---
+  function loadAdminTransactions(dbInstance) {
+    if (adminTransactionsUnsubscribe) adminTransactionsUnsubscribe();
+
+    const container = document.getElementById('dynamicContentArea');
+    container.innerHTML = `<div id="adminPendingList"><div style="font-size:12px;color:#d97706; text-align:center; padding:20px;">Birimo gufungura amakuru ya Transactions...</div></div>`;
+    
+    const listEl = document.getElementById('adminPendingList');
+
+    adminTransactionsUnsubscribe = onSnapshot(
+      collection(dbInstance, "transactions"),
+      (snapshot) => {
+        if (!listEl) return;
+
+        const pendingItems = snapshot.docs
+          .map(docSnap => ({ id: docSnap.id, ...docSnap.data() }))
+          .filter(item => item.status === "pending")
+          .sort((a, b) => String(b.date || "").localeCompare(String(a.date || "")));
+
+        if (pendingItems.length === 0) {
+          listEl.innerHTML = `<div style="font-size:12px;color:#d97706; text-align:center; padding:20px;">Nta busabe (pending) buri muri Firestore ubu.</div>`;
+          return;
+        }
+
+        listEl.innerHTML = pendingItems.map(item => `
+          <div class="item-card" style="border:1px solid #78350f; margin-bottom:10px;">
+            <div class="item-row">
+              <span class="item-name">${item.userName || "Unknown"}</span>
+              <span class="item-badge badge-pending">PENDING</span>
+            </div>
+            <div style="font-size:12px; color:#cbd5e1; margin-bottom:4px;"><b>Telefoni:</b> ${item.userPhone || "Unknown"}</div>
+            <div style="font-size:12px; color:#cbd5e1; margin-bottom:4px;">
+              <b>Ubwoko:</b> 
+              <span style="color:${item.type === 'deposit' ? '#10b981' : '#ef4444'}; font-weight:800;">
+                ${(item.type || "").toUpperCase()}
+              </span>
+            </div>
+            <div style="font-size:15px; font-weight:900; color:${item.type === 'deposit' ? '#10b981' : '#ef4444'}; margin-bottom:4px;">${item.type === 'deposit' ? '+' : '-'}${Number(item.amount || 0).toLocaleString()} RWF</div>
+            <div style="font-size:10px; color:#94a3b8; margin-top:4px;">${item.date || ""}</div>
+            <div class="action-btn-group">
+              <button class="btn-act-green" onclick="adminApproveTx('${item.id}', '${item.userId}', '${item.type}', ${Number(item.amount || 0)})">✓ Emeza</button>
+              <button class="btn-act-red" onclick="adminRejectTx('${item.id}', '${item.userId}', '${item.type}', ${Number(item.amount || 0)})">✕ Hagarika</button>
+            </div>
+          </div>
+        `).join("");
+      },
+      (error) => {
+        console.error("Ikibazo mu gusoma transactions:", error);
+        if (listEl) {
+          listEl.innerHTML = `<div style="font-size:12px;color:#f87171; text-align:center; padding:20px;">Ntibashoboye gusoma transactions: ${error.message}</div>`;
+        }
+      }
+    );
+  }
+
+  window.adminApproveTx = async function(txId, targetUserId, type, amount) {
+    try {
+      await updateDoc(doc(db, "transactions", txId), { status: "approved" });
+
+      if (type === "deposit") {
+        const targetRef = doc(db, "users", targetUserId);
+        const targetSnap = await getDoc(targetRef);
+        if (targetSnap.exists()) {
+          const tData = targetSnap.data();
+          await updateDoc(targetRef, { balance: (tData.balance || 0) + amount });
+
+          // Kohereza komisiyo ya Referral nibaahari
+          if (tData.referredBy) {
+            const refRef = doc(db, "users", tData.referredBy);
+            const refSnap = await getDoc(refRef);
+            if (refSnap.exists()) {
+              const rData = refSnap.data();
+              const comm = amount * 0.35;
+              await updateDoc(refRef, {
+                level1Earnings: (rData.level1Earnings || 0) + comm,
+                withdrawableEarnings: (rData.withdrawableEarnings || 0) + comm
+              });
+            }
+          }
+        }
+      }
+      alert("Ubusabe bwemejwe neza kuri Firestore!");
+    } catch (e) {
+      alert("Ikosa: " + e.message);
+    }
+  };
+
+  window.adminRejectTx = async function(txId, targetUserId, type, amount) {
+    try {
+      await updateDoc(doc(db, "transactions", txId), { status: "rejected" });
+      if (type === "withdrawal") {
+        const targetRef = doc(db, "users", targetUserId);
+        const targetSnap = await getDoc(targetRef);
+        if (targetSnap.exists()) {
+          const tData = targetSnap.data();
+          await updateDoc(targetRef, { withdrawableEarnings: (tData.withdrawableEarnings || 0) + amount });
+        }
+      }
+      alert("Ubusabe bwanzwe!");
+    } catch (e) {
+      alert("Ikosa: " + e.message);
+    }
+  };
 
   async function loadAllFirebaseUsers(container) {
     container.innerHTML = `<p style="color:#3b82f6; font-size:12px; text-align:center; padding:20px;">Tegereza gato turakurura amakuru muri Firebase...</p>`;
@@ -618,104 +696,6 @@
     }
   }
 
-  function renderDeposits(container) {
-    container.innerHTML = '';
-    let pendingList = depositRequests.filter(d => d.status === 'pending');
-    if (pendingList.length === 0) {
-      container.innerHTML = `<p style="color:#64748b; font-size:13px; text-align:center; padding:30px;">Nta wubikije amafaranga utarerekanwa (No pending deposits).</p>`;
-      return;
-    }
-    pendingList.forEach(req => {
-      container.innerHTML += `
-        <div class="item-card">
-          <div class="item-row">
-            <span class="item-name">${req.user}</span>
-            <span class="item-badge badge-pending">PENDING</span>
-          </div>
-          <div style="font-size:15px; font-weight:900; color:#10b981; margin-bottom:4px;">+${req.amount.toLocaleString()} RWF</div>
-          <div style="font-size:11px; color:#94a3b8;">Ref Code: <b>${req.code}</b> | ${req.date}</div>
-          <div class="action-btn-group">
-            <button class="btn-act-green" onclick="approveDeposit(${req.id})">✓ Approve Deposit</button>
-            <button class="btn-act-red" onclick="rejectDeposit(${req.id})">✕ Reject</button>
-          </div>
-        </div>
-      `;
-    });
-  }
-
-  async function approveDeposit(id) {
-    let req = depositRequests.find(d => d.id === id);
-    if (!req) return;
-
-    try {
-      if (req.userId) {
-        const userRef = doc(window.db, "users", req.userId);
-        await updateDoc(userRef, {
-          balance: increment(req.amount)
-        });
-      }
-
-      req.status = "approved";
-      saveAllData();
-      switchTool('deposits');
-      alert(`Deposit approved successfully and balance added to user account!`);
-    } catch (error) {
-      console.error("Error approving deposit:", error);
-      alert("Habaye ikibazo mu kohereza amafaranga kuri konti y'umukoresha: " + error.message);
-    }
-  }
-
-  function rejectDeposit(id) {
-    depositRequests = depositRequests.filter(d => d.id !== id);
-    saveAllData();
-    switchTool('deposits');
-  }
-
-  function renderWithdrawals(container) {
-    container.innerHTML = '';
-    let pendingList = withdrawalRequests.filter(w => w.status === 'pending');
-    if (pendingList.length === 0) {
-      container.innerHTML = `<p style="color:#64748b; font-size:13px; text-align:center; padding:30px;">Nta wubikuze amafaranga utarerekanwa (No pending withdrawals).</p>`;
-      return;
-    }
-    pendingList.forEach(req => {
-      container.innerHTML += `
-        <div class="item-card">
-          <div class="item-row">
-            <span class="item-name">${req.user} (${req.phone})</span>
-            <span class="item-badge badge-pending">PENDING</span>
-          </div>
-          <div style="font-size:15px; font-weight:900; color:#ef4444; margin-bottom:4px;">-${req.amount.toLocaleString()} RWF</div>
-          <div style="font-size:11px; color:#94a3b8;">Requested: ${req.date}</div>
-          <div class="action-btn-group">
-            <button class="btn-act-green" onclick="approveWithdrawal(${req.id})">✓ Approve Withdrawal</button>
-            <button class="btn-act-red" onclick="rejectWithdrawal(${req.id})">✕ Reject</button>
-          </div>
-        </div>
-      `;
-    });
-  }
-
-  function approveWithdrawal(id) {
-    let req = withdrawalRequests.find(w => w.id === id);
-    if (req) {
-      req.status = "approved";
-      saveAllData();
-      switchTool('withdrawals');
-      alert(`Withdrawal approved successfully!`);
-    }
-  }
-
-  function rejectWithdrawal(id) {
-    withdrawalRequests = withdrawalRequests.filter(w => w.id !== id);
-    saveAllData();
-    switchTool('withdrawals');
-  }
-
-  function renderReferrals(container) {
-    container.innerHTML = `<p style="color:#64748b; font-size:13px; text-align:center; padding:20px;">Team & Referrals overview.</p>`;
-  }
-
   function renderSharesEditor(container) {
     let html = `
       <div class="item-card" style="margin-bottom:20px;">
@@ -840,16 +820,12 @@
   }
 
   function saveAllData() {
-    localStorage.setItem('tesla_deposits', JSON.stringify(depositRequests));
-    localStorage.setItem('tesla_withdrawals', JSON.stringify(withdrawalRequests));
     localStorage.setItem('tesla_banners', JSON.stringify(dashboardBanners));
     localStorage.setItem('tesla_vip_shares', JSON.stringify(vipShares));
     localStorage.setItem('tesla_platform_videos', JSON.stringify(platformVideos));
-    calculateTotalStats();
   }
 
   function reloadAdminData() {
-    calculateTotalStats();
     switchTool(currentTool);
   }
 
