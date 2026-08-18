@@ -299,6 +299,30 @@
           <div id="adminPendingList">
             <div style="font-size: 12px; color: #d97706;">Birimo gushakisha amakuru...</div>
           </div>
+          
+          <h4 style="font-size: 14px; color: #eab308; margin-top: 20px; margin-bottom: 10px;">👥 Abakoresha bose bariyandikishije</h4>
+          <div style="overflow-x: auto;">
+            <table style="width: 100%; border-collapse: collapse; font-size: 11px; text-align: left; color: #f3f4f6;">
+              <thead>
+                <tr style="background: #292524; border-bottom: 1px solid #78350f; color: #eab308;">
+                  <th style="padding: 8px;">Amazina</th>
+                  <th style="padding: 8px;">Telefoni</th>
+                  <th style="padding: 8px;">Bal. Deposits</th>
+                  <th style="padding: 8px;">Practice Bal.</th>
+                  <th style="padding: 8px;">Inyungu</th>
+                  <th style="padding: 8px;">Invested</th>
+                  <th style="padding: 8px;">Total Inv.</th>
+                  <th style="padding: 8px;">Active</th>
+                  <th style="padding: 8px;">Role</th>
+                  <th style="padding: 8px;">Ref Code</th>
+                  <th style="padding: 8px;">Created At</th>
+                </tr>
+              </thead>
+              <tbody id="adminUsersTableBody">
+                <tr><td colspan="11" style="padding: 10px; text-align: center; color: #d97706;">Birimo gushakisha abakoresha...</td></tr>
+              </tbody>
+            </table>
+          </div>
         </div>
       </div>
     </div>
@@ -430,13 +454,58 @@
 
   let currentFirebaseUid = null;
 
+  async function loadAllUsersForAdmin() {
+    try {
+      const querySnapshot = await getDocs(collection(db, "users"));
+      const usersList = [];
+
+      querySnapshot.forEach((docSnap) => {
+        usersList.push({
+          id: docSnap.id,
+          ...docSnap.data()
+        });
+      });
+
+      console.log("Abakoresha bose:", usersList);
+
+      const tableBody = document.getElementById("adminUsersTableBody");
+
+      if (tableBody) {
+        tableBody.innerHTML = "";
+
+        usersList.forEach(u => {
+          tableBody.innerHTML += `
+            <tr>
+              <td>${u.name || "N/A"}</td>
+              <td>${u.phone || "N/A"}</td>
+              <td>${(u.balance || 0).toLocaleString()} RWF</td>
+              <td>${(u.practiceBalance || 0).toLocaleString()} RWF</td>
+              <td>${(u.withdrawableEarnings || 0).toLocaleString()} RWF</td>
+              <td>${(u.investedAmount || 0).toLocaleString()} RWF</td>
+              <td>${(u.totalInvestments || 0).toLocaleString()} RWF</td>
+              <td>${u.activeInvestments?.length || 0}</td>
+              <td>${u.role || "user"}</td>
+              <td>${u.refCode || "N/A"}</td>
+              <td>${u.createdAt || "N/A"}</td>
+            </tr>
+          `;
+        });
+      }
+
+    } catch (error) {
+      console.error("Ikibazo mu gusoma abakoresha:", error);
+    }
+  }
+
   onAuthStateChanged(auth, async (firebaseUser) => {
     if (firebaseUser) {
       currentFirebaseUid = firebaseUser.uid;
       const userSnap = await getDoc(doc(db, "users", firebaseUser.uid));
       if (userSnap.exists() && userSnap.data().role === "admin") {
         document.getElementById('adminSection').style.display = 'block';
+
         loadAdminTransactions(db);
+        loadAllUsersForAdmin();
       } else {
         document.getElementById('adminSection').style.display = 'none';
       }
@@ -456,6 +525,7 @@
           
           if (dbData.role === "admin") {
             document.getElementById('adminSection').style.display = 'block';
+            loadAllUsersForAdmin();
           } else {
             document.getElementById('adminSection').style.display = 'none';
           }
