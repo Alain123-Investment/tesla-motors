@@ -165,7 +165,7 @@
     </div>
   </div>
 
-  <!-- QUICK TOOLS MENU -->
+  <!-- QUICK TOOLS NAVIGATION GRID -->
   <div class="tools-grid">
     <div class="tool-btn" onclick="switchTool('deposits')">
       <span class="tool-icon">💵</span>
@@ -179,9 +179,9 @@
       <span class="tool-icon">👥</span>
       <span class="tool-title">Users Manager</span>
     </div>
-    <div class="tool-btn" onclick="switchTool('referrals')">
-      <span class="tool-icon">🏆</span>
-      <span class="tool-title">Referrals</span>
+    <div class="tool-btn" onclick="switchTool('investment_tiers')">
+      <span class="tool-icon">📦</span>
+      <span class="tool-title">Investment Tiers</span>
     </div>
     <div class="tool-btn" onclick="switchTool('shares')">
       <span class="tool-icon">⚙️</span>
@@ -220,7 +220,7 @@
       <button class="btn-act-blue" style="width:100%; margin-bottom:8px; padding:12px;" onclick="switchTool('deposits'); closeMenuModal();">💵 Deposits Approval</button>
       <button class="btn-act-blue" style="width:100%; margin-bottom:8px; padding:12px;" onclick="switchTool('withdrawals'); closeMenuModal();">📲 Withdrawals Approval</button>
       <button class="btn-act-blue" style="width:100%; margin-bottom:8px; padding:12px;" onclick="switchTool('users'); closeMenuModal();">👥 Users Management</button>
-      <button class="btn-act-blue" style="width:100%; margin-bottom:8px; padding:12px;" onclick="switchTool('referrals'); closeMenuModal();">🏆 Team & Referrals</button>
+      <button class="btn-act-blue" style="width:100%; margin-bottom:8px; padding:12px;" onclick="switchTool('investment_tiers'); closeMenuModal();">📦 Investment Tiers (Bigega)</button>
       <button class="btn-act-blue" style="width:100%; margin-bottom:8px; padding:12px;" onclick="switchTool('shares'); closeMenuModal();">⚙️ Shares & Banners Editor</button>
       <button class="btn-act-blue" style="width:100%; margin-bottom:8px; padding:12px;" onclick="switchTool('videos'); closeMenuModal();">🎬 Videos & Daily Tasks Manager</button>
     </div>
@@ -273,10 +273,26 @@
   ];
 
   let vipShares = JSON.parse(localStorage.getItem('tesla_vip_shares')) || [
-    { id: "m0", name: "M0 Share", price: 500, dailyProfit: 300, validityDays: 2 },
-    { id: "m1", name: "M1 Share", price: 20000, dailyProfit: 675, validityDays: 365 },
-    { id: "m2", name: "M2 Share", price: 100000, dailyProfit: 3350, validityDays: 365 },
-    { id: "m3", name: "M3 Share", price: 250000, dailyProfit: 8325, validityDays: 365 }
+    { id: "m0", name: "Ikigega G0", price: 500, dailyProfit: 300, validityDays: 2, videosCount: 3, monthlyProfit: 600 },
+    { id: "m1", name: "Ikigega G1", price: 20000, dailyProfit: 675, validityDays: 365, videosCount: 5, monthlyProfit: 20250 },
+    { id: "m2", name: "Ikigega G2", price: 100000, dailyProfit: 3350, validityDays: 365, videosCount: 7, monthlyProfit: 100500 },
+    { id: "m2_vip", name: "Ikigega G2-VIP", price: 120000, dailyProfit: 8000, validityDays: 365, videosCount: 9, monthlyProfit: 240000 },
+    { id: "m3", name: "Ikigega G3", price: 250000, dailyProfit: 8325, validityDays: 365, videosCount: 11, monthlyProfit: 249750 },
+    { id: "m3_vip", name: "Ikigega G3-VIP", price: 300000, dailyProfit: 20025, validityDays: 365, videosCount: 13, monthlyProfit: 600750 },
+    { id: "m4", name: "Ikigega G4", price: 550000, dailyProfit: 18400, validityDays: 365, videosCount: 15, monthlyProfit: 552000 },
+    { id: "m4_vip", name: "Ikigega G4-VIP", price: 600000, dailyProfit: 40000, validityDays: 365, videosCount: 17, monthlyProfit: 1200000 },
+    { id: "m5", name: "Ikigega G5", price: 1200000, dailyProfit: 40000, validityDays: 365, videosCount: 19, monthlyProfit: 1200000 },
+    { id: "m5_vip", name: "Ikigega G5-VIP", price: 1500000, dailyProfit: 100000, validityDays: 365, videosCount: 21, monthlyProfit: 3000000 },
+    { id: "m6", name: "Ikigega G6", price: 2400000, dailyProfit: 81000, validityDays: 365, videosCount: 23, monthlyProfit: 2430000 },
+    { id: "m6_vip", name: "Ikigega G6-VIP", price: 2800000, dailyProfit: 187500, validityDays: 365, videosCount: 25, monthlyProfit: 5625000 },
+    { id: "m7", name: "Ikigega G7", price: 4000000, dailyProfit: 134750, validityDays: 365, videosCount: 27, monthlyProfit: 4042500 },
+    { id: "m7_vip", name: "Ikigega G7-VIP", price: 5000000, dailyProfit: 334250, validityDays: 365, videosCount: 29, monthlyProfit: 10027500 },
+    { id: "m8", name: "Ikigega G8", price: 6000000, dailyProfit: 200000, validityDays: 365, videosCount: 31, monthlyProfit: 6000000 },
+    { id: "m8_vip", name: "Ikigega G8-VIP", price: 7000000, dailyProfit: 468000, validityDays: 365, videosCount: 33, monthlyProfit: 14040000 },
+    { id: "m9", name: "Ikigega G9", price: 8000000, dailyProfit: 267750, validityDays: 365, videosCount: 35, monthlyProfit: 8032500 },
+    { id: "m9_vip", name: "Ikigega G9-VIP", price: 9000000, dailyProfit: 600750, validityDays: 365, videosCount: 37, monthlyProfit: 18022500 },
+    { id: "m10", name: "Ikigega G10", price: 10000000, dailyProfit: 335000, validityDays: 365, videosCount: 39, monthlyProfit: 10050000 },
+    { id: "m10_vip", name: "Ikigega G10-VIP", price: 11000000, dailyProfit: 735000, validityDays: 365, videosCount: 41, monthlyProfit: 22050000 }
   ];
 
   let platformVideos = JSON.parse(localStorage.getItem('tesla_platform_videos')) || (() => {
@@ -394,6 +410,9 @@
     } else if (tool === 'users') {
       title.innerText = "Registered Users Management (Firebase)";
       loadAllFirebaseUsers(container);
+    } else if (tool === 'investment_tiers') {
+      title.innerText = "Manage Investment Tiers (Bigega byo Gushoramo)";
+      renderInvestmentTiers(container);
     } else if (tool === 'referrals') {
       title.innerText = "Team & Referrals Commissions";
       renderReferrals(container);
@@ -515,6 +534,88 @@
 
   function closeEditUserModal() {
     document.getElementById('editUserModal').style.display = 'none';
+  }
+
+  /* INVESTMENT TIERS / BIGEGA MANAGER */
+  function renderInvestmentTiers(container) {
+    let html = `
+      <div class="item-card" style="margin-bottom:20px;">
+        <div class="item-name" style="margin-bottom:12px; color:#3b82f6;">📦 Genzura Ibigega Byo Gushoramo (Total: ${vipShares.length})</div>
+        <button class="btn-act-blue" style="width:100%; padding:10px; margin-bottom:15px;" onclick="addNewTierField()">➕ Kongeramo Ikigega Gishya</button>
+    `;
+
+    vipShares.forEach((tier, index) => {
+      html += `
+        <div style="background:#0b1329; padding:12px; border-radius:10px; margin-bottom:12px; border:1px solid #1e2d52;">
+          <div class="form-group">
+            <label class="form-label">Izina ry'Ikigega (Tier Name)</label>
+            <input type="text" id="tierName_${index}" class="input-box" value="${tier.name}">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Igiciro cy'ishoramari (Price - RWF)</label>
+            <input type="number" id="tierPrice_${index}" class="input-box" value="${tier.price}">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Inyungu ku munsi (Daily Profit - RWF)</label>
+            <input type="number" id="tierProfit_${index}" class="input-box" value="${tier.dailyProfit}">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Iminsi y'imikorere (Validity Days)</label>
+            <input type="number" id="tierDays_${index}" class="input-box" value="${tier.validityDays}">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Video zo kureba ku munsi (Videos Count)</label>
+            <input type="number" id="tierVideos_${index}" class="input-box" value="${tier.videosCount || 3}">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Inyungu ku kwezi (Monthly Profit - RWF)</label>
+            <input type="number" id="tierMonthly_${index}" class="input-box" value="${tier.monthlyProfit || (tier.dailyProfit * 30)}">
+          </div>
+          <div class="action-btn-group">
+            <button class="btn-act-green" onclick="saveSingleTier(${index})">💾 Save ${tier.name}</button>
+            <button class="btn-act-red" onclick="deleteTier(${index})">🗑️ Delete</button>
+          </div>
+        </div>
+      `;
+    });
+
+    html += `</div>`;
+    container.innerHTML = html;
+  }
+
+  function saveSingleTier(index) {
+    vipShares[index].name = document.getElementById(`tierName_${index}`).value;
+    vipShares[index].price = parseFloat(document.getElementById(`tierPrice_${index}`).value) || 0;
+    vipShares[index].dailyProfit = parseFloat(document.getElementById(`tierProfit_${index}`).value) || 0;
+    vipShares[index].validityDays = parseInt(document.getElementById(`tierDays_${index}`).value) || 365;
+    vipShares[index].videosCount = parseInt(document.getElementById(`tierVideos_${index}`).value) || 3;
+    vipShares[index].monthlyProfit = parseFloat(document.getElementById(`tierMonthly_${index}`).value) || 0;
+
+    saveAllData();
+    alert(`Ikigega "${vipShares[index].name}" cyahinduwe kandi cyabitswe neza! (Bizahita biboneka ku bakoresha).`);
+  }
+
+  function addNewTierField() {
+    let newId = "m_" + Date.now();
+    vipShares.push({
+      id: newId,
+      name: "Ikigega Gishya",
+      price: 15000,
+      dailyProfit: 500,
+      validityDays: 365,
+      videosCount: 4,
+      monthlyProfit: 15000
+    });
+    saveAllData();
+    renderInvestmentTiers(document.getElementById('dynamicContentArea'));
+  }
+
+  function deleteTier(index) {
+    if (confirm("Uremeye ko ushaka gusiba iki kigega?")) {
+      vipShares.splice(index, 1);
+      saveAllData();
+      renderInvestmentTiers(document.getElementById('dynamicContentArea'));
+    }
   }
 
   function renderDeposits(container) {
@@ -695,7 +796,7 @@
             <input type="text" id="vidTitle_${index}" class="input-box" value="${vid.title}">
           </div>
           <div class="form-group">
-            <label class="form-label">Associated Share ID (e.g. m0, m1, m2, m3)</label>
+            <label class="form-label">Associated Share ID (e.g. m0, m1, m2)</label>
             <input type="text" id="vidShare_${index}" class="input-box" value="${vid.shareId}">
           </div>
           <div class="form-group">
