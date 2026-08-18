@@ -454,47 +454,76 @@
 
   let currentFirebaseUid = null;
 
-  async function loadAllUsersForAdmin() {
-    try {
-      const querySnapshot = await getDocs(collection(db, "users"));
-      const usersList = [];
+  let adminUsersUnsubscribe = null;
+  let adminTransactionsUnsubscribe = null;
 
-      querySnapshot.forEach((docSnap) => {
-        usersList.push({
+  function renderAdminUsers(usersList) {
+    const tableBody = document.getElementById("adminUsersTableBody");
+    if (!tableBody) return;
+
+    if (!usersList.length) {
+      tableBody.innerHTML = `
+        <tr>
+          <td colspan="11" style="padding:10px;text-align:center;color:#d97706;">
+            Nta mukoresha uraboneka muri Firestore.
+          </td>
+        </tr>`;
+      return;
+    }
+
+    tableBody.innerHTML = usersList.map(u => `
+      <tr>
+        <td>${u.name || "N/A"}</td>
+        <td>${u.phone || "N/A"}</td>
+        <td>${Number(u.balance || 0).toLocaleString()} RWF</td>
+        <td>${Number(u.practiceBalance || 0).toLocaleString()} RWF</td>
+        <td>${Number(u.withdrawableEarnings || 0).toLocaleString()} RWF</td>
+        <td>${Number(u.investedAmount || 0).toLocaleString()} RWF</td>
+        <td>${Number(u.totalInvestments || 0).toLocaleString()}</td>
+        <td>${Array.isArray(u.activeInvestments) ? u.activeInvestments.length : 0}</td>
+        <td>${u.role || "user"}</td>
+        <td>${u.refCode || "N/A"}</td>
+        <td>${u.createdAt || "N/A"}</td>
+      </tr>
+    `).join("");
+  }
+
+  function loadAllUsersForAdmin() {
+    if (adminUsersUnsubscribe) adminUsersUnsubscribe();
+
+    const tableBody = document.getElementById("adminUsersTableBody");
+    if (tableBody) {
+      tableBody.innerHTML = `
+        <tr>
+          <td colspan="11" style="padding:10px;text-align:center;color:#d97706;">
+            Birimo gufungura amakuru ya Firestore...
+          </td>
+        </tr>`;
+    }
+
+    adminUsersUnsubscribe = onSnapshot(
+      collection(db, "users"),
+      (snapshot) => {
+        const usersList = snapshot.docs.map(docSnap => ({
           id: docSnap.id,
           ...docSnap.data()
-        });
-      });
+        }));
 
-      console.log("Abakoresha bose:", usersList);
-
-      const tableBody = document.getElementById("adminUsersTableBody");
-
-      if (tableBody) {
-        tableBody.innerHTML = "";
-
-        usersList.forEach(u => {
-          tableBody.innerHTML += `
+        console.log("Firestore users real-time:", usersList);
+        renderAdminUsers(usersList);
+      },
+      (error) => {
+        console.error("Ikibazo mu gusoma users muri Firestore:", error);
+        if (tableBody) {
+          tableBody.innerHTML = `
             <tr>
-              <td>${u.name || "N/A"}</td>
-              <td>${u.phone || "N/A"}</td>
-              <td>${(u.balance || 0).toLocaleString()} RWF</td>
-              <td>${(u.practiceBalance || 0).toLocaleString()} RWF</td>
-              <td>${(u.withdrawableEarnings || 0).toLocaleString()} RWF</td>
-              <td>${(u.investedAmount || 0).toLocaleString()} RWF</td>
-              <td>${(u.totalInvestments || 0).toLocaleString()} RWF</td>
-              <td>${u.activeInvestments?.length || 0}</td>
-              <td>${u.role || "user"}</td>
-              <td>${u.refCode || "N/A"}</td>
-              <td>${u.createdAt || "N/A"}</td>
-            </tr>
-          `;
-        });
+              <td colspan="11" style="padding:10px;text-align:center;color:#f87171;">
+                Ntibashoboye gusomwa: ${error.message}
+              </td>
+            </tr>`;
+        }
       }
-
-    } catch (error) {
-      console.error("Ikibazo mu gusoma abakoresha:", error);
-    }
+    );
   }
 
   onAuthStateChanged(auth, async (firebaseUser) => {
@@ -508,6 +537,14 @@
         loadAllUsersForAdmin();
       } else {
         document.getElementById('adminSection').style.display = 'none';
+        if (adminUsersUnsubscribe) {
+          adminUsersUnsubscribe();
+          adminUsersUnsubscribe = null;
+        }
+        if (adminTransactionsUnsubscribe) {
+          adminTransactionsUnsubscribe();
+          adminTransactionsUnsubscribe = null;
+        }
       }
 
       onSnapshot(doc(db, "users", firebaseUser.uid), (docSnap) => {
@@ -534,6 +571,14 @@
     } else {
       currentFirebaseUid = null;
       window.user = null;
+      if (adminUsersUnsubscribe) {
+        adminUsersUnsubscribe();
+        adminUsersUnsubscribe = null;
+      }
+      if (adminTransactionsUnsubscribe) {
+        adminTransactionsUnsubscribe();
+        adminTransactionsUnsubscribe = null;
+      }
       window.showLoginSection();
     }
   });
@@ -624,11 +669,6 @@
     if (!telefon || !password) {
       alert("Shyiramo numero ya telefoni n'ijambobanga.");
       return;
-    }
-
-    if (telefon === "0789681391" && password === "admin123") {
-        window.location.href = "admin.html"; 
-        return;
     }
 
     const loginBtn = document.getElementById('loginBtn');
@@ -738,40 +778,65 @@
   };
 
   function loadAdminTransactions(dbInstance) {
-    onSnapshot(collection(dbInstance, "transactions"), (snapshot) => {
-      const listEl = document.getElementById('adminPendingList');
-      if (!listEl) return;
-      let html = '';
-      let pendingItems = [];
+    if (adminTransactionsUnsubscribe) adminTransactionsUnsubscribe();
 
-      snapshot.forEach((docSnap) => {
-        const data = docSnap.data();
-        if (data.status === "pending") {
-          pendingItems.push({ id: docSnap.id, ...data });
+    adminTransactionsUnsubscribe = onSnapshot(
+      collection(dbInstance, "transactions"),
+      (snapshot) => {
+        const listEl = document.getElementById('adminPendingList');
+        if (!listEl) return;
+
+        const pendingItems = snapshot.docs
+          .map(docSnap => ({ id: docSnap.id, ...docSnap.data() }))
+          .filter(item => item.status === "pending")
+          .sort((a, b) => String(b.date || "").localeCompare(String(a.date || "")));
+
+        if (pendingItems.length === 0) {
+          listEl.innerHTML = `
+            <div style="font-size:12px;color:#d97706;">
+              Nta busabe buri pending ubu.
+            </div>`;
+          return;
         }
-      });
 
-      if (pendingItems.length === 0) {
-        listEl.innerHTML = `<div style="font-size:12px; color:#d97706;">Nta busabe buri pending ubu.</div>`;
-        return;
-      }
-
-      pendingItems.forEach(item => {
-        html += `
+        listEl.innerHTML = pendingItems.map(item => `
           <div class="admin-item-box">
-            <div><b>Izina:</b> ${item.userName}</div>
-            <div><b>Telefoni:</b> ${item.userPhone}</div>
-            <div><b>Ubwoko:</b> <span style="color:${item.type==='deposit'?'#16a34a':'#b91c1c'}">${item.type.toUpperCase()}</span></div>
-            <div><b>Amafaranga:</b> ${Number(item.amount).toLocaleString()} RWF</div>
-            <div style="margin-top:10px; display:flex; gap:8px;">
-              <button class="btn-approve" onclick="adminApproveTx('${item.id}', '${item.userId}', '${item.type}', ${item.amount})">Emeza</button>
-              <button class="btn-reject" onclick="adminRejectTx('${item.id}', '${item.userId}', '${item.type}', ${item.amount})">Hagarika</button>
+            <div><b>Izina:</b> ${item.userName || "Unknown"}</div>
+            <div><b>Telefoni:</b> ${item.userPhone || "Unknown"}</div>
+            <div>
+              <b>Ubwoko:</b>
+              <span style="color:${item.type === 'deposit' ? '#16a34a' : '#b91c1c'}">
+                ${(item.type || "").toUpperCase()}
+              </span>
+            </div>
+            <div><b>Amafaranga:</b> ${Number(item.amount || 0).toLocaleString()} RWF</div>
+            <div style="font-size:10px;color:#a8a29e;margin-top:4px;">
+              ${item.date || ""}
+            </div>
+            <div style="margin-top:10px;display:flex;gap:8px;">
+              <button class="btn-approve"
+                onclick="adminApproveTx('${item.id}', '${item.userId}', '${item.type}', ${Number(item.amount || 0)})">
+                Emeza
+              </button>
+              <button class="btn-reject"
+                onclick="adminRejectTx('${item.id}', '${item.userId}', '${item.type}', ${Number(item.amount || 0)})">
+                Hagarika
+              </button>
             </div>
           </div>
-        `;
-      });
-      listEl.innerHTML = html;
-    });
+        `).join("");
+      },
+      (error) => {
+        console.error("Ikibazo mu gusoma transactions:", error);
+        const listEl = document.getElementById('adminPendingList');
+        if (listEl) {
+          listEl.innerHTML = `
+            <div style="font-size:12px;color:#f87171;">
+              Ntibashoboye gusoma transactions: ${error.message}
+            </div>`;
+        }
+      }
+    );
   }
 
   window.adminApproveTx = async function(txId, targetUserId, type, amount) {
