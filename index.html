@@ -450,11 +450,20 @@
   const app = initializeApp(firebaseConfig);
   const auth = getAuth(app);
   const db = getFirestore(app);
+  window.db = db;
   const analytics = getAnalytics(app);
 
   let currentFirebaseUid = null;
 
-  loadInvestmentTiersFromFirestore();
+  // Investment tiers are controlled from the Admin Dashboard through Firestore.
+  // Start this listener only after the page scripts are fully initialized so it cannot interfere with login.
+  setTimeout(() => {
+    try {
+      loadInvestmentTiersFromFirestore();
+    } catch (e) {
+      console.error('Investment tiers listener failed:', e);
+    }
+  }, 0);
 
   let adminUsersUnsubscribe = null;
   let adminTransactionsUnsubscribe = null;
@@ -510,10 +519,20 @@
           id: docSnap.id,
           ...docSnap.data()
         }));
+
+        console.log("Firestore users real-time:", usersList);
         renderAdminUsers(usersList);
       },
       (error) => {
         console.error("Ikibazo mu gusoma users muri Firestore:", error);
+        if (tableBody) {
+          tableBody.innerHTML = `
+            <tr>
+              <td colspan="11" style="padding:10px;text-align:center;color:#f87171;">
+                Ntibashoboye gusomwa: ${error.message}
+              </td>
+            </tr>`;
+        }
       }
     );
   }
@@ -524,6 +543,7 @@
       const userSnap = await getDoc(doc(db, "users", firebaseUser.uid));
       if (userSnap.exists() && userSnap.data().role === "admin") {
         document.getElementById('adminSection').style.display = 'block';
+
         loadAdminTransactions(db);
         loadAllUsersForAdmin();
       } else {
@@ -689,6 +709,8 @@
   };
 
   window.confirmPaymentAction = async function(amountFromButton) {
+    // Use the amount passed by the payment button first. This prevents the
+    // amount from being lost when the modal is re-rendered.
     const amount = Number(amountFromButton) || Number(window.selectedDepositAmount) || 0;
 
     if (amount <= 0) {
@@ -715,7 +737,10 @@
         date: new Date().toISOString()
       });
 
-      alert("✅ Byemejwe!\n\nTegereza gato, Admin ari kugenzura ubwishyu bwawe.");
+      alert(
+        "✅ Byemejwe!\n\n" +
+        "Tegereza gato, Admin ari kugenzura ubwishyu bwawe."
+      );
       window.closeModal();
       switchTab('ahabanza');
 
@@ -782,7 +807,10 @@
           .sort((a, b) => String(b.date || "").localeCompare(String(a.date || "")));
 
         if (pendingItems.length === 0) {
-          listEl.innerHTML = `<div style="font-size:12px;color:#d97706;">Nta busabe buri pending ubu.</div>`;
+          listEl.innerHTML = `
+            <div style="font-size:12px;color:#d97706;">
+              Nta busabe buri pending ubu.
+            </div>`;
           return;
         }
 
@@ -797,16 +825,31 @@
               </span>
             </div>
             <div><b>Amafaranga:</b> ${Number(item.amount || 0).toLocaleString()} RWF</div>
-            <div style="font-size:10px;color:#a8a29e;margin-top:4px;">${item.date || ""}</div>
+            <div style="font-size:10px;color:#a8a29e;margin-top:4px;">
+              ${item.date || ""}
+            </div>
             <div style="margin-top:10px;display:flex;gap:8px;">
-              <button class="btn-approve" onclick="adminApproveTx('${item.id}', '${item.userId}', '${item.type}', ${Number(item.amount || 0)})">Emeza</button>
-              <button class="btn-reject" onclick="adminRejectTx('${item.id}', '${item.userId}', '${item.type}', ${Number(item.amount || 0)})">Hagarika</button>
+              <button class="btn-approve"
+                onclick="adminApproveTx('${item.id}', '${item.userId}', '${item.type}', ${Number(item.amount || 0)})">
+                Emeza
+              </button>
+              <button class="btn-reject"
+                onclick="adminRejectTx('${item.id}', '${item.userId}', '${item.type}', ${Number(item.amount || 0)})">
+                Hagarika
+              </button>
             </div>
           </div>
         `).join("");
       },
       (error) => {
         console.error("Ikibazo mu gusoma transactions:", error);
+        const listEl = document.getElementById('adminPendingList');
+        if (listEl) {
+          listEl.innerHTML = `
+            <div style="font-size:12px;color:#f87171;">
+              Ntibashoboye gusoma transactions: ${error.message}
+            </div>`;
+        }
       }
     );
   }
@@ -872,31 +915,6 @@
       });
     }
   };
-
-  function loadInvestmentTiersFromFirestore() {
-    onSnapshot(collection(db, 'investmentTiers'), (snapshot) => {
-      const loaded = snapshot.docs.map(ds => {
-        const d = ds.data();
-        return {
-          id: ds.id,
-          name: d.name || ('Ikigega ' + ds.id),
-          price: Number(d.price || 0),
-          daily: Number(d.daily || 0),
-          monthly: Number(d.monthly || 0),
-          annual: Number(d.annual || 0),
-          validity: Number(d.validity || 365),
-          reqVideos: Number(d.reqVideos || 0),
-          isPractice: Boolean(d.isPractice)
-        };
-      }).filter(p => p.price > 0);
-
-      if (loaded.length > 0) {
-        loaded.sort((a, b) => a.id.localeCompare(b.id, undefined, { numeric: true }));
-        window.plans = loaded;
-        if (typeof renderPlans === 'function') renderPlans();
-      }
-    });
-  }
 </script>
 
 <!-- APP LOGIC SCRIPT -->
@@ -915,10 +933,12 @@
   let user = null;
   let currentTab = localStorage.getItem('tesla_tab') || 'ahabanza';
   let tabHistory = ['ahabanza'];
+  // Keep deposit amount synchronized between the normal script and Firebase module.
   let selectedDepositAmount = 0;
   window.selectedDepositAmount = 0;
+  window.selectedDepositAmount = 0;
 
-  window.plans = [
+  let plans = [
     { id: 'M0', name: 'Ikigega G0', price: 500, daily: 300, monthly: 600, annual: 600, validity: 2, reqVideos: 3, isPractice: true },
     { id: 'M1', name: 'Ikigega G1', price: 20000, daily: 675, monthly: 20250, annual: 246375, validity: 365, reqVideos: 5 },
     { id: 'M2', name: 'Ikigega G2', price: 100000, daily: 3350, monthly: 100500, annual: 1222750, validity: 365, reqVideos: 7 },
@@ -940,6 +960,58 @@
     { id: 'M10', name: 'Ikigega G10', price: 10000000, daily: 335000, monthly: 10050000, annual: 122275000, validity: 365, reqVideos: 39 },
     { id: 'M10-VIP', name: 'Ikigega G10-VIP', price: 11000000, daily: 735000, monthly: 22050000, annual: 268275000, validity: 365, reqVideos: 41 }
   ];
+
+  let plansFirestoreUnsubscribe = null;
+
+  function normalizeFirestoreTier(data, docId) {
+    const d = data || {};
+    const id = String(d.id || d.planId || d.tierId || docId || '').trim();
+    if (!id) return null;
+    return {
+      id,
+      name: d.name || d.tierName || d.title || ('Ikigega ' + id),
+      price: Number(d.price ?? d.investmentPrice ?? d.cost ?? 0),
+      daily: Number(d.daily ?? d.dailyProfit ?? d.dailyIncome ?? 0),
+      monthly: Number(d.monthly ?? d.monthlyProfit ?? d.monthlyIncome ?? 0),
+      annual: Number(d.annual ?? d.annualProfit ?? 0),
+      validity: Number(d.validity ?? d.validityDays ?? d.days ?? 365),
+      reqVideos: Number(d.reqVideos ?? d.videosCount ?? d.requiredVideos ?? 0),
+      isPractice: Boolean(d.isPractice ?? d.practice ?? id === 'M0')
+    };
+  }
+
+  function applyFirestoreTiers(snapshot) {
+    const loaded = snapshot.docs
+      .map(ds => normalizeFirestoreTier(ds.data(), ds.id))
+      .filter(Boolean)
+      .filter(p => p.price > 0);
+
+    if (loaded.length > 0) {
+      loaded.sort((a, b) => {
+        const ai = String(a.id), bi = String(b.id);
+        return ai.localeCompare(bi, undefined, { numeric: true, sensitivity: 'base' });
+      });
+      plans = loaded;
+      console.log('Investment tiers loaded from Firestore:', plans);
+      renderPlans();
+    }
+  }
+
+  function loadInvestmentTiersFromFirestore() {
+    if (plansFirestoreUnsubscribe) plansFirestoreUnsubscribe();
+    plansFirestoreUnsubscribe = onSnapshot(
+      collection(window.db, 'investmentTiers'),
+      (snapshot) => {
+        // If Admin has created/edited tiers in this collection, users see them immediately.
+        applyFirestoreTiers(snapshot);
+      },
+      (error) => {
+        console.error('Investment tiers Firestore read error:', error);
+        // Keep the built-in fallback plans so the user page does not become empty.
+        renderPlans();
+      }
+    );
+  }
 
   const videoUrls = [
     "https://www.w3schools.com/html/mov_bbb.mp4",
@@ -1104,7 +1176,7 @@
   function renderPlans() {
     const container = document.getElementById('plansContainer');
     if (!container) return;
-    container.innerHTML = window.plans.map(p => `
+    container.innerHTML = plans.map(p => `
       <div class="plan-card">
         <div class="plan-header-title">Shora mu kigega cya Tesla Motors</div>
         <div class="plan-header">
@@ -1123,7 +1195,7 @@
   }
 
   window.buyInvestment = function(planId) {
-    const plan = window.plans.find(p => p.id === planId);
+    const plan = plans.find(p => p.id === planId);
     if (!plan || !window.user) return;
 
     if (plan.isPractice) {
