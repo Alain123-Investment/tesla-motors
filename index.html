@@ -454,6 +454,8 @@
 
   let currentFirebaseUid = null;
 
+  loadInvestmentTiersFromFirestore();
+
   let adminUsersUnsubscribe = null;
   let adminTransactionsUnsubscribe = null;
 
@@ -508,20 +510,10 @@
           id: docSnap.id,
           ...docSnap.data()
         }));
-
-        console.log("Firestore users real-time:", usersList);
         renderAdminUsers(usersList);
       },
       (error) => {
         console.error("Ikibazo mu gusoma users muri Firestore:", error);
-        if (tableBody) {
-          tableBody.innerHTML = `
-            <tr>
-              <td colspan="11" style="padding:10px;text-align:center;color:#f87171;">
-                Ntibashoboye gusomwa: ${error.message}
-              </td>
-            </tr>`;
-        }
       }
     );
   }
@@ -532,7 +524,6 @@
       const userSnap = await getDoc(doc(db, "users", firebaseUser.uid));
       if (userSnap.exists() && userSnap.data().role === "admin") {
         document.getElementById('adminSection').style.display = 'block';
-
         loadAdminTransactions(db);
         loadAllUsersForAdmin();
       } else {
@@ -724,10 +715,7 @@
         date: new Date().toISOString()
       });
 
-      alert(
-        "✅ Byemejwe!\n\n" +
-        "Tegereza gato, Admin ari kugenzura ubwishyu bwawe."
-      );
+      alert("✅ Byemejwe!\n\nTegereza gato, Admin ari kugenzura ubwishyu bwawe.");
       window.closeModal();
       switchTab('ahabanza');
 
@@ -794,10 +782,7 @@
           .sort((a, b) => String(b.date || "").localeCompare(String(a.date || "")));
 
         if (pendingItems.length === 0) {
-          listEl.innerHTML = `
-            <div style="font-size:12px;color:#d97706;">
-              Nta busabe buri pending ubu.
-            </div>`;
+          listEl.innerHTML = `<div style="font-size:12px;color:#d97706;">Nta busabe buri pending ubu.</div>`;
           return;
         }
 
@@ -812,31 +797,16 @@
               </span>
             </div>
             <div><b>Amafaranga:</b> ${Number(item.amount || 0).toLocaleString()} RWF</div>
-            <div style="font-size:10px;color:#a8a29e;margin-top:4px;">
-              ${item.date || ""}
-            </div>
+            <div style="font-size:10px;color:#a8a29e;margin-top:4px;">${item.date || ""}</div>
             <div style="margin-top:10px;display:flex;gap:8px;">
-              <button class="btn-approve"
-                onclick="adminApproveTx('${item.id}', '${item.userId}', '${item.type}', ${Number(item.amount || 0)})">
-                Emeza
-              </button>
-              <button class="btn-reject"
-                onclick="adminRejectTx('${item.id}', '${item.userId}', '${item.type}', ${Number(item.amount || 0)})">
-                Hagarika
-              </button>
+              <button class="btn-approve" onclick="adminApproveTx('${item.id}', '${item.userId}', '${item.type}', ${Number(item.amount || 0)})">Emeza</button>
+              <button class="btn-reject" onclick="adminRejectTx('${item.id}', '${item.userId}', '${item.type}', ${Number(item.amount || 0)})">Hagarika</button>
             </div>
           </div>
         `).join("");
       },
       (error) => {
         console.error("Ikibazo mu gusoma transactions:", error);
-        const listEl = document.getElementById('adminPendingList');
-        if (listEl) {
-          listEl.innerHTML = `
-            <div style="font-size:12px;color:#f87171;">
-              Ntibashoboye gusoma transactions: ${error.message}
-            </div>`;
-        }
       }
     );
   }
@@ -902,6 +872,31 @@
       });
     }
   };
+
+  function loadInvestmentTiersFromFirestore() {
+    onSnapshot(collection(db, 'investmentTiers'), (snapshot) => {
+      const loaded = snapshot.docs.map(ds => {
+        const d = ds.data();
+        return {
+          id: ds.id,
+          name: d.name || ('Ikigega ' + ds.id),
+          price: Number(d.price || 0),
+          daily: Number(d.daily || 0),
+          monthly: Number(d.monthly || 0),
+          annual: Number(d.annual || 0),
+          validity: Number(d.validity || 365),
+          reqVideos: Number(d.reqVideos || 0),
+          isPractice: Boolean(d.isPractice)
+        };
+      }).filter(p => p.price > 0);
+
+      if (loaded.length > 0) {
+        loaded.sort((a, b) => a.id.localeCompare(b.id, undefined, { numeric: true }));
+        window.plans = loaded;
+        if (typeof renderPlans === 'function') renderPlans();
+      }
+    });
+  }
 </script>
 
 <!-- APP LOGIC SCRIPT -->
@@ -923,7 +918,7 @@
   let selectedDepositAmount = 0;
   window.selectedDepositAmount = 0;
 
-  const plans = [
+  window.plans = [
     { id: 'M0', name: 'Ikigega G0', price: 500, daily: 300, monthly: 600, annual: 600, validity: 2, reqVideos: 3, isPractice: true },
     { id: 'M1', name: 'Ikigega G1', price: 20000, daily: 675, monthly: 20250, annual: 246375, validity: 365, reqVideos: 5 },
     { id: 'M2', name: 'Ikigega G2', price: 100000, daily: 3350, monthly: 100500, annual: 1222750, validity: 365, reqVideos: 7 },
@@ -1109,7 +1104,7 @@
   function renderPlans() {
     const container = document.getElementById('plansContainer');
     if (!container) return;
-    container.innerHTML = plans.map(p => `
+    container.innerHTML = window.plans.map(p => `
       <div class="plan-card">
         <div class="plan-header-title">Shora mu kigega cya Tesla Motors</div>
         <div class="plan-header">
@@ -1128,7 +1123,7 @@
   }
 
   window.buyInvestment = function(planId) {
-    const plan = plans.find(p => p.id === planId);
+    const plan = window.plans.find(p => p.id === planId);
     if (!plan || !window.user) return;
 
     if (plan.isPractice) {
