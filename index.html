@@ -1177,7 +1177,6 @@
     const now = Date.now();
     const expiry = now + (plan.validity * 24 * 60 * 60 * 1000);
     
-    // Twongereyeho unique investment instance ID kugira ngo ikigega kimwe gishobore kugurwa inshuro nyinshi cyangwa se byinshi bitandukanye
     window.user.activeInvestments.push({
       investId: 'inv_' + now + '_' + Math.random().toString(36).substring(2, 6),
       planId: plan.id,
@@ -1187,7 +1186,7 @@
       reqVideos: plan.reqVideos,
       startTime: now,
       expiryTime: expiry,
-      lastClaimTime: 0, // Guhita bikurikirana neza nyuma y'amasaha 24 kuri buri kigega ku giti ccyacyo
+      lastClaimTime: 0,
       completedToday: 0
     });
     window.user.investedAmount = (window.user.investedAmount || 0) + plan.price;
@@ -1247,7 +1246,6 @@
 
     let maxVideosAllowed = 0;
 
-    // Logic nshya yo kureba ibigega byose bifite agaciro kanini mu bice byose umukoresha afite kugira ngo amavideo ahwanye n'ikigega cy'agaciro karinganiye cyangwa kinini afite
     if (window.user && window.user.activeInvestments && window.user.activeInvestments.length > 0) {
       window.user.activeInvestments.forEach(inv => {
         if (inv.expiryTime > Date.now() && inv.reqVideos > maxVideosAllowed) {
@@ -1292,12 +1290,10 @@
     window.user.watchedVideosToday[`vid_${vidIndex}`] = true;
     
     let watchedCount = 0;
-    for (let i = 1; i <= maxReq; i++) {
+    for (let i = 1; i <= 41; i++) {
       if (window.user.watchedVideosToday[`vid_${i}`]) watchedCount++;
     }
 
-    // Logic nshya yo gusuzuma buri kigega ku giti ccyacyo: 
-    // Buri kigega cyose umukoresha afite gishobora kwaka inyungu zacyo nyuma y'amasaha 24 (cyangwa igihe cyagenwe) niba yararangije umubare w'amavideo yacyo.
     if (window.user.activeInvestments && window.user.activeInvestments.length > 0) {
       const now = Date.now();
       let totalClaimedNow = 0;
@@ -1309,7 +1305,6 @@
           const timeSinceLastClaim = now - (inv.lastClaimTime || 0);
           const twentyFourHours = 24 * 60 * 60 * 1000;
 
-          // Niba yujuje amavideo asabwa n'iki kigega kandi amasaha 24 akaba ashize kuva yafata inyungu zacyoheruka
           if (inv.completedToday >= inv.reqVideos && (timeSinceLastClaim >= twentyFourHours || !inv.lastClaimTime)) {
             if (inv.planId === 'M0') {
               window.user.practiceBalance += inv.daily;
@@ -1317,7 +1312,6 @@
               window.user.withdrawableEarnings += inv.daily;
             }
             inv.lastClaimTime = now;
-            // Reset completedToday cyangwa ubike ngo yabonye inyungu z'uyu munsi
             totalClaimedNow += inv.daily;
           }
         }
