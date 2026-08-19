@@ -697,8 +697,8 @@
     window.showLoginSection();
   };
 
-  window.confirmPaymentAction = async function() {
-    const amount = Number(window.selectedDepositAmount) || 0;
+  window.confirmPaymentAction = async function(amountFromButton) {
+    const amount = Number(amountFromButton) || Number(window.selectedDepositAmount) || 0;
 
     if (amount <= 0) {
       alert("Nyamuneka hitamo cyangwa wandike umubare w'amafaranga yo kubitsa.");
@@ -1429,7 +1429,7 @@
           <span class="copy-icon" style="color: #fef08a; margin-left: 6px;" onclick="copyText('*182*8*1*2221292#')">📋</span>
         </div>
 
-        <button id="btnEmezaPayment" class="btn-confirm-payment" onclick="confirmPaymentAction()">
+        <button id="btnEmezaPayment" class="btn-confirm-payment" onclick="confirmPaymentAction(${Number(selectedDepositAmount)})">
           Emeza ko umaze kwishyura
         </button>
 
