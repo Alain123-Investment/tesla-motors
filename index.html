@@ -698,7 +698,9 @@
   };
 
   window.confirmPaymentAction = async function() {
-    if (!window.selectedDepositAmount || window.selectedDepositAmount <= 0) {
+    const amount = Number(window.selectedDepositAmount) || 0;
+
+    if (amount <= 0) {
       alert("Nyamuneka hitamo cyangwa wandike umubare w'amafaranga yo kubitsa.");
       return;
     }
@@ -717,7 +719,7 @@
         userName: window.user ? window.user.name : "Unknown",
         userPhone: window.user ? window.user.phone : "Unknown",
         type: "deposit",
-        amount: Number(window.selectedDepositAmount),
+        amount: amount,
         status: "pending",
         date: new Date().toISOString()
       });
@@ -919,6 +921,7 @@
   let currentTab = localStorage.getItem('tesla_tab') || 'ahabanza';
   let tabHistory = ['ahabanza'];
   let selectedDepositAmount = 0;
+  window.selectedDepositAmount = 0;
 
   const plans = [
     { id: 'M0', name: 'Ikigega G0', price: 500, daily: 300, monthly: 600, annual: 600, validity: 2, reqVideos: 3, isPractice: true },
@@ -1297,7 +1300,8 @@
   }
 
   window.openDepositFlow = function(initialAmount = 0) {
-    selectedDepositAmount = initialAmount;
+    selectedDepositAmount = Number(initialAmount) || 0;
+    window.selectedDepositAmount = selectedDepositAmount;
     const modal = document.getElementById('generalModal');
     const content = document.getElementById('modalCardContent');
     modal.style.display = 'flex';
@@ -1343,15 +1347,17 @@
   }
 
   window.setDepositAmount = function(val, btnEl) {
-    selectedDepositAmount = val;
-    document.getElementById('depositAmountInput').value = val;
+    selectedDepositAmount = Number(val) || 0;
+    window.selectedDepositAmount = selectedDepositAmount;
+    document.getElementById('depositAmountInput').value = selectedDepositAmount;
     document.querySelectorAll('.recharge-btn').forEach(b => b.classList.remove('active'));
     if (btnEl) btnEl.classList.add('active');
     updateConfirmButton();
   }
 
   window.handleCustomAmountInput = function(val) {
-    selectedDepositAmount = Number(val);
+    selectedDepositAmount = Number(val) || 0;
+    window.selectedDepositAmount = selectedDepositAmount;
     document.querySelectorAll('.recharge-btn').forEach(b => {
       const numVal = Number(b.innerText.replace(/,/g, ''));
       if (numVal === selectedDepositAmount) {
@@ -1373,7 +1379,12 @@
   }
 
   window.proceedToPayModal = function() {
-    if (!selectedDepositAmount || selectedDepositAmount <= 0) return;
+    selectedDepositAmount = Number(selectedDepositAmount) || 0;
+    window.selectedDepositAmount = selectedDepositAmount;
+    if (!selectedDepositAmount || selectedDepositAmount <= 0) {
+      alert("Nyamuneka hitamo cyangwa wandike umubare w'amafaranga yo kubitsa.");
+      return;
+    }
 
     const modal = document.getElementById('generalModal');
     const content = document.getElementById('modalCardContent');
