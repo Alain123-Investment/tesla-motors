@@ -455,8 +455,6 @@
 
   let currentFirebaseUid = null;
 
-  // Investment tiers are controlled from the Admin Dashboard through Firestore.
-  // Start this listener only after the page scripts are fully initialized so it cannot interfere with login.
   setTimeout(() => {
     try {
       loadInvestmentTiersFromFirestore();
@@ -519,20 +517,10 @@
           id: docSnap.id,
           ...docSnap.data()
         }));
-
-        console.log("Firestore users real-time:", usersList);
         renderAdminUsers(usersList);
       },
       (error) => {
         console.error("Ikibazo mu gusoma users muri Firestore:", error);
-        if (tableBody) {
-          tableBody.innerHTML = `
-            <tr>
-              <td colspan="11" style="padding:10px;text-align:center;color:#f87171;">
-                Ntibashoboye gusomwa: ${error.message}
-              </td>
-            </tr>`;
-        }
       }
     );
   }
@@ -543,7 +531,6 @@
       const userSnap = await getDoc(doc(db, "users", firebaseUser.uid));
       if (userSnap.exists() && userSnap.data().role === "admin") {
         document.getElementById('adminSection').style.display = 'block';
-
         loadAdminTransactions(db);
         loadAllUsersForAdmin();
       } else {
@@ -709,8 +696,6 @@
   };
 
   window.confirmPaymentAction = async function(amountFromButton) {
-    // Use the amount passed by the payment button first. This prevents the
-    // amount from being lost when the modal is re-rendered.
     const amount = Number(amountFromButton) || Number(window.selectedDepositAmount) || 0;
 
     if (amount <= 0) {
@@ -737,13 +722,9 @@
         date: new Date().toISOString()
       });
 
-      alert(
-        "✅ Byemejwe!\n\n" +
-        "Tegereza gato, Admin ari kugenzura ubwishyu bwawe."
-      );
+      alert("✅ Byemejwe!\n\nTegereza gato, Admin ari kugenzura ubwishyu bwawe.");
       window.closeModal();
       switchTab('ahabanza');
-
     } catch (e) {
       console.error(e);
       alert("❌ Ubusabe ntibwoherejwe: " + e.message);
@@ -807,10 +788,7 @@
           .sort((a, b) => String(b.date || "").localeCompare(String(a.date || "")));
 
         if (pendingItems.length === 0) {
-          listEl.innerHTML = `
-            <div style="font-size:12px;color:#d97706;">
-              Nta busabe buri pending ubu.
-            </div>`;
+          listEl.innerHTML = `<div style="font-size:12px;color:#d97706;">Nta busabe buri pending ubu.</div>`;
           return;
         }
 
@@ -818,38 +796,18 @@
           <div class="admin-item-box">
             <div><b>Izina:</b> ${item.userName || "Unknown"}</div>
             <div><b>Telefoni:</b> ${item.userPhone || "Unknown"}</div>
-            <div>
-              <b>Ubwoko:</b>
-              <span style="color:${item.type === 'deposit' ? '#16a34a' : '#b91c1c'}">
-                ${(item.type || "").toUpperCase()}
-              </span>
-            </div>
+            <div><b>Ubwoko:</b> <span style="color:${item.type === 'deposit' ? '#16a34a' : '#b91c1c'}">${(item.type || "").toUpperCase()}</span></div>
             <div><b>Amafaranga:</b> ${Number(item.amount || 0).toLocaleString()} RWF</div>
-            <div style="font-size:10px;color:#a8a29e;margin-top:4px;">
-              ${item.date || ""}
-            </div>
+            <div style="font-size:10px;color:#a8a29e;margin-top:4px;">${item.date || ""}</div>
             <div style="margin-top:10px;display:flex;gap:8px;">
-              <button class="btn-approve"
-                onclick="adminApproveTx('${item.id}', '${item.userId}', '${item.type}', ${Number(item.amount || 0)})">
-                Emeza
-              </button>
-              <button class="btn-reject"
-                onclick="adminRejectTx('${item.id}', '${item.userId}', '${item.type}', ${Number(item.amount || 0)})">
-                Hagarika
-              </button>
+              <button class="btn-approve" onclick="adminApproveTx('${item.id}', '${item.userId}', '${item.type}', ${Number(item.amount || 0)})">Emeza</button>
+              <button class="btn-reject" onclick="adminRejectTx('${item.id}', '${item.userId}', '${item.type}', ${Number(item.amount || 0)})">Hagarika</button>
             </div>
           </div>
         `).join("");
       },
       (error) => {
         console.error("Ikibazo mu gusoma transactions:", error);
-        const listEl = document.getElementById('adminPendingList');
-        if (listEl) {
-          listEl.innerHTML = `
-            <div style="font-size:12px;color:#f87171;">
-              Ntibashoboye gusoma transactions: ${error.message}
-            </div>`;
-        }
       }
     );
   }
@@ -933,9 +891,7 @@
   let user = null;
   let currentTab = localStorage.getItem('tesla_tab') || 'ahabanza';
   let tabHistory = ['ahabanza'];
-  // Keep deposit amount synchronized between the normal script and Firebase module.
   let selectedDepositAmount = 0;
-  window.selectedDepositAmount = 0;
   window.selectedDepositAmount = 0;
 
   let plans = [
@@ -992,7 +948,6 @@
         return ai.localeCompare(bi, undefined, { numeric: true, sensitivity: 'base' });
       });
       plans = loaded;
-      console.log('Investment tiers loaded from Firestore:', plans);
       renderPlans();
     }
   }
@@ -1002,12 +957,10 @@
     plansFirestoreUnsubscribe = onSnapshot(
       collection(window.db, 'investmentTiers'),
       (snapshot) => {
-        // If Admin has created/edited tiers in this collection, users see them immediately.
         applyFirestoreTiers(snapshot);
       },
       (error) => {
         console.error('Investment tiers Firestore read error:', error);
-        // Keep the built-in fallback plans so the user page does not become empty.
         renderPlans();
       }
     );
@@ -1223,7 +1176,10 @@
   function addActiveInvestment(plan) {
     const now = Date.now();
     const expiry = now + (plan.validity * 24 * 60 * 60 * 1000);
+    
+    // Twongereyeho unique investment instance ID kugira ngo ikigega kimwe gishobore kugurwa inshuro nyinshi cyangwa se byinshi bitandukanye
     window.user.activeInvestments.push({
+      investId: 'inv_' + now + '_' + Math.random().toString(36).substring(2, 6),
       planId: plan.id,
       name: plan.name,
       price: plan.price,
@@ -1231,7 +1187,7 @@
       reqVideos: plan.reqVideos,
       startTime: now,
       expiryTime: expiry,
-      lastClaimCycle: 0,
+      lastClaimTime: 0, // Guhita bikurikirana neza nyuma y'amasaha 24 kuri buri kigega ku giti ccyacyo
       completedToday: 0
     });
     window.user.investedAmount = (window.user.investedAmount || 0) + plan.price;
@@ -1256,7 +1212,7 @@
           </div>
           <div style="font-size:12px; color:#d6d3d1; margin-top:6px;">
             • Inyungu ya buri munsi: <b>${inv.daily.toLocaleString()} RWF</b><br>
-            • Video wagaragaje uyu munsi: <b>${inv.completedToday || 0} / ${inv.reqVideos}</b>
+            • Video wagaragaje: <b>${inv.completedToday || 0} / ${inv.reqVideos}</b>
           </div>
           <div class="active-timer" id="timer-${index}">Igihe cyo gupima...</div>
         </div>
@@ -1290,24 +1246,23 @@
     if (!container) return;
 
     let maxVideosAllowed = 0;
-    let activePlan = null;
 
+    // Logic nshya yo kureba ibigega byose bifite agaciro kanini mu bice byose umukoresha afite kugira ngo amavideo ahwanye n'ikigega cy'agaciro karinganiye cyangwa kinini afite
     if (window.user && window.user.activeInvestments && window.user.activeInvestments.length > 0) {
       window.user.activeInvestments.forEach(inv => {
-        if (inv.reqVideos > maxVideosAllowed) {
+        if (inv.expiryTime > Date.now() && inv.reqVideos > maxVideosAllowed) {
           maxVideosAllowed = inv.reqVideos;
-          activePlan = inv;
         }
       });
     }
 
     const infoEl = document.getElementById('tasksInfoText');
     if (maxVideosAllowed === 0) {
-      infoEl.innerText = "⚠️ Nta kigega gikorera active ufite. Banza ushore imari ngo amavideo afunguke!";
+      infoEl.innerText = "⚠️ Nta kigega gikorera active ufite cyangwa byarangiye igihe. Banza ushore imari ngo amavideo afunguke!";
       container.innerHTML = `<div style="background:#1e1b18; padding:20px; border-radius:12px; border:1px solid #78350f;">Jya muri "SHORA" ugure ikigega cyo kurebera amavideo!</div>`;
       return;
     } else {
-      infoEl.innerText = `⚡ Wafunguye amavideo ${maxVideosAllowed} y'ishoramari ryawe! Reba amavideo yose uyu munsi ubone inyungu ya ${activePlan.daily.toLocaleString()} RWF.`;
+      infoEl.innerText = `⚡ Wafunguye amavideo ${maxVideosAllowed} y'ishoramari ryawe! Reba amavideo yose uyu munsi ubone inyungu zawe.`;
     }
 
     let html = '';
@@ -1341,25 +1296,38 @@
       if (window.user.watchedVideosToday[`vid_${i}`]) watchedCount++;
     }
 
+    // Logic nshya yo gusuzuma buri kigega ku giti ccyacyo: 
+    // Buri kigega cyose umukoresha afite gishobora kwaka inyungu zacyo nyuma y'amasaha 24 (cyangwa igihe cyagenwe) niba yararangije umubare w'amavideo yacyo.
     if (window.user.activeInvestments && window.user.activeInvestments.length > 0) {
+      const now = Date.now();
+      let totalClaimedNow = 0;
+
       window.user.activeInvestments.forEach(inv => {
-        inv.completedToday = watchedCount;
-        
-        if (watchedCount >= inv.reqVideos) {
-          const now = Date.now();
-          const cycleDiff = now - (inv.lastClaimCycle || 0);
+        if (inv.expiryTime > Date.now()) {
+          inv.completedToday = Math.min(watchedCount, inv.reqVideos);
           
-          if (cycleDiff >= 24 * 60 * 60 * 1000 || !inv.lastClaimCycle) {
+          const timeSinceLastClaim = now - (inv.lastClaimTime || 0);
+          const twentyFourHours = 24 * 60 * 60 * 1000;
+
+          // Niba yujuje amavideo asabwa n'iki kigega kandi amasaha 24 akaba ashize kuva yafata inyungu zacyoheruka
+          if (inv.completedToday >= inv.reqVideos && (timeSinceLastClaim >= twentyFourHours || !inv.lastClaimTime)) {
             if (inv.planId === 'M0') {
               window.user.practiceBalance += inv.daily;
             } else {
               window.user.withdrawableEarnings += inv.daily;
             }
-            inv.lastClaimCycle = now;
-            alert(`🎉 Byagenze neza! Urangije amavideo ${inv.reqVideos}! Inyungu ya ${inv.daily.toLocaleString()} RWF yinjijwe muri konti yawe!`);
+            inv.lastClaimTime = now;
+            // Reset completedToday cyangwa ubike ngo yabonye inyungu z'uyu munsi
+            totalClaimedNow += inv.daily;
           }
         }
       });
+
+      if (totalClaimedNow > 0) {
+        alert(`🎉 Byagenze neza! Inyungu zawe zose hamwe zingana na ${totalClaimedNow.toLocaleString()} RWF zinjijwe muri konti yawe kuri ibi kigega wujujeho amavideo!`);
+      } else if (watchedCount >= maxReq) {
+        alert(`🎉 Amavideo yose uyarangije! (Icyitonderwa: Inyungu zizongera kwinjira kuri buri kigega nyuma y'amasaha 24 kuva uheruka kuzifata).`);
+      }
     }
 
     window.saveUsersDB();
