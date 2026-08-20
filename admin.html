@@ -87,7 +87,7 @@
   <!-- FIREBASE SDK & GLOBAL FUNCTIONS INITIALIZATION -->
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-    import { getFirestore, collection, query, where, getDocs, doc, updateDoc, getDoc, increment, onSnapshot } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+    import { getFirestore, collection, query, where, getDocs, doc, setDoc, updateDoc, deleteDoc, getDoc, increment, onSnapshot } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
     const firebaseConfig = {
       apiKey: "AIzaSyBZon08Rj5NcQO6N-O4uC4FoEIDHmdWvsA",
@@ -110,7 +110,9 @@
     window.getDocs = getDocs;
     window.getDoc = getDoc;
     window.doc = doc;
+    window.setDoc = setDoc;
     window.updateDoc = updateDoc;
+    window.deleteDoc = deleteDoc;
     window.increment = increment;
     window.onSnapshot = onSnapshot;
   </script>
@@ -255,33 +257,11 @@
 <script>
   let firebaseUsersCache = [];
   let adminTransactionsUnsubscribe = null;
+  let firebaseTiersCache = [];
 
   let dashboardBanners = JSON.parse(localStorage.getItem('tesla_banners')) || [
     "https://images.unsplash.com/photo-1560958089-b8a1929cea89",
     "https://images.unsplash.com/photo-1536700503339-1e4b06520771"
-  ];
-
-  let vipShares = JSON.parse(localStorage.getItem('tesla_vip_shares')) || [
-    { id: "m0", name: "Ikigega G0", price: 500, dailyProfit: 300, validityDays: 2, videosCount: 3, monthlyProfit: 600 },
-    { id: "m1", name: "Ikigega G1", price: 20000, dailyProfit: 675, validityDays: 365, videosCount: 5, monthlyProfit: 20250 },
-    { id: "m2", name: "Ikigega G2", price: 100000, dailyProfit: 3350, validityDays: 365, videosCount: 7, monthlyProfit: 100500 },
-    { id: "m2_vip", name: "Ikigega G2-VIP", price: 120000, dailyProfit: 8000, validityDays: 365, videosCount: 9, monthlyProfit: 240000 },
-    { id: "m3", name: "Ikigega G3", price: 250000, dailyProfit: 8325, validityDays: 365, videosCount: 11, monthlyProfit: 249750 },
-    { id: "m3_vip", name: "Ikigega G3-VIP", price: 300000, dailyProfit: 20025, validityDays: 365, videosCount: 13, monthlyProfit: 600750 },
-    { id: "m4", name: "Ikigega G4", price: 550000, dailyProfit: 18400, validityDays: 365, videosCount: 15, monthlyProfit: 552000 },
-    { id: "m4_vip", name: "Ikigega G4-VIP", price: 600000, dailyProfit: 40000, validityDays: 365, videosCount: 17, monthlyProfit: 1200000 },
-    { id: "m5", name: "Ikigega G5", price: 1200000, dailyProfit: 40000, validityDays: 365, videosCount: 19, monthlyProfit: 1200000 },
-    { id: "m5_vip", name: "Ikigega G5-VIP", price: 1500000, dailyProfit: 100000, validityDays: 365, videosCount: 21, monthlyProfit: 3000000 },
-    { id: "m6", name: "Ikigega G6", price: 2400000, dailyProfit: 81000, validityDays: 365, videosCount: 23, monthlyProfit: 2430000 },
-    { id: "m6_vip", name: "Ikigega G6-VIP", price: 2800000, dailyProfit: 187500, validityDays: 365, videosCount: 25, monthlyProfit: 5625000 },
-    { id: "m7", name: "Ikigega G7", price: 4000000, dailyProfit: 134750, validityDays: 365, videosCount: 27, monthlyProfit: 4042500 },
-    { id: "m7_vip", name: "Ikigega G7-VIP", price: 5000000, dailyProfit: 334250, validityDays: 365, videosCount: 29, monthlyProfit: 10027500 },
-    { id: "m8", name: "Ikigega G8", price: 6000000, dailyProfit: 200000, validityDays: 365, videosCount: 31, monthlyProfit: 6000000 },
-    { id: "m8_vip", name: "Ikigega G8-VIP", price: 7000000, dailyProfit: 468000, validityDays: 365, videosCount: 33, monthlyProfit: 14040000 },
-    { id: "m9", name: "Ikigega G9", price: 8000000, dailyProfit: 267750, validityDays: 365, videosCount: 35, monthlyProfit: 8032500 },
-    { id: "m9_vip", name: "Ikigega G9-VIP", price: 9000000, dailyProfit: 600750, validityDays: 365, videosCount: 37, monthlyProfit: 18022500 },
-    { id: "m10", name: "Ikigega G10", price: 10000000, dailyProfit: 335000, validityDays: 365, videosCount: 39, monthlyProfit: 10050000 },
-    { id: "m10_vip", name: "Ikigega G10-VIP", price: 11000000, dailyProfit: 735000, validityDays: 365, videosCount: 41, monthlyProfit: 22050000 }
   ];
 
   let platformVideos = JSON.parse(localStorage.getItem('tesla_platform_videos')) || (() => {
@@ -375,7 +355,6 @@
 
     searchContainer.style.display = (tool === 'users') ? 'block' : 'none';
 
-    // Clear active transaction listener if we navigate away from transactions
     if (tool !== 'transactions' && adminTransactionsUnsubscribe) {
       adminTransactionsUnsubscribe();
       adminTransactionsUnsubscribe = null;
@@ -389,7 +368,7 @@
       loadAllFirebaseUsers(container);
     } else if (tool === 'investment_tiers') {
       title.innerText = "Manage Investment Tiers (Bigega byo Gushoramo)";
-      renderInvestmentTiers(container);
+      loadFirebaseInvestmentTiers(container);
     } else if (tool === 'shares') {
       title.innerText = "Edit Shares & Dashboard Banners";
       renderSharesEditor(container);
@@ -465,7 +444,6 @@
           const tData = targetSnap.data();
           await updateDoc(targetRef, { balance: (tData.balance || 0) + amount });
 
-          // Kohereza komisiyo ya Referral nibaahari
           if (tData.referredBy) {
             const refRef = doc(db, "users", tData.referredBy);
             const refSnap = await getDoc(refRef);
@@ -614,32 +592,48 @@
     document.getElementById('editUserModal').style.display = 'none';
   }
 
-  /* INVESTMENT TIERS / BIGEGA MANAGER */
+  /* INVESTMENT TIERS / BIGEGA MANAGER (FIRESTORE) */
+  async function loadFirebaseInvestmentTiers(container) {
+    container.innerHTML = `<p style="color:#3b82f6; font-size:12px; text-align:center; padding:20px;">Tegereza gato turakurura ibigega muri Firebase...</p>`;
+    try {
+      const querySnapshot = await getDocs(collection(window.db, "tiers"));
+      firebaseTiersCache = [];
+      querySnapshot.forEach((docSnap) => {
+        firebaseTiersCache.push({ id: docSnap.id, ...docSnap.data() });
+      });
+      renderInvestmentTiers(container);
+    } catch (error) {
+      console.error("Ikibazo cyo gukurura tiers:", error);
+      container.innerHTML = `<p style="color:red; font-size:12px; text-align:center; padding:20px;">Habaye ikibazo: ${error.message}</p>`;
+    }
+  }
+
   function renderInvestmentTiers(container) {
     let html = `
       <div class="item-card" style="margin-bottom:20px;">
-        <div class="item-name" style="margin-bottom:12px; color:#3b82f6;">📦 Genzura Ibigega Byo Gushoramo (Total: ${vipShares.length})</div>
+        <div class="item-name" style="margin-bottom:12px; color:#3b82f6;">📦 Genzura Ibigega Byo Gushoramo (Total: ${firebaseTiersCache.length})</div>
         <button class="btn-act-blue" style="width:100%; padding:10px; margin-bottom:15px;" onclick="addNewTierField()">➕ Kongeramo Ikigega Gishya</button>
     `;
 
-    vipShares.forEach((tier, index) => {
+    firebaseTiersCache.forEach((tier, index) => {
       html += `
         <div style="background:#0b1329; padding:12px; border-radius:10px; margin-bottom:12px; border:1px solid #1e2d52;">
+          <input type="hidden" id="tierDocId_${index}" value="${tier.id}">
           <div class="form-group">
             <label class="form-label">Izina ry'Ikigega (Tier Name)</label>
-            <input type="text" id="tierName_${index}" class="input-box" value="${tier.name}">
+            <input type="text" id="tierName_${index}" class="input-box" value="${tier.name || ''}">
           </div>
           <div class="form-group">
             <label class="form-label">Igiciro cy'ishoramari (Price - RWF)</label>
-            <input type="number" id="tierPrice_${index}" class="input-box" value="${tier.price}">
+            <input type="number" id="tierPrice_${index}" class="input-box" value="${tier.price || 0}">
           </div>
           <div class="form-group">
             <label class="form-label">Inyungu ku munsi (Daily Profit - RWF)</label>
-            <input type="number" id="tierProfit_${index}" class="input-box" value="${tier.dailyProfit}">
+            <input type="number" id="tierProfit_${index}" class="input-box" value="${tier.dailyProfit || 0}">
           </div>
           <div class="form-group">
             <label class="form-label">Iminsi y'imikorere (Validity Days)</label>
-            <input type="number" id="tierDays_${index}" class="input-box" value="${tier.validityDays}">
+            <input type="number" id="tierDays_${index}" class="input-box" value="${tier.validityDays || 365}">
           </div>
           <div class="form-group">
             <label class="form-label">Video zo kureba ku munsi (Videos Count)</label>
@@ -647,11 +641,11 @@
           </div>
           <div class="form-group">
             <label class="form-label">Inyungu ku kwezi (Monthly Profit - RWF)</label>
-            <input type="number" id="tierMonthly_${index}" class="input-box" value="${tier.monthlyProfit || (tier.dailyProfit * 30)}">
+            <input type="number" id="tierMonthly_${index}" class="input-box" value="${tier.monthlyProfit || 0}">
           </div>
           <div class="action-btn-group">
-            <button class="btn-act-green" onclick="saveSingleTier(${index})">💾 Save ${tier.name}</button>
-            <button class="btn-act-red" onclick="deleteTier(${index})">🗑️ Delete</button>
+            <button class="btn-act-green" onclick="saveSingleTierFirebase(${index})">💾 Save Firebase</button>
+            <button class="btn-act-red" onclick="deleteTierFirebase(${index})">🗑️ Delete</button>
           </div>
         </div>
       `;
@@ -661,38 +655,59 @@
     container.innerHTML = html;
   }
 
-  function saveSingleTier(index) {
-    vipShares[index].name = document.getElementById(`tierName_${index}`).value;
-    vipShares[index].price = parseFloat(document.getElementById(`tierPrice_${index}`).value) || 0;
-    vipShares[index].dailyProfit = parseFloat(document.getElementById(`tierProfit_${index}`).value) || 0;
-    vipShares[index].validityDays = parseInt(document.getElementById(`tierDays_${index}`).value) || 365;
-    vipShares[index].videosCount = parseInt(document.getElementById(`tierVideos_${index}`).value) || 3;
-    vipShares[index].monthlyProfit = parseFloat(document.getElementById(`tierMonthly_${index}`).value) || 0;
+  window.saveSingleTierFirebase = async function(index) {
+    let docId = document.getElementById(`tierDocId_${index}`).value;
+    let name = document.getElementById(`tierName_${index}`).value;
+    let price = parseFloat(document.getElementById(`tierPrice_${index}`).value) || 0;
+    let dailyProfit = parseFloat(document.getElementById(`tierProfit_${index}`).value) || 0;
+    let validityDays = parseInt(document.getElementById(`tierDays_${index}`).value) || 365;
+    let videosCount = parseInt(document.getElementById(`tierVideos_${index}`).value) || 3;
+    let monthlyProfit = parseFloat(document.getElementById(`tierMonthly_${index}`).value) || 0;
 
-    saveAllData();
-    alert(`Ikigega "${vipShares[index].name}" cyahinduwe kandi cyabitswe neza! (Bizahita biboneka ku bakoresha).`);
+    try {
+      await setDoc(doc(window.db, "tiers", docId), {
+        name,
+        price,
+        dailyProfit,
+        validityDays,
+        videosCount,
+        monthlyProfit
+      });
+      alert(`Ikigega "${name}" cyabitswe neza muri Firebase!`);
+      loadFirebaseInvestmentTiers(document.getElementById('dynamicContentArea'));
+    } catch (e) {
+      alert("Ikosa: " + e.message);
+    }
   }
 
-  function addNewTierField() {
+  window.addNewTierField = async function() {
     let newId = "m_" + Date.now();
-    vipShares.push({
-      id: newId,
+    let newTier = {
       name: "Ikigega Gishya",
       price: 15000,
       dailyProfit: 500,
       validityDays: 365,
       videosCount: 4,
       monthlyProfit: 15000
-    });
-    saveAllData();
-    renderInvestmentTiers(document.getElementById('dynamicContentArea'));
+    };
+
+    try {
+      await setDoc(doc(window.db, "tiers", newId), newTier);
+      loadFirebaseInvestmentTiers(document.getElementById('dynamicContentArea'));
+    } catch (e) {
+      alert("Ikosa: " + e.message);
+    }
   }
 
-  function deleteTier(index) {
-    if (confirm("Uremeye ko ushaka gusiba iki kigega?")) {
-      vipShares.splice(index, 1);
-      saveAllData();
-      renderInvestmentTiers(document.getElementById('dynamicContentArea'));
+  window.deleteTierFirebase = async function(index) {
+    let docId = document.getElementById(`tierDocId_${index}`).value;
+    if (confirm("Uremeye ko ushaka gusiba iki kigega burundu muri Firebase?")) {
+      try {
+        await deleteDoc(doc(window.db, "tiers", docId));
+        loadFirebaseInvestmentTiers(document.getElementById('dynamicContentArea'));
+      } catch (e) {
+        alert("Ikosa: " + e.message);
+      }
     }
   }
 
@@ -821,7 +836,6 @@
 
   function saveAllData() {
     localStorage.setItem('tesla_banners', JSON.stringify(dashboardBanners));
-    localStorage.setItem('tesla_vip_shares', JSON.stringify(vipShares));
     localStorage.setItem('tesla_platform_videos', JSON.stringify(platformVideos));
   }
 
