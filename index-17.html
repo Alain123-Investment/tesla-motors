@@ -1,0 +1,2094 @@
+<!DOCTYPE html>
+<html lang="rw">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TESLA MOTORS - Investment Platform & Admin Portal</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
+    body { background-color: #1a1512; color: #f3f4f6; display: flex; justify-content: center; }
+    .app-container { width: 100%; max-width: 480px; background: #120e0c; min-height: 100vh; position: relative; padding-bottom: 85px; box-shadow: 0 0 25px rgba(0,0,0,0.5); }
+
+    /* Header Modern Bright */
+    .dash-header { background: linear-gradient(135deg, #b91c1c, #78350f, #eab308); color: white; padding: 18px 20px 45px; border-bottom-left-radius: 28px; border-bottom-right-radius: 28px; box-shadow: 0 8px 25px rgba(185, 28, 28, 0.3); }
+    .dash-user { display: flex; justify-content: space-between; align-items: center; }
+    .user-name { font-size: 18px; font-weight: 800; color: #fef08a; }
+    .user-phone { font-size: 12px; color: #fef08a; }
+
+    .nav-top-btns { display: flex; gap: 8px; margin-bottom: 12px; }
+    .btn-step-back { background: rgba(0,0,0,0.3); border: 1px solid rgba(234,179,8,0.4); color: #fef08a; padding: 6px 12px; border-radius: 8px; font-size: 12px; font-weight: 700; cursor: pointer; }
+    .btn-step-back:hover { background: rgba(0,0,0,0.5); }
+
+    /* Balance Card Custom */
+    .balance-card { background: #1e1b18; margin: -35px 16px 15px; border-radius: 20px; padding: 20px; border: 1px solid #78350f; box-shadow: 0 10px 30px rgba(0,0,0,0.4); }
+    .balance-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; border-bottom: 1px solid #292524; padding-bottom: 12px; }
+    .bal-title { font-size: 10px; color: #d97706; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; }
+    .bal-num { font-size: 16px; font-weight: 900; color: #f3f4f6; margin-top: 4px; }
+    .bal-num span { font-size: 11px; color: #eab308; }
+
+    .action-btns { display: flex; gap: 10px; margin-top: 14px; }
+    .btn-act { flex: 1; background: #292524; border: 1px solid #78350f; padding: 12px; border-radius: 12px; font-weight: 800; color: #fef08a; font-size: 12px; cursor: pointer; text-align: center; }
+    .btn-act:hover { background: #44403c; }
+
+    /* Notice */
+    .notice-bar { background: #1e1b18; margin: 0 16px 15px; padding: 12px 14px; border-radius: 14px; font-size: 12px; color: #fef08a; display: flex; align-items: center; gap: 8px; border: 1px solid #78350f; }
+
+    /* CAR SLIDER */
+    .car-slider-card { margin: 0 16px 15px; height: 180px; border-radius: 18px; position: relative; overflow: hidden; border: 1px solid #78350f; box-shadow: 0 4px 12px rgba(0,0,0,0.3); }
+    .car-slide { position: absolute; inset: 0; background-size: cover; background-position: center; transition: opacity 0.8s ease-in-out; opacity: 0; display: flex; align-items: flex-end; padding: 15px; }
+    .car-slide.active { opacity: 1; }
+    .banner-overlay { position: absolute; inset: 0; background: linear-gradient(to top, rgba(0,0,0,0.85), transparent); }
+    .banner-text { position: relative; z-index: 2; font-size: 14px; font-weight: 800; color: #fef08a; }
+
+    /* Grid Menu */
+    .grid-menu { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin: 0 16px 20px; }
+    .menu-item { background: #1e1b18; padding: 14px 6px; border-radius: 16px; text-align: center; border: 1px solid #78350f; cursor: pointer; box-shadow: 0 2px 6px rgba(0,0,0,0.2); }
+    .menu-item:hover { border-color: #eab308; background: #292524; }
+    .menu-icon { font-size: 22px; margin-bottom: 4px; }
+    .menu-label { font-size: 11px; font-weight: 700; color: #fef08a; }
+
+    /* Forms & Inputs */
+    .auth-card { background: #1e1b18; margin: 15px 16px; padding: 24px 20px; border-radius: 20px; border: 1px solid #78350f; box-shadow: 0 10px 25px rgba(0,0,0,0.4); }
+    .form-group { margin-bottom: 14px; text-align: left; }
+    .form-label { font-size: 11px; font-weight: 800; color: #d97706; letter-spacing: 0.5px; margin-bottom: 6px; display: block; }
+    
+    .input-container { position: relative; width: 100%; }
+    .input-box { width: 100%; background: #292524; border: 1px solid #78350f; border-radius: 12px; padding: 14px 45px 14px 16px; font-size: 14px; color: #fef08a; outline: none; }
+    .input-box:focus { border-color: #eab308; background: #1e1b18; }
+    .input-box-normal { width: 100%; background: #292524; border: 1px solid #78350f; border-radius: 12px; padding: 14px 16px; font-size: 14px; color: #fef08a; outline: none; }
+    .input-box-normal:focus { border-color: #eab308; background: #1e1b18; }
+    .input-box-normal:read-only { background: #292524; color: #a8a29e; cursor: not-allowed; }
+    
+    .eye-btn { position: absolute; right: 15px; top: 50%; transform: translateY(-50%); background: none; border: none; cursor: pointer; font-size: 16px; color: #d97706; }
+
+    .btn-main { width: 100%; background: linear-gradient(135deg, #b91c1c, #78350f, #eab308); color: white; border: none; padding: 14px; border-radius: 12px; font-size: 15px; font-weight: 800; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; margin-top: 10px; box-shadow: 0 4px 12px rgba(185, 28, 28, 0.4); }
+    .btn-main:hover { background: linear-gradient(135deg, #991b1b, #451a03, #ca8a04); }
+    .btn-back { width: 100%; background: #292524; color: #fef08a; border: 1px solid #78350f; padding: 12px; border-radius: 12px; font-size: 13px; font-weight: 700; cursor: pointer; margin-top: 8px; text-align: center; }
+
+    /* Loading Spinner */
+    .spinner { display: inline-block; width: 18px; height: 18px; border: 3px solid rgba(255,255,255,0.3); border-radius: 50%; border-top-color: #eab308; animation: spin 0.8s ease-in-out infinite; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* Plans Card */
+    .plan-card { background: #1e1b18; border-radius: 16px; padding: 16px; margin: 0 16px 16px; border: 1px solid #78350f; box-shadow: 0 4px 12px rgba(0,0,0,0.3); }
+    .plan-header-title { background: #292524; color: #fef08a; padding: 8px 12px; border-radius: 10px; font-size: 12px; font-weight: 800; margin-bottom: 12px; text-align: center; letter-spacing: 0.5px; border: 1px solid #78350f; }
+    .plan-header { display: flex; justify-content: space-between; align-items: center; font-weight: 800; font-size: 16px; color: #fef08a; margin-bottom: 10px; }
+    .plan-badge { background: #451a03; color: #fef08a; font-size: 11px; padding: 4px 10px; border-radius: 8px; border: 1px solid #78350f; }
+    .plan-details { font-size: 12px; color: #d6d3d1; line-height: 1.8; margin-bottom: 14px; text-align: left; background: #292524; padding: 10px 12px; border-radius: 10px; border: 1px solid #78350f; }
+
+    /* Active Investment Card */
+    .active-plan-card { background: #1e1b18; border-radius: 16px; padding: 16px; margin-bottom: 12px; border: 2px solid #eab308; text-align: left; box-shadow: 0 4px 12px rgba(234, 179, 8, 0.2); }
+    .active-timer { font-size: 14px; font-weight: 800; color: #fef08a; margin-top: 6px; }
+
+    /* Video Task Styles */
+    .video-card { background: #1e1b18; border-radius: 16px; padding: 14px; margin-bottom: 15px; border: 1px solid #78350f; box-shadow: 0 4px 10px rgba(0,0,0,0.3); }
+    .video-card video { width: 100%; border-radius: 12px; max-height: 200px; background: #000; }
+    .video-btn { width: 100%; background: #b91c1c; color: white; border: none; padding: 12px; border-radius: 10px; font-size: 13px; font-weight: 800; margin-top: 10px; cursor: pointer; box-shadow: 0 4px 10px rgba(185, 28, 28, 0.3); }
+    .video-btn:disabled { background: #44403c; cursor: not-allowed; box-shadow: none; }
+
+    /* Modal Styles */
+    .modal-overlay { position: fixed; inset: 0; background: rgba(0, 0, 0, 0.8); backdrop-filter: blur(4px); display: flex; align-items: center; justify-content: center; z-index: 100; padding: 15px; }
+    .modal-card { background: #1e1b18; width: 100%; max-width: 420px; border-radius: 20px; padding: 20px; color: #f3f4f6; max-height: 90vh; overflow-y: auto; position: relative; border: 1px solid #78350f; box-shadow: 0 20px 40px rgba(0,0,0,0.6); }
+
+    .modal-nav-btns { display: flex; gap: 8px; margin-bottom: 15px; border-bottom: 1px solid #292524; padding-bottom: 10px; }
+    .btn-modal-nav { background: #292524; border: 1px solid #78350f; color: #fef08a; padding: 6px 12px; border-radius: 8px; font-size: 11px; font-weight: 800; cursor: pointer; flex: 1; }
+
+    /* Deposit UI */
+    .recharge-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin: 15px 0; }
+    .recharge-btn { background: #292524; border: 1px solid #78350f; border-radius: 12px; padding: 14px 5px; font-size: 14px; font-weight: 700; color: #fef08a; cursor: pointer; text-align: center; }
+    .recharge-btn.active { border: 2px solid #eab308; background: #451a03; color: #fef08a; }
+    
+    .recharge-input-box { background: #292524; border: 1px solid #78350f; border-radius: 12px; padding: 12px 15px; display: flex; align-items: center; gap: 10px; font-size: 15px; font-weight: 700; color: #fef08a; margin-top: 8px; }
+    .recharge-input-box input { border: none; background: transparent; outline: none; font-size: 15px; font-weight: 700; color: #fef08a; width: 100%; }
+
+    .btn-confirm-deposit { width: 100%; background: #292524; color: #78350f; border: none; padding: 14px; border-radius: 25px; font-size: 16px; font-weight: 800; cursor: not-allowed; transition: all 0.3s ease; margin-top: 15px; }
+    .btn-confirm-deposit.active { background: #b91c1c; color: #ffffff; cursor: pointer; box-shadow: 0 4px 15px rgba(185, 28, 28, 0.4); }
+
+    /* Modal Pay Card */
+    .pay-card-modal { background: #1e1b18; color: #f3f4f6; width: 100%; max-width: 400px; border-radius: 20px; padding: 20px; position: relative; border: 1px solid #78350f; box-shadow: 0 20px 40px rgba(0,0,0,0.6); }
+    .pay-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
+    .pay-logo { background: #b91c1c; color: #fff; width: 28px; height: 28px; border-radius: 50%; font-weight: 900; display: flex; align-items: center; justify-content: center; font-size: 14px; }
+    
+    .pay-box { background: #292524; border-radius: 16px; padding: 18px; color: #f3f4f6; margin-top: 10px; border: 1px solid #78350f; }
+    .pay-row-title { font-size: 11px; color: #d97706; font-weight: 700; margin-bottom: 2px; }
+    .pay-row-val { font-size: 18px; font-weight: 900; color: #eab308; margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center; }
+    .copy-icon { cursor: pointer; color: #d97706; font-size: 16px; }
+
+    .btn-confirm-payment { width: 100%; background: #b91c1c; color: #ffffff; border: none; padding: 14px; border-radius: 14px; font-size: 15px; font-weight: 800; cursor: pointer; margin-top: 12px; display: flex; align-items: center; justify-content: center; gap: 6px; box-shadow: 0 4px 12px rgba(185, 28, 28, 0.4); }
+
+    /* Bottom Nav */
+    .bottom-nav { position: fixed; bottom: 0; left: 50%; transform: translateX(-50%); width: 100%; max-width: 480px; background: #120e0c; border-top: 1px solid #78350f; display: flex; justify-content: space-around; padding: 10px 0; z-index: 90; box-shadow: 0 -4px 15px rgba(0,0,0,0.5); }
+    .nav-item { text-align: center; color: #d97706; font-size: 10px; font-weight: 700; cursor: pointer; flex: 1; }
+    .nav-item.active { color: #eab308; }
+    .nav-icon { font-size: 18px; display: block; margin-bottom: 2px; }
+    
+    .team-card { background: #292524; padding: 12px; border-radius: 12px; margin-top: 10px; border: 1px solid #78350f; text-align: left; }
+    .team-member { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid #78350f; font-size: 12px; color: #fef08a; }
+
+    /* Admin Styles */
+    .admin-card { background: #1e1b18; border-radius: 16px; padding: 20px; border: 1px solid #b91c1c; margin: 0 16px 20px; text-align: left; box-shadow: 0 4px 12px rgba(185,28,28,0.2); }
+    .admin-item-box { background: #292524; border: 1px solid #78350f; border-radius: 10px; padding: 14px; margin-bottom: 12px; font-size: 13px; text-align: left; }
+    .btn-approve { background: #16a34a; color: #fff; border: none; padding: 6px 12px; border-radius: 6px; cursor: pointer; font-weight: 800; font-size: 12px; }
+    .btn-reject { background: #b91c1c; color: #fff; border: none; padding: 6px 12px; border-radius: 6px; cursor: pointer; font-weight: 800; font-size: 12px; }
+  </style>
+</head>
+<body>
+
+<div class="app-container">
+
+  <!-- AUTH SECTION -->
+  <div id="authContainer">
+    <!-- REGISTER PAGE -->
+    <div id="registerPage">
+      <div style="text-align: center; padding: 35px 15px 10px;">
+        <div style="font-size:26px; font-weight:900; color:#eab308;">⚡ TESLA MOTORS</div>
+        <div style="font-size:13px; color:#d97706; margin-top:4px;">Fungura Konti Nshya yo Gufatanya Nacu</div>
+      </div>
+      <div class="auth-card">
+        <div class="form-group">
+          <label class="form-label">AMAZINA YOSE</label>
+          <input type="text" id="regName" class="input-box-normal" placeholder="Amazina yawe bwite">
+        </div>
+        <div class="form-group">
+          <label class="form-label">NUMERO YA TELEFONI</label>
+          <input type="tel" id="regPhone" class="input-box-normal" placeholder="078xxxxxxxx">
+        </div>
+        <div class="form-group">
+          <label class="form-label">IJAMBOBANGA (PASSWORD)</label>
+          <div class="input-container">
+            <input type="password" id="regPass" class="input-box" placeholder="••••••">
+            <button type="button" class="eye-btn" onclick="togglePassword('regPass', this)">👁️</button>
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">EMEZA IJAMBOBANGA</label>
+          <div class="input-container">
+            <input type="password" id="regPassConfirm" class="input-box" placeholder="••••••">
+            <button type="button" class="eye-btn" onclick="togglePassword('regPassConfirm', this)">👁️</button>
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">KODE Y'UBUTUMIRE (REF CODE)</label>
+          <input type="text" id="regRefCode" class="input-box-normal" placeholder="Urugero: TS-XXXXXX" style="text-transform:uppercase;">
+        </div>
+        <button id="regBtn" type="button" class="btn-main" onclick="if (validateRequiredAuthFields(['regName','regPhone','regPass','regPassConfirm'])) handleRegister()">Iyandikishe nonaha ➔</button>
+        <button class="btn-back" onclick="showLoginSection()">Ufite konti? Injira hano</button>
+      </div>
+    </div>
+
+    <!-- LOGIN PAGE -->
+    <div id="loginPage" style="display: none;">
+      <div style="text-align: center; padding: 35px 15px 10px;">
+        <div style="font-size:26px; font-weight:900; color:#eab308;">⚡ TESLA MOTORS</div>
+        <div style="font-size:13px; color:#d97706; margin-top:4px;">Injira muri Konti yawe</div>
+      </div>
+      <div class="auth-card">
+        <div class="form-group">
+          <label class="form-label">NUMERO YA TELEFONI</label>
+          <input type="tel" id="loginPhone" class="input-box-normal" placeholder="078xxxxxxxx">
+        </div>
+        <div class="form-group">
+          <label class="form-label">IJAMBOBANGA (PASSWORD)</label>
+          <div class="input-container">
+            <input type="password" id="loginPass" class="input-box" placeholder="••••••">
+            <button type="button" class="eye-btn" onclick="togglePassword('loginPass', this)">👁️</button>
+          </div>
+        </div>
+        <button id="loginBtn" type="button" class="btn-main" onclick="if (validateRequiredAuthFields(['loginPhone','loginPass'])) handleLogin()">Injira muri Konti ➔</button>
+        <div style="text-align: center; margin-top: 15px;">
+          <span style="font-size: 13px; color: #eab308; font-weight: 800; cursor: pointer; text-decoration: underline;" onclick="showRegisterSection()">Nta konti ufite? Iyandikishe hano</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MAIN APP CONTAINER -->
+  <div id="appBody" style="display: none;">
+
+    <!-- HEADER -->
+    <div class="dash-header">
+      <div class="nav-top-btns">
+        <button class="btn-step-back" onclick="goBackStep()">⬅ Subira inyuma</button>
+        <button class="btn-step-back" onclick="switchTab('ahabanza')">🏠 Ahabanza</button>
+      </div>
+      <div class="dash-user">
+        <div>
+          <div class="user-name" id="dispName">User</div>
+          <div class="user-phone" id="dispPhone">Konti - 078xxxxxxx</div>
+        </div>
+        <div style="cursor:pointer; font-size:20px; background:rgba(0,0,0,0.3); padding:6px 10px; border-radius:10px; border:1px solid rgba(234,179,8,0.3);" onclick="openDepositFlow()">🔔</div>
+      </div>
+    </div>
+
+    <!-- BALANCE CARD -->
+    <div class="balance-card">
+      <div class="balance-grid">
+        <div>
+          <div class="bal-title">Amafaranga yo Kwiga</div>
+          <div class="bal-num"><span id="userPracticeBalance">1,000</span> <span>RWF</span></div>
+        </div>
+        <div>
+          <div class="bal-title">Ubwizigame Bwose</div>
+          <div class="bal-num"><span id="userDepositBalance">0</span> <span>RWF</span></div>
+        </div>
+      </div>
+      <div style="margin-top: 10px; border-bottom: 1px solid #292524; padding-bottom: 10px;">
+        <div class="bal-title">Inyungu Ziboneka</div>
+        <div class="bal-num" style="color:#eab308;"><span id="userWithdrawableEarnings">0</span> <span>RWF</span></div>
+      </div>
+      <div class="action-btns">
+        <button class="btn-act" onclick="switchTab('shora')">👑 Gura Ibyiciro</button>
+        <button class="btn-act" onclick="openDepositFlow()">💵 Kongera Amafaranga</button>
+      </div>
+    </div>
+
+    <!-- TAB 1: AHABANZA -->
+    <div id="tabAhabanza">
+      <div id="deposit-activity-ticker" style="margin:10px 16px 12px;overflow:hidden;background:#1e1b18;border:1px solid #78350f;border-radius:12px;padding:8px 0;">
+        <div id="liveActivityTicker" style="white-space:nowrap;display:inline-block;animation:teslaTicker 34s linear infinite;font-size:12px;font-weight:800;color:#fef08a;">
+          🔄 Birimo gushaka ibikorwa byemejwe...
+        </div>
+      </div>
+      <style>@keyframes teslaTicker{from{transform:translateX(100%)}to{transform:translateX(-100%)}}</style>
+    <div class="notice-bar">
+        <span>📢</span>
+        <marquee behavior="scroll" direction="left" scrollamount="4">
+          Murakaza neza muri Tesla Motors Platform! Hitamo ikigega cy'imari ukorere inyungu buri munsi binyuze mu bikorwa byiza!
+        </marquee>
+      </div>
+
+      <!-- AUTOMATIC TESLA CAR SLIDER -->
+      <div class="car-slider-card">
+        <div class="car-slide active" style="background-image: url('https://images.unsplash.com/photo-1560958089-b8a1929cea89?auto=format&fit=crop&w=600&q=80');">
+          <div class="banner-overlay"></div>
+          <div class="banner-text">⚡ Tesla Clean Energy - Powering the Future</div>
+        </div>
+        <div class="car-slide" style="background-image: url('https://images.unsplash.com/photo-1536700503339-1e4b06520771?auto=format&fit=crop&w=600&q=80');">
+          <div class="banner-overlay"></div>
+          <div class="banner-text">⚡ Sustainable Technology & Efficiency</div>
+        </div>
+        <div class="car-slide" style="background-image: url('https://images.unsplash.com/photo-1571127236794-81c0bbfe1ce3?auto=format&fit=crop&w=600&q=80');">
+          <div class="banner-overlay"></div>
+          <div class="banner-text">🔋 Advanced Battery Storage Innovation</div>
+        </div>
+        <div class="car-slide" style="background-image: url('https://images.unsplash.com/photo-1617788138017-80ad40651399?auto=format&fit=crop&w=600&q=80');">
+          <div class="banner-overlay"></div>
+          <div class="banner-text">⚡ Green Electric Vehicle Fleet Solutions</div>
+        </div>
+        <div class="car-slide" style="background-image: url('https://images.unsplash.com/photo-1552519507-da3b142c6e3d?auto=format&fit=crop&w=600&q=80');">
+          <div class="banner-overlay"></div>
+          <div class="banner-text">🚀 Next-Gen Eco Transportation Systems</div>
+        </div>
+      </div>
+
+      <div style="margin: 0 16px 10px; font-size: 11px; font-weight: 800; color: #d97706; text-transform: uppercase; text-align:left;">IBIKORWA BY'INGENZI</div>
+      
+      <div class="grid-menu">
+        <div class="menu-item" onclick="openDepositFlow()"><div class="menu-icon">💵</div><div class="menu-label">Kubitsa</div></div>
+        <div class="menu-item" onclick="openWithdrawModal()"><div class="menu-icon">📲</div><div class="menu-label">Kubikuza</div></div>
+        <div class="menu-item" onclick="switchTab('washoye')"><div class="menu-icon">📈</div><div class="menu-label">Ishoramari</div></div>
+        <div class="menu-item" onclick="switchTab('itsinda')"><div class="menu-icon">👥</div><div class="menu-label">Itsinda</div></div>
+        <div class="menu-item" onclick="openHistoryModal()"><div class="menu-icon">🕒</div><div class="menu-label">Amateka</div></div>
+        <div class="menu-item" onclick="openBonusModal()"><div class="menu-icon">🎁</div><div class="menu-label">Agashimwe</div></div>
+        <div class="menu-item" onclick="openRewardsModal()"><div class="menu-icon">🏆</div><div class="menu-label">Ibihembo</div></div>
+        <div class="menu-item" onclick="openSupport()"><div class="menu-icon">🎧</div><div class="menu-label">Ubufasha</div></div>
+        <div class="menu-item" onclick="handleLogout()"><div class="menu-icon">🚪</div><div class="menu-label">Gusohoka</div></div>
+      </div>
+
+      <!-- ADMIN PANEL SECTION (Visible only if user role is admin) -->
+      <div id="adminSection" style="display: none;">
+        <div class="admin-card">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+            <h3 style="font-size: 15px; color: #b91c1c;">🛠️ TESLA ADMIN MANAGEMENT</h3>
+          </div>
+          <div style="font-size: 11px; color: #d97706; margin-bottom: 10px;">Genzura kandi wemeze ubusabe bwose bw'abafatanyabikorwa:</div>
+          <div id="adminPendingList">
+            <div style="font-size: 12px; color: #d97706;">Birimo gushakisha amakuru...</div>
+          </div>
+          
+          <h4 style="font-size: 14px; color: #eab308; margin-top: 20px; margin-bottom: 10px;">👥 Abakoresha bose bariyandikishije</h4>
+          <div style="overflow-x: auto;">
+            <table style="width: 100%; border-collapse: collapse; font-size: 11px; text-align: left; color: #f3f4f6;">
+              <thead>
+                <tr style="background: #292524; border-bottom: 1px solid #78350f; color: #eab308;">
+                  <th style="padding: 8px;">Amazina</th>
+                  <th style="padding: 8px;">Telefoni</th>
+                  <th style="padding: 8px;">Bal. Deposits</th>
+                  <th style="padding: 8px;">Practice Bal.</th>
+                  <th style="padding: 8px;">Inyungu</th>
+                  <th style="padding: 8px;">Invested</th>
+                  <th style="padding: 8px;">Total Inv.</th>
+                  <th style="padding: 8px;">Active</th>
+                  <th style="padding: 8px;">Role</th>
+                  <th style="padding: 8px;">Ref Code</th>
+                  <th style="padding: 8px;">Created At</th>
+                </tr>
+              </thead>
+              <tbody id="adminUsersTableBody">
+                <tr><td colspan="11" style="padding: 10px; text-align: center; color: #d97706;">Birimo gushakisha abakoresha...</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TAB 2: SHORA (VIP PLANS) -->
+    <div id="tabShora" style="display: none;">
+      <div id="plansContainer"></div>
+    </div>
+
+    <!-- TAB 3: IMIRIMO (41 TESLA VIDEOS) -->
+    <div id="tabImirimo" style="display: none; padding: 0 16px;">
+      <div style="margin-bottom: 15px; background:#1e1b18; padding:12px; border-radius:12px; border:1px solid #78350f; text-align:left;">
+        <h3 style="font-size:14px; color:#eab308;">🎬 Reba Amavidewo Ubone Inyungu</h3>
+        <p style="font-size:11px; color:#fef08a; margin-top:4px;" id="tasksInfoText">Shyira mu bikorwa ishoramari ryawe hanyuma urebe amavideo ajyanye n'urwego rwawe!</p>
+      </div>
+      <div id="videosContainer"></div>
+    </div>
+
+    <!-- TAB 4: AHO WASHOYE (ACTIVE INVESTMENTS) -->
+    <div id="tabWashoye" style="display: none; padding: 0 16px;">
+      <div style="margin-bottom: 15px; text-align:left;">
+        <h3 style="font-size:16px; color:#fef08a;">📈 Imigabane Uri Gukurikirana</h3>
+        <p style="font-size:12px; color: #d97706;">Aha hagaragaza igihe gisigaye ngo inyungu zawe ziyongere.</p>
+      </div>
+      <div id="activeInvestmentsContainer"></div>
+    </div>
+
+    <!-- TAB 5: ITSINDA (TEAM) -->
+    <div id="tabItsinda" style="display: none; padding: 0 16px;">
+      <div style="background:#1e1b18; border-radius:20px; padding:20px; text-align:center; border:1px solid #78350f; box-shadow: 0 4px 12px rgba(0,0,0,0.3);">
+        <div style="font-size:36px; margin-bottom:6px;">👥</div>
+        <h3 style="font-size:18px; color:#fef08a;">Itsinda Ryanjye</h3>
+        
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px; margin: 15px 0;">
+          <div style="background:#292524; padding:10px; border-radius:12px; border:1px solid #78350f;">
+            <div style="font-size:11px; color:#d97706;">Abafatanyabikorwa (L1)</div>
+            <div style="font-size:16px; font-weight:800; color:#eab308;" id="teamL1Count">0 Abantu</div>
+          </div>
+          <div style="background:#292524; padding:10px; border-radius:12px; border:1px solid #78350f;">
+            <div style="font-size:11px; color:#d97706;">Inyungu Z'itsinda (7%)</div>
+            <div style="font-size:16px; font-weight:800; color:#eab308;" id="teamL1Earnings">0 RWF</div>
+          </div>
+        </div>
+
+        <p style="font-size:12px; color:#d6d3d1; margin: 10px 0; line-height: 1.5; text-align: left;" id="teamStatusText">
+          Nta muntu uraza muri level 1 yawe. Tumira abandi uyu munsi ukomeze kunguka byinshi!
+        </p>
+
+        <!-- Referral Link Box -->
+        <div style="margin-top:15px; text-align:left;">
+          <label style="font-size:11px; font-weight:800; color:#d97706; display:block; margin-bottom:4px;">IHURO RYO GUTUMIRA (REFERRAL LINK)</label>
+          <div style="background:#292524; padding:10px 12px; border-radius:12px; font-size:12px; font-weight:700; color:#eab308; display:flex; justify-content:space-between; align-items:center; border:1px solid #78350f;">
+            <span id="refLinkText" style="word-break:break-all; margin-right:8px;">Loading link...</span>
+            <span style="cursor:pointer; font-size:18px;" onclick="copyRefLink()">📋</span>
+          </div>
+        </div>
+
+        <button class="btn-main" onclick="copyRefLink()" style="margin-top:15px;">📋 Koporora Ihuro ryawe</button>
+      </div>
+    </div>
+
+    <!-- TAB 6: KONTI -->
+    <div id="tabKonti" style="display: none; padding: 0 16px;">
+      <div style="background:#1e1b18; border-radius:20px; padding:20px; border:1px solid #78350f; box-shadow: 0 4px 12px rgba(0,0,0,0.3);">
+        <div style="text-align:center; margin-bottom:15px;">
+          <div style="width:60px; height:60px; background:#451a03; color:#eab308; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:24px; font-weight:800; margin:0 auto 10px; border:1px solid #78350f;">👤</div>
+          <h3 style="font-size:18px; color:#fef08a;" id="profileName">User</h3>
+          <p style="font-size:13px; color:#d97706;" id="profilePhone">078xxxxxxx</p>
+          <span style="font-size:11px; background:#292524; color:#eab308; padding:4px 10px; border-radius:6px; margin-top:6px; display:inline-block; border:1px solid #78350f;" id="profileRefCode">Ref Code: ...</span>
+        </div>
+        <hr style="border:none; border-top:1px solid #292524; margin:15px 0;">
+        <div style="display:flex; justify-content:space-between; margin-bottom:10px;">
+          <span style="font-size:13px; color:#d97706;">Ubwizigame bwose:</span>
+          <span style="font-size:14px; font-weight:800; color:#eab308;"><span id="accDepBal">0</span> RWF</span>
+        </div>
+        <div style="display:flex; justify-content:space-between; margin-bottom:10px;">
+          <span style="font-size:13px; color:#d97706;">Inyungu ziboneka:</span>
+          <span style="font-size:14px; font-weight:800; color:#eab308;"><span id="accWithdrawable">0</span> RWF</span>
+        </div>
+        <div style="display:flex; justify-content:space-between; margin-bottom:10px;">
+          <span style="font-size:13px; color:#d97706;">Inyungu z'itsinda:</span>
+          <span style="font-size:14px; font-weight:800; color:#eab308;"><span id="accTeamEarnings">0</span> RWF</span>
+        </div>
+        <button class="btn-main" onclick="openWithdrawModal()" style="background:#b91c1c;">📲 Bikuza Inyungu Zawe</button>
+        <button class="btn-back" onclick="handleLogout()" style="margin-top:15px; background:#292524; color:#b91c1c; border:1px solid #b91c1c;">Gusohoka muri Konti</button>
+      </div>
+    </div>
+
+    <!-- BOTTOM NAVIGATION -->
+    <div class="bottom-nav">
+      <div onclick="switchTab('ahabanza')" id="navAhabanza" class="nav-item active"><span class="nav-icon">🏠</span>Ahabanza</div>
+      <div onclick="switchTab('shora')" id="navShora" class="nav-item"><span class="nav-icon">👑</span>Shora</div>
+      <div onclick="switchTab('imirimo')" id="navImirimo" class="nav-item"><span class="nav-icon">📦</span>Imirimo</div>
+      <div onclick="switchTab('washoye')" id="navWashoye" class="nav-item"><span class="nav-icon">📈</span>Ishoramari</div>
+      <div onclick="switchTab('itsinda')" id="navItsinda" class="nav-item"><span class="nav-icon">👥</span>Itsinda</div>
+      <div onclick="switchTab('konti')" id="navKonti" class="nav-item"><span class="nav-icon">👤</span>Konti</div>
+    </div>
+
+  </div>
+
+  <!-- GENERAL MODAL -->
+  <div id="generalModal" class="modal-overlay" style="display: none;">
+    <div id="modalCardContent"></div>
+  </div>
+
+</div>
+
+<!-- FIREBASE INTEGRATION MODULE -->
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+  import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+  import { getFirestore, doc, setDoc, getDoc, collection, addDoc, onSnapshot, updateDoc, getDocs, query, where, increment } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+  import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-analytics.js";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyBZon08Rj5NcQO6N-O4uC4FoEIDHmdWvsA",
+    authDomain: "my-investment-platform-7d442.firebaseapp.com",
+    projectId: "my-investment-platform-7d442",
+    storageBucket: "my-investment-platform-7d442.firebasestorage.app",
+    messagingSenderId: "1456551588",
+    appId: "1:1456551588:web:e8d55f6fe58af02cc91831",
+    measurementId: "G-0H4ZH1R83Y"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+  const db = getFirestore(app);
+  window.db = db;
+  // Expose the Firestore listener helpers to the normal (non-module) script below.
+  // The Investment Tiers code runs there, so it must use these shared references.
+  window.firestoreOnSnapshot = onSnapshot;
+  window.firestoreCollection = collection;
+  const analytics = getAnalytics(app);
+
+  // Always start a fresh page load at the login/register screen.
+  // This prevents Firebase's previous persisted session from automatically
+  // opening the previous account before the user enters credentials.
+  try {
+    await signOut(auth);
+  } catch (e) {
+    console.warn('Initial auth reset:', e);
+  }
+
+  let currentFirebaseUid = null;
+
+  // Investment tiers are controlled from Firestore.
+  // Start the listener after Firebase Authentication is ready, so Firestore
+  // security rules that require a signed-in user do not reject the first read.
+  function startInvestmentTiersListener() {
+    try {
+      loadInvestmentTiersFromFirestore();
+    } catch (e) {
+      console.error('Investment tiers listener failed:', e);
+      const container = document.getElementById('plansContainer');
+      if (container) container.innerHTML = `<div style=\"padding:20px;text-align:center;font-weight:800;color:#ef4444;\">Ntibyashoboye gufungura Investment Tiers. Ongera winjire.</div>`;
+    }
+  }
+
+  let adminUsersUnsubscribe = null;
+  let adminTransactionsUnsubscribe = null;
+
+  function renderAdminUsers(usersList) {
+    const tableBody = document.getElementById("adminUsersTableBody");
+    if (!tableBody) return;
+
+    if (!usersList.length) {
+      tableBody.innerHTML = `
+        <tr>
+          <td colspan="11" style="padding:10px;text-align:center;color:#d97706;">
+            Nta mukoresha uraboneka muri Firestore.
+          </td>
+        </tr>`;
+      return;
+    }
+
+    tableBody.innerHTML = usersList.map(u => `
+      <tr>
+        <td>${u.name || "N/A"}</td>
+        <td>${u.phone || "N/A"}</td>
+        <td>${Number(u.balance || 0).toLocaleString()} RWF</td>
+        <td>${Number(u.practiceBalance || 0).toLocaleString()} RWF</td>
+        <td>${Number(u.withdrawableEarnings || 0).toLocaleString()} RWF</td>
+        <td>${Number(u.investedAmount || 0).toLocaleString()} RWF</td>
+        <td>${Number(u.totalInvestments || 0).toLocaleString()}</td>
+        <td>${Array.isArray(u.activeInvestments) ? u.activeInvestments.length : 0}</td>
+        <td>${u.role || "user"}</td>
+        <td>${u.refCode || "N/A"}</td>
+        <td>${u.createdAt || "N/A"}</td>
+      </tr>
+    `).join("");
+  }
+
+  function loadAllUsersForAdmin() {
+    if (adminUsersUnsubscribe) adminUsersUnsubscribe();
+
+    const tableBody = document.getElementById("adminUsersTableBody");
+    if (tableBody) {
+      tableBody.innerHTML = `
+        <tr>
+          <td colspan="11" style="padding:10px;text-align:center;color:#d97706;">
+            Birimo gufungura amakuru ya Firestore...
+          </td>
+        </tr>`;
+    }
+
+    adminUsersUnsubscribe = onSnapshot(
+      collection(db, "users"),
+      (snapshot) => {
+        const usersList = snapshot.docs.map(docSnap => ({
+          id: docSnap.id,
+          ...docSnap.data()
+        }));
+
+        console.log("Firestore users real-time:", usersList);
+        renderAdminUsers(usersList);
+      },
+      (error) => {
+        console.error("Ikibazo mu gusoma users muri Firestore:", error);
+        if (tableBody) {
+          tableBody.innerHTML = `
+            <tr>
+              <td colspan="11" style="padding:10px;text-align:center;color:#f87171;">
+                Ntibashoboye gusomwa: ${error.message}
+              </td>
+            </tr>`;
+        }
+      }
+    );
+  }
+
+  onAuthStateChanged(auth, async (firebaseUser) => {
+    if (firebaseUser) {
+      currentFirebaseUid = firebaseUser.uid;
+      startInvestmentTiersListener();
+      startLiveActivityTicker(db);
+      const userSnap = await getDoc(doc(db, "users", firebaseUser.uid));
+      if (userSnap.exists() && userSnap.data().role === "admin") {
+        document.getElementById('adminSection').style.display = 'block';
+
+        loadAdminTransactions(db);
+        loadAllUsersForAdmin();
+      } else {
+        document.getElementById('adminSection').style.display = 'none';
+        if (adminUsersUnsubscribe) {
+          adminUsersUnsubscribe();
+          adminUsersUnsubscribe = null;
+        }
+        if (adminTransactionsUnsubscribe) {
+          adminTransactionsUnsubscribe();
+          adminTransactionsUnsubscribe = null;
+        }
+      }
+
+      onSnapshot(doc(db, "users", firebaseUser.uid), (docSnap) => {
+        if (docSnap.exists()) {
+          const dbData = docSnap.data();
+          window.user = {
+            ...dbData,
+            practiceBalance: dbData.practiceBalance ?? 1000,
+            depositBalance: dbData.balance ?? 0,
+            withdrawableEarnings: dbData.withdrawableEarnings ?? 0,
+            activeInvestments: dbData.activeInvestments || [],
+            purchasedPlanIds: Array.isArray(dbData.purchasedPlanIds) ? dbData.purchasedPlanIds : [],
+            watchedVideosToday: dbData.watchedVideosToday || {}
+          };
+          window.showDashboard();
+          
+          if (dbData.role === "admin") {
+            document.getElementById('adminSection').style.display = 'block';
+            loadAllUsersForAdmin();
+          } else {
+            document.getElementById('adminSection').style.display = 'none';
+          }
+        }
+      });
+    } else {
+      currentFirebaseUid = null;
+      window.telegramNoticeAuthUid = null;
+      window.telegramNoticeScheduledUid = null;
+      window.user = null;
+      if (plansFirestoreUnsubscribe) {
+        plansFirestoreUnsubscribe();
+        plansFirestoreUnsubscribe = null;
+      }
+      investmentTiersLoaded = false;
+      plans = [];
+      renderPlans();
+      if (adminUsersUnsubscribe) {
+        adminUsersUnsubscribe();
+        adminUsersUnsubscribe = null;
+      }
+      if (adminTransactionsUnsubscribe) {
+        adminTransactionsUnsubscribe();
+        adminTransactionsUnsubscribe = null;
+      }
+      window.showLoginSection();
+    }
+  });
+
+  window.handleRegister = async function() {
+    const name = document.getElementById('regName').value.trim();
+    const phone = document.getElementById('regPhone').value.trim();
+    const refCode = document.getElementById('regRefCode').value.trim().toUpperCase();
+    const pass = document.getElementById('regPass').value;
+    const confirm = document.getElementById('regPassConfirm').value;
+
+    if (!name || !phone || !pass || !confirm) {
+      alert("Nyamuneka uzuze amakuru yose asabwa mbere yo kwiyandikisha.");
+      return;
+    }
+    if (pass !== confirm) {
+      alert("Amagambo y'ibanga ntabwo ahura.");
+      return;
+    }
+
+    const regBtn = document.getElementById('regBtn');
+    regBtn.innerHTML = `<span class="spinner"></span> Tegereza...`;
+    regBtn.disabled = true;
+
+    try {
+      const dummyEmail = `${phone}@tesla.com`;
+      const userCredential = await createUserWithEmailAndPassword(auth, dummyEmail, pass);
+      const fUser = userCredential.user;
+
+      const myNewRefCode = window.generateUniqueRefCode();
+      
+      let referrerUid = null;
+      if (refCode) {
+        const qRef = query(collection(db, "users"), where("refCode", "==", refCode));
+        const refSnap = await getDocs(qRef);
+        if (!refSnap.empty) {
+          const refDocUser = refSnap.docs[0];
+          referrerUid = refDocUser.id;
+        }
+      }
+
+      const newUserDoc = {
+        uid: fUser.uid,
+        name: name,
+        phone: phone,
+        email: dummyEmail,
+        balance: 0,
+        practiceBalance: 1000,
+        withdrawableEarnings: 0,
+        investedAmount: 0,
+        totalInvestments: 0,
+        role: "user",
+        refCode: myNewRefCode,
+        referredBy: referrerUid || null,
+        level1Members: [],
+        level1Earnings: 0,
+        activeInvestments: [],
+        purchasedPlanIds: [],
+        watchedVideosToday: {},
+        createdAt: new Date().toISOString()
+      };
+
+      await setDoc(doc(db, "users", fUser.uid), newUserDoc);
+
+      if (referrerUid) {
+        const refUserRef = doc(db, "users", referrerUid);
+        const refSnapData = await getDoc(refUserRef);
+        if (refSnapData.exists()) {
+          const refData = refSnapData.data();
+          const existingList = refData.level1Members || [];
+          existingList.push({ uid: fUser.uid, phone: phone, commission: 0 });
+          await updateDoc(refUserRef, { level1Members: existingList });
+        }
+      }
+
+      alert("Konti yawe yaremwe neza! Uhawe 1,000 RWF zo kwimenyereza.");
+    } catch (error) {
+      alert("Ikosa ryabaye: " + error.message);
+    } finally {
+      regBtn.innerHTML = `Iyandikishe nonaha ➔`;
+      regBtn.disabled = false;
+    }
+  };
+
+  window.handleLogin = async function() {
+    const telefon = document.getElementById('loginPhone').value.trim();
+    const password = document.getElementById('loginPass').value;
+
+    if (!telefon || !password) {
+      alert("Shyiramo numero ya telefoni n'ijambobanga.");
+      return;
+    }
+
+    const loginBtn = document.getElementById('loginBtn');
+    loginBtn.innerHTML = `<span class="spinner"></span> Tegereza...`;
+    loginBtn.disabled = true;
+
+    try {
+      const dummyEmail = `${telefon}@tesla.com`;
+      const userCredential = await signInWithEmailAndPassword(auth, dummyEmail, password);
+      const userDocRef = doc(db, "users", userCredential.user.uid);
+      const userDocSnap = await getDoc(userDocRef);
+
+      if (userDocSnap.exists()) {
+        window.showDashboard();
+      }
+    } catch (error) {
+      alert("Kwinjira byanze! Yaba numero cyangwa ijambobanga si byo.");
+    } finally {
+      loginBtn.innerHTML = `Injira muri Konti ➔`;
+      loginBtn.disabled = false;
+    }
+  };
+
+  window.handleLogout = async function() {
+    window.telegramNoticeAuthUid = null;
+    window.telegramNoticeScheduledUid = null;
+    try {
+      await signOut(auth);
+    } finally {
+      window.showLoginSection();
+    }
+  };
+
+  window.confirmPaymentAction = async function(amountFromButton) {
+    // Use the amount passed by the payment button first. This prevents the
+    // amount from being lost when the modal is re-rendered.
+    const amount = Number(amountFromButton) || Number(window.selectedDepositAmount) || 0;
+
+    if (amount <= 0) {
+      alert("Nyamuneka hitamo cyangwa wandike umubare w'amafaranga yo kubitsa.");
+      return;
+    }
+    if (!currentFirebaseUid) {
+      alert("Banza winjire muri konti yawe!");
+      return;
+    }
+
+    const btn = document.getElementById('btnEmezaPayment');
+    btn.innerHTML = `<span class="spinner"></span> Birimo koherezwa...`;
+    btn.disabled = true;
+
+    try {
+      await addDoc(collection(db, "transactions"), {
+        userId: currentFirebaseUid,
+        userName: window.user ? window.user.name : "Unknown",
+        userPhone: window.user ? window.user.phone : "Unknown",
+        type: "deposit",
+        amount: amount,
+        status: "pending",
+        date: new Date().toISOString()
+      });
+
+      alert(
+        "✅ Byemejwe!\n\n" +
+        "Tegereza gato, Admin ari kugenzura ubwishyu bwawe."
+      );
+      window.closeModal();
+      switchTab('ahabanza');
+
+    } catch (e) {
+      console.error(e);
+      alert("❌ Ubusabe ntibwoherejwe: " + e.message);
+      btn.innerHTML = "Emeza ko umaze kwishyura";
+      btn.disabled = false;
+    }
+  };
+
+  window.submitWithdrawal = async function() {
+    if (!window.user || !currentFirebaseUid) {
+      alert("Banza winjire muri konti yawe!");
+      return;
+    }
+
+    const amt = Number(document.getElementById('withdrawAmount').value);
+    const withdrawPhone = String(document.getElementById('withdrawPhone')?.value || window.user.phone || '').trim();
+
+    // Withdrawal window: every day from 10:00 AM through 04:00 PM (Rwanda local time).
+    const now = new Date();
+    const currentMinutes = now.getHours() * 60 + now.getMinutes();
+    const openingMinutes = 10 * 60;
+    const closingMinutes = 16 * 60;
+    if (currentMinutes < openingMinutes || currentMinutes > closingMinutes) {
+      alert("Kubikuza biremewe buri munsi kuva 10:00 AM kugeza 04:00 PM. Nyamuneka garuka muri ayo masaha.");
+      return;
+    }
+
+    if (!amt || amt < 1100) {
+      alert("Amafaranga make yo kubikuza ni 1,100 RWF.");
+      return;
+    }
+    if (amt > 500000) {
+      alert("Amafaranga menshi yo kubikuza ni 500,000 RWF ku munsi.");
+      return;
+    }
+    if (amt > (window.user.withdrawableEarnings || 0)) {
+      alert("Nta nyungu zihagije ufite zo kubikuza. Amafaranga yo kwimenyereza ntabwo abikuzwa!");
+      return;
+    }
+    if (!withdrawPhone) {
+      alert("Shyiramo numero yakira amafaranga.");
+      return;
+    }
+
+    try {
+      // Enforce the 500,000 RWF daily withdrawal request limit using today's
+      // pending/approved withdrawal requests for this user.
+      const txQuery = query(
+        collection(db, "transactions"),
+        where("userId", "==", currentFirebaseUid)
+      );
+      const txSnap = await getDocs(txQuery);
+
+      const startOfDay = new Date(now);
+      startOfDay.setHours(0, 0, 0, 0);
+      const endOfDay = new Date(now);
+      endOfDay.setHours(23, 59, 59, 999);
+
+      let withdrawnToday = 0;
+      txSnap.forEach(docSnap => {
+        const tx = docSnap.data() || {};
+        if (tx.type !== 'withdrawal' || tx.status === 'rejected') return;
+        const txDate = new Date(tx.date || 0);
+        if (txDate >= startOfDay && txDate <= endOfDay) {
+          withdrawnToday += Number(tx.amount || 0);
+        }
+      });
+
+      if (withdrawnToday + amt > 500000) {
+        const remaining = Math.max(0, 500000 - withdrawnToday);
+        alert("Warengeje umubare wa 500,000 RWF ku munsi. Uyu munsi hasigaye " + remaining.toLocaleString() + " RWF.");
+        return;
+      }
+
+      // Platform withdrawal fee: 15%. The user's requested amount is the
+      // gross withdrawal; the net amount is what is recorded for payout.
+      const fee = Math.round(amt * 0.15);
+      const netAmount = amt - fee;
+      const newWithdrawable = (window.user.withdrawableEarnings || 0) - amt;
+
+      await updateDoc(doc(db, "users", currentFirebaseUid), {
+        withdrawableEarnings: newWithdrawable
+      });
+
+      await addDoc(collection(db, "transactions"), {
+        userId: currentFirebaseUid,
+        userName: window.user.name,
+        userPhone: window.user.phone,
+        withdrawalPhone: withdrawPhone,
+        type: "withdrawal",
+        amount: amt,
+        fee: fee,
+        feeRate: 0.15,
+        netAmount: netAmount,
+        status: "pending",
+        processingTime: "30 minutes - 72 hours",
+        date: new Date().toISOString()
+      });
+
+      window.showDashboard();
+      window.closeModal();
+      alert(
+        "Ubusabe bwawe bwo kubikuza " + amt.toLocaleString() + " RWF bwoherejwe kuri Admin.\n\n" +
+        "15% fee: " + fee.toLocaleString() + " RWF\n" +
+        "Amafaranga azishyurwa nyuma ya fee: " + netAmount.toLocaleString() + " RWF\n\n" +
+        "Processing: iminota 30 kugeza ku masaha 72. Nyamuneka tegereza wihanganye."
+      );
+    } catch (error) {
+      alert("Ikosa: " + error.message);
+    }
+  };
+
+  // Public activity ticker: use only real, approved Firestore transactions.
+  // Names are de-duplicated so the same person does not appear repeatedly.
+  function startLiveActivityTicker(dbInstance) {
+    try {
+      onSnapshot(collection(dbInstance, "transactions"), (snapshot) => {
+        const ticker = document.getElementById('liveActivityTicker');
+        if (!ticker) return;
+
+        const rows = snapshot.docs
+          .map(d => ({ id: d.id, ...d.data() }))
+          .filter(t => t.status === 'approved' && (t.type === 'deposit' || t.type === 'withdrawal'))
+          .sort((a, b) => String(b.date || '').localeCompare(String(a.date || '')));
+
+        const seen = new Set();
+        const unique = [];
+        for (const item of rows) {
+          const key = String(item.userId || item.userPhone || item.userName || item.id);
+          if (seen.has(key)) continue;
+          seen.add(key);
+          unique.push(item);
+          if (unique.length >= 12) break;
+        }
+
+        if (!unique.length) {
+          ticker.textContent = '🔒 Ibikorwa byemejwe bizagaragara hano iyo habayeho transactions zemejwe.';
+          return;
+        }
+
+        const text = unique.map(item => {
+          const name = String(item.userName || 'Umukoresha').trim();
+          const amount = Number(item.netAmount ?? item.amount ?? 0).toLocaleString();
+          if (item.type === 'withdrawal') {
+            return `💸 ${name} yakuye ${amount} RWF`;
+          }
+          return `💰 ${name} yabikije ${amount} RWF`;
+        }).join('   •   ');
+
+        ticker.textContent = text + '   •   ';
+      }, (error) => {
+        console.error('Activity ticker error:', error);
+        const ticker = document.getElementById('liveActivityTicker');
+        if (ticker) ticker.textContent = '🔒 Ibikorwa byemejwe bya platform.';
+      });
+    } catch (e) {
+      console.error('Activity ticker failed:', e);
+    }
+  }
+
+  function loadAdminTransactions(dbInstance) {
+    if (adminTransactionsUnsubscribe) adminTransactionsUnsubscribe();
+
+    adminTransactionsUnsubscribe = onSnapshot(
+      collection(dbInstance, "transactions"),
+      (snapshot) => {
+        const listEl = document.getElementById('adminPendingList');
+        if (!listEl) return;
+
+        const pendingItems = snapshot.docs
+          .map(docSnap => ({ id: docSnap.id, ...docSnap.data() }))
+          .filter(item => item.status === "pending")
+          .sort((a, b) => String(b.date || "").localeCompare(String(a.date || "")));
+
+        if (pendingItems.length === 0) {
+          listEl.innerHTML = `
+            <div style="font-size:12px;color:#d97706;">
+              Nta busabe buri pending ubu.
+            </div>`;
+          return;
+        }
+
+        listEl.innerHTML = pendingItems.map(item => `
+          <div class="admin-item-box">
+            <div><b>Izina:</b> ${item.userName || "Unknown"}</div>
+            <div><b>Telefoni:</b> ${item.userPhone || "Unknown"}</div>
+            <div>
+              <b>Ubwoko:</b>
+              <span style="color:${item.type === 'deposit' ? '#16a34a' : '#b91c1c'}">
+                ${(item.type || "").toUpperCase()}
+              </span>
+            </div>
+            <div><b>Amafaranga:</b> ${Number(item.amount || 0).toLocaleString()} RWF</div>
+            ${item.type === 'withdrawal' ? `
+              <div><b>Fee (15%):</b> ${Number(item.fee || 0).toLocaleString()} RWF</div>
+              <div><b>Net payout:</b> ${Number(item.netAmount ?? (Number(item.amount || 0) - Number(item.fee || 0))).toLocaleString()} RWF</div>
+              <div style="font-size:10px;color:#d97706;">Processing: ${item.processingTime || '30 minutes - 72 hours'}</div>
+            ` : ''}
+            <div style="font-size:10px;color:#a8a29e;margin-top:4px;">
+              ${item.date || ""}
+            </div>
+            <div style="margin-top:10px;display:flex;gap:8px;">
+              <button class="btn-approve"
+                onclick="adminApproveTx('${item.id}', '${item.userId}', '${item.type}', ${Number(item.amount || 0)})">
+                Emeza
+              </button>
+              <button class="btn-reject"
+                onclick="adminRejectTx('${item.id}', '${item.userId}', '${item.type}', ${Number(item.amount || 0)})">
+                Hagarika
+              </button>
+            </div>
+          </div>
+        `).join("");
+      },
+      (error) => {
+        console.error("Ikibazo mu gusoma transactions:", error);
+        const listEl = document.getElementById('adminPendingList');
+        if (listEl) {
+          listEl.innerHTML = `
+            <div style="font-size:12px;color:#f87171;">
+              Ntibashoboye gusoma transactions: ${error.message}
+            </div>`;
+        }
+      }
+    );
+  }
+
+  window.adminApproveTx = async function(txId, targetUserId, type, amount) {
+    try {
+      await updateDoc(doc(db, "transactions", txId), { status: "approved" });
+
+      if (type === "deposit") {
+        const targetRef = doc(db, "users", targetUserId);
+        const targetSnap = await getDoc(targetRef);
+        if (targetSnap.exists()) {
+          const tData = targetSnap.data();
+          await updateDoc(targetRef, { balance: (tData.balance || 0) + amount });
+
+          if (tData.referredBy) {
+            const refRef = doc(db, "users", tData.referredBy);
+            const refSnap = await getDoc(refRef);
+            if (refSnap.exists()) {
+              const rData = refSnap.data();
+              const comm = amount * 0.07;
+              await updateDoc(refRef, {
+                level1Earnings: (rData.level1Earnings || 0) + comm,
+                withdrawableEarnings: (rData.withdrawableEarnings || 0) + comm
+              });
+            }
+          }
+        }
+      }
+      alert("Byemejwe neza!");
+    } catch (e) {
+      alert("Ikosa: " + e.message);
+    }
+  };
+
+  window.adminRejectTx = async function(txId, targetUserId, type, amount) {
+    try {
+      await updateDoc(doc(db, "transactions", txId), { status: "rejected" });
+      if (type === "withdrawal") {
+        const targetRef = doc(db, "users", targetUserId);
+        const targetSnap = await getDoc(targetRef);
+        if (targetSnap.exists()) {
+          const tData = targetSnap.data();
+          await updateDoc(targetRef, { withdrawableEarnings: (tData.withdrawableEarnings || 0) + amount });
+        }
+      }
+      alert("Ubusabe bwanzwe!");
+    } catch (e) {
+      alert("Ikosa: " + e.message);
+    }
+  };
+
+  window.saveUsersDB = async function() {
+    if (currentFirebaseUid && window.user) {
+      await updateDoc(doc(db, "users", currentFirebaseUid), {
+        practiceBalance: window.user.practiceBalance || 0,
+        balance: window.user.depositBalance || 0,
+        withdrawableEarnings: window.user.withdrawableEarnings || 0,
+        investedAmount: window.user.investedAmount || 0,
+        totalInvestments: window.user.totalInvestments || 0,
+        activeInvestments: window.user.activeInvestments || [],
+        purchasedPlanIds: Array.isArray(window.user.purchasedPlanIds) ? window.user.purchasedPlanIds : [],
+        watchedVideosToday: window.user.watchedVideosToday || {}
+      });
+    }
+  };
+</script>
+
+<!-- APP LOGIC SCRIPT -->
+<script>
+  function generateUniqueRefCode() {
+    return 'TS-' + Math.random().toString(36).substring(2, 8).toUpperCase();
+  }
+
+  function getUrlParameter(name) {
+    name = name.replace(/[\[]/, '\\[').replace(/[\]]/, '\\]');
+    var regex = new RegExp('[\\?&]' + name + '=([^&#]*)');
+    var results = regex.exec(location.search);
+    return results === null ? '' : decodeURIComponent(results[1].replace(/\+/g, ' '));
+  }
+
+  let user = null;
+  let currentTab = localStorage.getItem('tesla_tab') || 'ahabanza';
+  let tabHistory = ['ahabanza'];
+  // Keep deposit amount synchronized between the normal script and Firebase module.
+  let selectedDepositAmount = 0;
+  window.selectedDepositAmount = 0;
+  window.selectedDepositAmount = 0;
+
+  // Investment tiers are controlled ONLY by Firestore (investmentTiers).
+  // There is intentionally no hard-coded tier fallback here.
+  let plans = [];
+  let investmentTiersLoaded = false;
+
+
+  let plansFirestoreUnsubscribe = null;
+
+  function normalizeFirestoreTier(data, docId) {
+    const d = data || {};
+    const id = String(d.id || d.planId || d.tierId || docId || '').trim();
+    if (!id) return null;
+    return {
+      id,
+      name: d.name || d.tierName || d.title || ('Ikigega ' + id),
+      price: Number(d.price ?? d.investmentPrice ?? d.cost ?? 0),
+      daily: Number(d.daily ?? d.dailyProfit ?? d.dailyIncome ?? 0),
+      monthly: Number(d.monthly ?? d.monthlyProfit ?? d.monthlyIncome ?? 0),
+      annual: Number(d.annual ?? d.annualProfit ?? 0),
+      validity: Number(d.validity ?? d.validityDays ?? d.days ?? 365),
+      reqVideos: Number(d.reqVideos ?? d.videosCount ?? d.requiredVideos ?? 0),
+      isPractice: Boolean(d.isPractice ?? d.practice ?? id === 'M0')
+    };
+  }
+
+  function applyFirestoreTiers(snapshot) {
+    const loaded = snapshot.docs
+      .map(ds => normalizeFirestoreTier(ds.data(), ds.id))
+      .filter(Boolean)
+      .filter(p => p.price > 0);
+
+    loaded.sort((a, b) => {
+      const ai = String(a.id), bi = String(b.id);
+      return ai.localeCompare(bi, undefined, { numeric: true, sensitivity: 'base' });
+    });
+
+    // Firestore is the single source of truth. Even an empty collection
+    // must replace the old list so deleted/changed tiers cannot remain visible.
+    plans = loaded;
+    investmentTiersLoaded = true;
+    console.log('Investment tiers loaded from Firestore:', plans);
+    renderPlans();
+  }
+
+  function loadInvestmentTiersFromFirestore() {
+    if (plansFirestoreUnsubscribe) plansFirestoreUnsubscribe();
+    if (!window.firestoreOnSnapshot || !window.firestoreCollection) {
+      console.error('Firestore listener helpers ntizashyizwe kuri window.');
+      investmentTiersLoaded = false;
+      renderPlans();
+      return;
+    }
+    plansFirestoreUnsubscribe = window.firestoreOnSnapshot(
+      window.firestoreCollection(window.db, 'investmentTiers'),
+      (snapshot) => {
+        // If Admin has created/edited tiers in this collection, users see them immediately.
+        applyFirestoreTiers(snapshot);
+      },
+      (error) => {
+        console.error('Investment tiers Firestore read error:', error);
+        investmentTiersLoaded = false;
+        plans = [];
+        renderPlans();
+      }
+    );
+  }
+
+  const videoUrls = [
+    "https://www.w3schools.com/html/mov_bbb.mp4",
+    "https://www.w3schools.com/html/movie.mp4",
+    "https://assets.mixkit.co/videos/preview/mixkit-car-driving-on-a-road-in-the-middle-of-a-4061-large.mp4",
+    "https://assets.mixkit.co/videos/preview/mixkit-sports-car-driving-on-a-road-4062-large.mp4",
+    "https://assets.mixkit.co/videos/preview/mixkit-electric-car-charging-at-a-station-41561-large.mp4"
+  ];
+
+  window.onload = function() {
+    const refFromUrl = getUrlParameter('ref');
+    const refInput = document.getElementById('regRefCode');
+    
+    if (refFromUrl) {
+      refInput.value = refFromUrl;
+      refInput.readOnly = true;
+      showRegisterSection();
+    }
+    startCarSlider();
+    setInterval(updateTimers, 1000);
+  };
+
+  let currentSlide = 0;
+  function startCarSlider() {
+    const slides = document.querySelectorAll('.car-slide');
+    if (!slides.length) return;
+    setInterval(() => {
+      slides[currentSlide].classList.remove('active');
+      currentSlide = (currentSlide + 1) % slides.length;
+      slides[currentSlide].classList.add('active');
+    }, 3000);
+  }
+
+  function getReferralLink() {
+    const baseUrl = window.location.origin + window.location.pathname;
+    const code = (window.user && window.user.refCode) ? window.user.refCode : 'TS-8A2F9B';
+    return `${baseUrl}?ref=${code}`;
+  }
+
+  function togglePassword(inputId, btn) {
+    const input = document.getElementById(inputId);
+    if (input.type === "password") {
+      input.type = "text";
+      btn.textContent = "🙈";
+    } else {
+      input.type = "password";
+      btn.textContent = "👁️";
+    }
+  }
+
+  // Show the Telegram welcome notice once for EACH authenticated login session.
+  // It is intentionally reset on logout, so a fresh login/registration sees it again.
+  window.telegramNoticeAuthUid = null;
+  window.telegramNoticeScheduledUid = null;
+
+  window.showTelegramJoinNotice = function() {
+    const uid = (window.user && window.user.uid) || null;
+    if (!uid) return;
+
+    // Prevent the Firestore user snapshot from opening the same modal twice
+    // during one authentication session.
+    if (window.telegramNoticeAuthUid === uid || window.telegramNoticeScheduledUid === uid) return;
+    window.telegramNoticeScheduledUid = uid;
+
+    setTimeout(() => {
+      const modal = document.getElementById('generalModal');
+      const content = document.getElementById('modalCardContent');
+      if (!modal || !content) {
+        window.telegramNoticeScheduledUid = null;
+        return;
+      }
+
+      window.telegramNoticeAuthUid = uid;
+      modal.style.display = 'flex';
+      content.className = 'modal-card';
+      content.innerHTML = `<div style="text-align:center;padding:10px;">
+        <div style="font-size:42px;">📢</div>
+        <h3 style="color:#fef08a;margin:8px 0;font-size:18px;">Murakaza neza kuri Tesla Platform!</h3>
+        <p style="color:#d6d3d1;font-size:13px;line-height:1.6;margin:10px 0 4px;">
+          Mbere yo gutangira gukoresha platform, turagusaba kwinjira muri <b style="color:#fef08a;">Telegram Group ya Tesla Platform</b> kugira ngo ubone amakuru, ubufasha n'amatangazo mashya.
+        </p>
+        <p style="color:#d6d3d1;font-size:12px;line-height:1.5;margin:6px 0 12px;">
+          Hitamo <b>Join Telegram Group</b> niba ushaka kuyijoininga, cyangwa uhitemo <b>Komeza kuri Platform</b> niba ushaka gukomeza ukoresha platform.
+        </p>
+        <a href="https://t.me/+IJV5S1720eU2ZjFl" target="_blank" rel="noopener noreferrer" class="btn-main" style="background:#0088cc;text-decoration:none;display:block;margin-top:12px;">👥 Join Telegram Group</a>
+        <button class="btn-back" onclick="closeModal()" style="margin-top:10px;width:100%;">➡️ Komeza kuri Platform</button>
+      </div>`;
+    }, 300);
+  };
+
+  window.showDashboard = function() {
+    document.getElementById('authContainer').style.display = 'none';
+    document.getElementById('appBody').style.display = 'block';
+    if (window.user) {
+      document.getElementById('dispName').innerText = window.user.name || "User";
+      document.getElementById('dispPhone').innerText = "Konti - " + (window.user.phone || "");
+      document.getElementById('profileName').innerText = window.user.name || "User";
+      document.getElementById('profilePhone').innerText = window.user.phone || "";
+      document.getElementById('profileRefCode').innerText = "Ref Code: " + (window.user.refCode || "");
+      
+      document.getElementById('userPracticeBalance').innerText = (window.user.practiceBalance || 0).toLocaleString();
+      document.getElementById('userDepositBalance').innerText = (window.user.depositBalance || 0).toLocaleString();
+      document.getElementById('userWithdrawableEarnings').innerText = (window.user.withdrawableEarnings || 0).toLocaleString();
+      
+      document.getElementById('accDepBal').innerText = (window.user.depositBalance || 0).toLocaleString();
+      document.getElementById('accWithdrawable').innerText = (window.user.withdrawableEarnings || 0).toLocaleString();
+      document.getElementById('accTeamEarnings').innerText = (window.user.level1Earnings || 0).toLocaleString();
+
+      const members = window.user.level1Members || [];
+      document.getElementById('teamL1Count').innerText = members.length + " Abantu";
+      document.getElementById('teamL1Earnings').innerText = (window.user.level1Earnings || 0).toLocaleString() + " RWF";
+
+      if (members.length === 0) {
+        document.getElementById('teamStatusText').innerHTML = "Nta muntu uraza muri level 1 yawe. Tumira abandi uyu munsi ukomeze kunguka byinshi!";
+      } else {
+        let memberHtml = `<div class="team-card"><b>Abari muri Level 1 yawe:</b>`;
+        members.forEach(m => {
+          memberHtml += `
+            <div class="team-member">
+              <span>👤 ${m.phone}</span>
+              <span style="color:#eab308;">+${(m.commission || 0).toLocaleString()} RWF</span>
+            </div>
+          `;
+        });
+        memberHtml += `</div>`;
+        document.getElementById('teamStatusText').innerHTML = memberHtml;
+      }
+    }
+    
+    document.getElementById('refLinkText').innerText = getReferralLink();
+    showTelegramJoinNotice();
+    renderPlans();
+    renderActiveInvestments();
+    renderVideos();
+    switchTab(currentTab, false);
+  };
+
+  document.addEventListener('keydown', function(e) {
+    if (e.key !== 'Enter') return;
+    const active = document.activeElement;
+    if (!active) return;
+    if (['regName','regPhone','regPass','regPassConfirm','regRefCode','loginPhone','loginPass'].includes(active.id)) {
+      e.preventDefault();
+      const loginVisible = document.getElementById('loginPage') && document.getElementById('loginPage').style.display !== 'none';
+      if (loginVisible) {
+        if (validateRequiredAuthFields(['loginPhone','loginPass'])) handleLogin();
+      } else {
+        if (validateRequiredAuthFields(['regName','regPhone','regPass','regPassConfirm'])) handleRegister();
+      }
+    }
+  });
+
+  function validateRequiredAuthFields(ids) {
+    for (const id of ids) {
+      const el = document.getElementById(id);
+      if (!el || !String(el.value || '').trim()) {
+        if (el) { el.focus(); el.style.borderColor = '#ef4444'; setTimeout(() => { el.style.borderColor = ''; }, 1500); }
+        alert("Nyamuneka uzuza amakuru yose asabwa mbere yo gukomeza.");
+        return false;
+      }
+    }
+    return true;
+  }
+
+  window.showLoginSection = function() {
+    document.getElementById('authContainer').style.display = 'block';
+    document.getElementById('appBody').style.display = 'none';
+    document.getElementById('loginPage').style.display = 'block';
+    document.getElementById('registerPage').style.display = 'none';
+    const phone = document.getElementById('loginPhone');
+    const pass = document.getElementById('loginPass');
+    if (phone) phone.value = '';
+    if (pass) pass.value = '';
+  }
+
+  window.showRegisterSection = function() {
+    document.getElementById('authContainer').style.display = 'block';
+    document.getElementById('appBody').style.display = 'none';
+    document.getElementById('loginPage').style.display = 'none';
+    document.getElementById('registerPage').style.display = 'block';
+    const fields = ['regName','regPhone','regPass','regPassConfirm'];
+    fields.forEach(id => { const el = document.getElementById(id); if (el) el.value = ''; });
+  }
+
+  function switchTab(tabName, recordHistory = true) {
+    if (recordHistory && currentTab !== tabName) {
+      tabHistory.push(currentTab);
+    }
+    currentTab = tabName;
+    localStorage.setItem('tesla_tab', tabName);
+
+    const tabs = ['tabAhabanza', 'tabShora', 'tabImirimo', 'tabWashoye', 'tabItsinda', 'tabKonti'];
+    const navs = ['navAhabanza', 'navShora', 'navImirimo', 'navWashoye', 'navItsinda', 'navKonti'];
+
+    tabs.forEach(t => {
+      const el = document.getElementById(t);
+      if (el) el.style.display = 'none';
+    });
+    navs.forEach(n => {
+      const el = document.getElementById(n);
+      if (el) el.classList.remove('active');
+    });
+
+    if (tabName === 'ahabanza') {
+      document.getElementById('tabAhabanza').style.display = 'block';
+      document.getElementById('navAhabanza').classList.add('active');
+    } else if (tabName === 'shora') {
+      document.getElementById('tabShora').style.display = 'block';
+      document.getElementById('navShora').classList.add('active');
+    } else if (tabName === 'imirimo') {
+      document.getElementById('tabImirimo').style.display = 'block';
+      document.getElementById('navImirimo').classList.add('active');
+      renderVideos();
+    } else if (tabName === 'washoye') {
+      document.getElementById('tabWashoye').style.display = 'block';
+      document.getElementById('navWashoye').classList.add('active');
+      renderActiveInvestments();
+    } else if (tabName === 'itsinda') {
+      document.getElementById('tabItsinda').style.display = 'block';
+      document.getElementById('navItsinda').classList.add('active');
+    } else if (tabName === 'konti') {
+      document.getElementById('tabKonti').style.display = 'block';
+      document.getElementById('navKonti').classList.add('active');
+    }
+  }
+
+  function goBackStep() {
+    if (tabHistory.length > 0) {
+      const prevTab = tabHistory.pop();
+      switchTab(prevTab, false);
+    } else {
+      switchTab('ahabanza', false);
+    }
+  }
+
+  function renderPlans() {
+    const container = document.getElementById('plansContainer');
+    if (!container) return;
+    if (!investmentTiersLoaded) {
+      container.innerHTML = `<div style="padding:20px;text-align:center;font-weight:800;">⏳ Birimo gufungura Investment Tiers...</div>`;
+      return;
+    }
+    if (!plans.length) {
+      container.innerHTML = `<div style="padding:20px;text-align:center;font-weight:800;">Nta Investment Tier iri muri Firestore.</div>`;
+      return;
+    }
+    container.innerHTML = plans.map(p => `
+      <div class="plan-card">
+        <div class="plan-header-title">Shora mu kigega cya Tesla Motors</div>
+        <div class="plan-header">
+          <span>⚡ ${p.name}</span>
+          <span class="plan-badge">${p.validity} Iminsi</span>
+        </div>
+        <div class="plan-details">
+          <div>• Igiciro cy'ishoramari: <b>${p.price.toLocaleString()} RWF</b></div>
+          <div>• Inyungu ku munsi: <b>${p.daily.toLocaleString()} RWF</b></div>
+          <div>• Video zo kureba/munsi: <b>${p.reqVideos} Videos (30s)</b></div>
+          <div>• Inyungu ku kwezi: <b>${p.monthly.toLocaleString()} RWF</b></div>
+        </div>
+        <button class="btn-main" onclick="buyInvestment('${p.id}')">Shora Muri ${p.name}</button>
+      </div>
+    `).join('');
+  }
+
+  // Each investment has its own video cycle. A user may buy a tier only once.
+  function getPlanVideoOffset(planId) {
+    const s = String(planId || '');
+    let hash = 0;
+    for (let i = 0; i < s.length; i++) hash = ((hash << 5) - hash) + s.charCodeAt(i);
+    return Math.abs(hash) % videoUrls.length;
+  }
+
+  function ensureInvestmentCycleState(inv) {
+    if (!inv) return;
+    inv.videoOffset = Number.isFinite(Number(inv.videoOffset)) ? Number(inv.videoOffset) : getPlanVideoOffset(inv.planId);
+    inv.watchedVideos = (inv.watchedVideos && typeof inv.watchedVideos === 'object') ? inv.watchedVideos : {};
+    inv.completedToday = Object.keys(inv.watchedVideos).length;
+    inv.lastClaimCycle = Number(inv.lastClaimCycle || 0);
+    inv.nextVideoUnlockAt = Number(inv.nextVideoUnlockAt || 0);
+    // Legacy investments: if they have the old watchedVideosToday state, start a fresh cycle.
+    if (!inv.watchedVideos || typeof inv.watchedVideos !== 'object') inv.watchedVideos = {};
+  }
+
+  function normalizeUserInvestments() {
+    if (!window.user) return;
+    window.user.activeInvestments = Array.isArray(window.user.activeInvestments) ? window.user.activeInvestments : [];
+    window.user.purchasedPlanIds = Array.isArray(window.user.purchasedPlanIds) ? window.user.purchasedPlanIds : [];
+
+    window.user.activeInvestments.forEach(inv => {
+      ensureInvestmentCycleState(inv);
+      if (inv.planId && !window.user.purchasedPlanIds.includes(String(inv.planId))) {
+        window.user.purchasedPlanIds.push(String(inv.planId));
+      }
+    });
+  }
+
+  function isPlanAlreadyPurchased(planId) {
+    normalizeUserInvestments();
+    const id = String(planId);
+    return window.user.purchasedPlanIds.includes(id) ||
+      window.user.activeInvestments.some(inv => String(inv.planId) === id);
+  }
+
+  window.buyInvestment = function(planId) {
+    const plan = plans.find(p => p.id === planId);
+    if (!plan || !window.user) return;
+
+    const isG0 = String(plan.id).toUpperCase() === 'G0';
+
+    // BURI kigega gishobora kugurwa inshuro imwe gusa kuri user.
+    // Iri tegeko rikomeza kubaho no nyuma ya refresh/logout kuko purchasedPlanIds ibikwa muri Firestore.
+    if (isPlanAlreadyPurchased(plan.id)) {
+      alert("Iki kigega wamaze kukigura inshuro imwe. Ntushobora kongera kukigura.");
+      return;
+    }
+
+    if (isG0) {
+      // G0 ikoreshwa gusa n'amafaranga yo kwimenyereza (practiceBalance).
+      const practiceBalance = Number(window.user.practiceBalance || 0);
+      if (practiceBalance < Number(plan.price || 0)) {
+        alert("Nta mafaranga yo kwimenyereza ahagije asigaye muri konti yawe!");
+        return;
+      }
+
+      window.user.practiceBalance = practiceBalance - Number(plan.price || 0);
+      addActiveInvestment(plan);
+      alert("Ushoye neza muri " + plan.name + " (Kwimenyereza)! Jya muri Imirimo urebe video " + plan.reqVideos + " ngo ubone inyungu.");
+    } else {
+      // Ibindi bigega byose bishobora gukoresha Ubwizigame (depositBalance)
+      // cyangwa Inyungu Ziboneka (withdrawableEarnings).
+      const price = Number(plan.price || 0);
+      const depositBalance = Number(window.user.depositBalance || 0);
+      const withdrawableEarnings = Number(window.user.withdrawableEarnings || 0);
+      const totalAvailable = depositBalance + withdrawableEarnings;
+
+      if (totalAvailable < price) {
+        alert("Amafaranga ari ku bwizigame cyangwa ku nyungu ntahagije! Banza wongere amafaranga kuri konti.");
+        openDepositFlow(price);
+        return;
+      }
+
+      // Banza dukure ku bwizigame, ayasigaye tuyakure ku nyungu.
+      const fromDeposit = Math.min(depositBalance, price);
+      const remaining = price - fromDeposit;
+      const fromEarnings = Math.min(withdrawableEarnings, remaining);
+
+      window.user.depositBalance = depositBalance - fromDeposit;
+      window.user.withdrawableEarnings = withdrawableEarnings - fromEarnings;
+
+      addActiveInvestment(plan);
+      alert("Ushoye neza muri " + plan.name + "! Jya muri Imirimo urebe video " + plan.reqVideos + " z'uyu munsi.");
+    }
+
+    window.saveUsersDB();
+    showDashboard();
+  }
+
+  function addActiveInvestment(plan) {
+    const now = Date.now();
+    const expiry = now + (plan.validity * 24 * 60 * 60 * 1000);
+    normalizeUserInvestments();
+
+    window.user.activeInvestments.push({
+      planId: plan.id,
+      name: plan.name,
+      price: plan.price,
+      daily: plan.daily,
+      reqVideos: plan.reqVideos,
+      startTime: now,
+      expiryTime: expiry,
+      lastClaimCycle: 0,
+      nextVideoUnlockAt: 0,
+      completedToday: 0,
+      watchedVideos: {},
+      videoOffset: getPlanVideoOffset(plan.id)
+    });
+
+    if (!window.user.purchasedPlanIds.includes(String(plan.id))) {
+      window.user.purchasedPlanIds.push(String(plan.id));
+    }
+
+    window.user.investedAmount = (window.user.investedAmount || 0) + plan.price;
+    window.user.totalInvestments = (window.user.totalInvestments || 0) + 1;
+  }
+
+  function renderActiveInvestments() {
+    const container = document.getElementById('activeInvestmentsContainer');
+    if (!container) return;
+    normalizeUserInvestments();
+
+    if (!window.user || !window.user.activeInvestments || window.user.activeInvestments.length === 0) {
+      container.innerHTML = `<div style="background:#1e1b18; padding:20px; border-radius:12px; border:1px solid #78350f;">Nta kigega uragura. Hitamo ishoramari ryawe muri SHORA nonaha!</div>`;
+      return;
+    }
+
+    const now = Date.now();
+    container.innerHTML = window.user.activeInvestments.map((inv, index) => {
+      ensureInvestmentCycleState(inv);
+      const cycleLocked = inv.nextVideoUnlockAt > now;
+      const timeLeft = Math.max(0, inv.nextVideoUnlockAt - now);
+      const cycleStatus = cycleLocked
+        ? `⏳ Amavideo azongera gufunguka nyuma y'amasaha 24.`
+        : `🎬 ${inv.completedToday || 0} / ${inv.reqVideos} videos z'uyu munsi`;
+
+      return `
+        <div class="active-plan-card">
+          <div style="display:flex; justify-content:space-between; font-weight:800; color:#eab308;">
+            <span>⚡ ${inv.name}</span>
+            <span>ACTIVE</span>
+          </div>
+          <div style="font-size:12px; color:#d6d3d1; margin-top:6px;">
+            • Inyungu ya buri munsi: <b>${Number(inv.daily || 0).toLocaleString()} RWF</b><br>
+            • ${cycleStatus}
+          </div>
+          <div class="active-timer" id="timer-${index}">${cycleLocked ? 'Igihe cyo kongera gufungura...' : '🎬 Amavideo arakinguye'}</div>
+        </div>
+      `;
+    }).join('');
+  }
+
+  function updateTimers() {
+    if (!window.user || !window.user.activeInvestments) return;
+    const now = Date.now();
+    window.user.activeInvestments.forEach((inv, index) => {
+      ensureInvestmentCycleState(inv);
+      const el = document.getElementById(`timer-${index}`);
+      if (!el) return;
+
+      const expiryLeft = inv.expiryTime - now;
+      if (expiryLeft <= 0) {
+        el.innerText = "ISHORAMARI RYARANGIYE (CLOSED)";
+        el.style.color = "#b91c1c";
+        return;
+      }
+
+      const cycleLeft = Math.max(0, (inv.nextVideoUnlockAt || 0) - now);
+      if (cycleLeft <= 0) {
+        if (inv.nextVideoUnlockAt > 0 && Object.keys(inv.watchedVideos || {}).length > 0) {
+          inv.watchedVideos = {};
+          inv.completedToday = 0;
+          inv.nextVideoUnlockAt = 0;
+          window.saveUsersDB();
+        }
+        el.innerText = "🎬 Amavideo arakinguye — reba uyu munsi";
+        el.style.color = "#eab308";
+      } else {
+        const hours = Math.floor(cycleLeft / (1000 * 60 * 60));
+        const minutes = Math.floor((cycleLeft % (1000 * 60 * 60)) / (1000 * 60));
+        const seconds = Math.floor((cycleLeft % (1000 * 60)) / 1000);
+        el.innerText = `⏱️ Amavideo azongera gufunguka: ${hours}h ${minutes}m ${seconds}s`;
+      }
+    });
+  }
+
+  function renderVideos() {
+    const container = document.getElementById('videosContainer');
+    if (!container) return;
+    normalizeUserInvestments();
+
+    const infoEl = document.getElementById('tasksInfoText');
+    const now = Date.now();
+    const active = (window.user && Array.isArray(window.user.activeInvestments))
+      ? window.user.activeInvestments.filter(inv => (inv.expiryTime || 0) > now)
+      : [];
+
+    if (!active.length) {
+      if (infoEl) infoEl.innerText = "⚠️ Nta kigega gikorera active ufite. Banza ushore imari ngo amavideo afunguke!";
+      container.innerHTML = `<div style="background:#1e1b18; padding:20px; border-radius:12px; border:1px solid #78350f;">Jya muri "SHORA" ugure ikigega cyo kurebera amavideo!</div>`;
+      return;
+    }
+
+    if (infoEl) infoEl.innerText = "⚡ Buri kigega gifite amavideo yacyo. Reba videos zose zisabwa kuri buri kigega kugira ngo ubone profit y'uyu munsi.";
+
+    let html = '';
+    active.forEach((inv, invIndex) => {
+      ensureInvestmentCycleState(inv);
+      const lockedFor24h = inv.nextVideoUnlockAt > now;
+      const watchedCount = Object.keys(inv.watchedVideos || {}).length;
+      const allDone = watchedCount >= Number(inv.reqVideos || 0);
+      const offset = Number(inv.videoOffset || 0);
+
+      html += `
+        <div style="background:#1e1b18; padding:14px; margin-bottom:18px; border-radius:16px; border:1px solid #78350f;">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
+            <div style="font-size:14px;font-weight:900;color:#eab308;">⚡ ${inv.name}</div>
+            <div style="font-size:11px;color:#fef08a;">${Number(inv.daily || 0).toLocaleString()} RWF / munsi</div>
+          </div>
+          <div style="font-size:11px;color:#d6d3d1;margin-bottom:10px;">
+            ${lockedFor24h ? '⏳ Wamaze kubona profit y’uyu cycle. Amavideo azongera gufunguka nyuma y’amasaha 24.' : `🎬 ${watchedCount}/${inv.reqVideos} videos zarebwe uyu munsi.`}
+          </div>
+      `;
+
+      for (let v = 1; v <= Number(inv.reqVideos || 0); v++) {
+        const videoKey = `video_${v}`;
+        const isWatched = !!(inv.watchedVideos && inv.watchedVideos[videoKey]);
+        const sourceIndex = (offset + v - 1) % videoUrls.length;
+        const videoSrc = videoUrls[sourceIndex];
+        const disabled = lockedFor24h || isWatched || allDone;
+
+        html += `
+          <div class="video-card" style="margin-bottom:12px; ${disabled ? 'opacity:0.55;' : ''}">
+            <div style="font-size:12px;font-weight:800;color:#eab308;margin-bottom:6px;">
+              🎬 ${inv.name} — VIDEO #${v} ${isWatched ? '✓' : ''}
+            </div>
+            ${lockedFor24h
+              ? `<div style="height:120px;background:#292524;border-radius:10px;display:flex;align-items:center;justify-content:center;text-align:center;font-size:12px;color:#d97706;border:1px solid #78350f;padding:10px;">⏳ Iyi video izongera gufunguka nyuma y'amasaha 24.</div>`
+              : `<video src="${videoSrc}" controls controlsList="nodownload"></video>`}
+            <button class="video-btn" ${disabled ? 'disabled' : ''} onclick="watchInvestmentVideo('${String(inv.planId).replace(/'/g, "\\'")}', '${videoKey}')">
+              ${isWatched ? '✓ Yarebwe Uyu Munsi' : (lockedFor24h ? '⏳ Ifunze kugeza cycle ikurikira' : 'Emeza ko Wairebye (30s)')}
+            </button>
+          </div>
+        `;
+      }
+
+      html += `</div>`;
+    });
+
+    container.innerHTML = html;
+  }
+
+  window.watchInvestmentVideo = async function(planId, videoKey) {
+    if (!window.user) return;
+    normalizeUserInvestments();
+
+    const inv = window.user.activeInvestments.find(x => String(x.planId) === String(planId));
+    if (!inv) return;
+    ensureInvestmentCycleState(inv);
+
+    const now = Date.now();
+    if ((inv.expiryTime || 0) <= now) {
+      alert("Iki kigega cyarangije igihe cyacyo.");
+      renderVideos();
+      return;
+    }
+
+    if ((inv.nextVideoUnlockAt || 0) > now) {
+      alert("Amavideo y'iki kigega azongera gufunguka nyuma y'amasaha 24.");
+      renderVideos();
+      return;
+    }
+
+    if (inv.watchedVideos[videoKey]) return;
+
+    inv.watchedVideos[videoKey] = true;
+    inv.completedToday = Object.keys(inv.watchedVideos).length;
+
+    if (inv.completedToday >= Number(inv.reqVideos || 0)) {
+      // Credit exactly once for this 24-hour cycle.
+      if (!inv.lastClaimCycle || now >= Number(inv.lastClaimCycle) + (24 * 60 * 60 * 1000)) {
+        if (String(inv.planId).toUpperCase() === 'G0') {
+          window.user.practiceBalance = (window.user.practiceBalance || 0) + Number(inv.daily || 0);
+        } else {
+          window.user.withdrawableEarnings = (window.user.withdrawableEarnings || 0) + Number(inv.daily || 0);
+        }
+
+        inv.lastClaimCycle = now;
+        inv.nextVideoUnlockAt = now + (24 * 60 * 60 * 1000);
+
+        alert(`🎉 Byagenze neza! Urangije amavideo ${inv.reqVideos} ya ${inv.name}. Inyungu ya ${Number(inv.daily || 0).toLocaleString()} RWF yinjijwe. Amavideo azongera gufunguka nyuma y'amasaha 24.`);
+      }
+    }
+
+    await window.saveUsersDB();
+    showDashboard();
+    switchTab('imirimo', false);
+  }
+
+  // Backward compatibility for old buttons/data.
+  window.watchVideoTask = function() {
+    alert("Nyamuneka koresha video iri munsi y'ikigega cyawe. Buri kigega gifite cycle yacyo y'amasaha 24.");
+    renderVideos();
+  }
+
+  window.openDepositFlow = function(initialAmount = 0) {
+    selectedDepositAmount = Number(initialAmount) || 0;
+    window.selectedDepositAmount = selectedDepositAmount;
+    const modal = document.getElementById('generalModal');
+    const content = document.getElementById('modalCardContent');
+    modal.style.display = 'flex';
+    
+    content.className = 'modal-card';
+    content.innerHTML = `
+      <div style="position: relative;">
+        <div class="modal-nav-btns">
+          <button class="btn-modal-nav" onclick="closeModal()">⬅ Subira inyuma</button>
+          <button class="btn-modal-nav" onclick="closeModal(); switchTab('ahabanza');">🏠 Ahabanza</button>
+        </div>
+
+        <h4 style="font-size: 15px; font-weight: 800; color: #fef08a; margin-bottom: 12px; text-align: left;">Hitamo umubare w'amafaranga yo kubitsa</h4>
+        
+        <div class="recharge-grid">
+          <button class="recharge-btn ${initialAmount === 20000 ? 'active' : ''}" onclick="setDepositAmount(20000, this)">20,000</button>
+          <button class="recharge-btn ${initialAmount === 100000 ? 'active' : ''}" onclick="setDepositAmount(100000, this)">100,000</button>
+          <button class="recharge-btn ${initialAmount === 120000 ? 'active' : ''}" onclick="setDepositAmount(120000, this)">120,000</button>
+          <button class="recharge-btn ${initialAmount === 250000 ? 'active' : ''}" onclick="setDepositAmount(250000, this)">250,000</button>
+          <button class="recharge-btn ${initialAmount === 300000 ? 'active' : ''}" onclick="setDepositAmount(300000, this)">300,000</button>
+          <button class="recharge-btn ${initialAmount === 550000 ? 'active' : ''}" onclick="setDepositAmount(550000, this)">550,000</button>
+          <button class="recharge-btn ${initialAmount === 600000 ? 'active' : ''}" onclick="setDepositAmount(600000, this)">600,000</button>
+          <button class="recharge-btn ${initialAmount === 1200000 ? 'active' : ''}" onclick="setDepositAmount(1200000, this)">1,200,000</button>
+          <button class="recharge-btn ${initialAmount === 1500000 ? 'active' : ''}" onclick="setDepositAmount(1500000, this)">1,500,000</button>
+        </div>
+
+        <div style="font-size: 13px; font-weight: 800; color: #fef08a; margin-top: 15px; text-align: left;">Cungura cyangwa wandike andi mafaranga</div>
+        
+        <div class="recharge-input-box">
+          <span>RWF</span>
+          <input type="number" id="depositAmountInput" placeholder="Andika umubare w'amafaranga" value="${initialAmount > 0 ? initialAmount : ''}" oninput="handleCustomAmountInput(this.value)">
+        </div>
+
+        <div style="font-size: 13px; font-weight: 800; color: #fef08a; margin-top: 15px; text-align: left;">Uburyo bwo kwishyura</div>
+        <div style="background: #292524; color: #fef08a; padding: 12px 16px; border-radius: 12px; margin-top: 8px; display: flex; justify-content: space-between; align-items: center; font-weight: 700; font-size: 14px; border: 1px solid #78350f;">
+          <span>💳 Mobile Money / Banki</span>
+          <span>✓</span>
+        </div>
+
+        <button id="btnConfirmDeposit" class="btn-confirm-deposit ${initialAmount > 0 ? 'active' : ''}" onclick="proceedToPayModal()">Komeza kwishyura</button>
+      </div>
+    `;
+  }
+
+  window.setDepositAmount = function(val, btnEl) {
+    selectedDepositAmount = Number(val) || 0;
+    window.selectedDepositAmount = selectedDepositAmount;
+    document.getElementById('depositAmountInput').value = selectedDepositAmount;
+    document.querySelectorAll('.recharge-btn').forEach(b => b.classList.remove('active'));
+    if (btnEl) btnEl.classList.add('active');
+    updateConfirmButton();
+  }
+
+  window.handleCustomAmountInput = function(val) {
+    selectedDepositAmount = Number(val) || 0;
+    window.selectedDepositAmount = selectedDepositAmount;
+    document.querySelectorAll('.recharge-btn').forEach(b => {
+      const numVal = Number(b.innerText.replace(/,/g, ''));
+      if (numVal === selectedDepositAmount) {
+        b.classList.add('active');
+      } else {
+        b.classList.remove('active');
+      }
+    });
+    updateConfirmButton();
+  }
+
+  function updateConfirmButton() {
+    const btn = document.getElementById('btnConfirmDeposit');
+    if (selectedDepositAmount > 0) {
+      btn.classList.add('active');
+    } else {
+      btn.classList.remove('active');
+    }
+  }
+
+  window.proceedToPayModal = function() {
+    selectedDepositAmount = Number(selectedDepositAmount) || 0;
+    window.selectedDepositAmount = selectedDepositAmount;
+    if (!selectedDepositAmount || selectedDepositAmount <= 0) {
+      alert("Nyamuneka hitamo cyangwa wandike umubare w'amafaranga yo kubitsa.");
+      return;
+    }
+
+    const modal = document.getElementById('generalModal');
+    const content = document.getElementById('modalCardContent');
+
+    content.className = '';
+    content.innerHTML = `
+      <div class="pay-card-modal">
+        <div class="modal-nav-btns" style="border-color: #292524;">
+          <button class="btn-modal-nav" onclick="openDepositFlow(${selectedDepositAmount})">⬅ Subira inyuma</button>
+          <button class="btn-modal-nav" onclick="closeModal(); switchTab('ahabanza');">🏠 Ahabanza</button>
+        </div>
+
+        <div class="pay-header">
+          <div style="display: flex; align-items: center; gap: 8px;">
+            <div class="pay-logo">⚡</div>
+            <span style="font-weight: 800; font-size: 13px; letter-spacing: 0.5px; color:#eab308;">TESLA MOTORS PAY</span>
+          </div>
+        </div>
+
+        <div style="font-size: 11px; font-weight: 800; margin-bottom: 2px; color:#d97706;">KOPORA KODE YO KWISHYURA</div>
+        <div style="font-size: 10px; color: #d6d3d1; margin-bottom: 10px;">Kopora iyi kode ya MoMo Pay maze wishyure amafaranga yagenwe.</div>
+
+        <div class="pay-box">
+          <div class="pay-row-title">Amafaranga yo Kwishyura:</div>
+          <div class="pay-row-val" style="color: #eab308;">RWF ${Number(selectedDepositAmount).toLocaleString()}</div>
+
+          <div class="pay-row-title">MOMO PAY:</div>
+          <div class="pay-row-val" style="color: #fef08a;">
+            <span>2221292</span>
+            <span class="copy-icon" onclick="copyText('2221292')">📋</span>
+          </div>
+
+          <div class="pay-row-title">Izina rya Konti:</div>
+          <div class="pay-row-val" style="color: #eab308; font-size: 16px;">
+            <span>Eric</span>
+            <span class="copy-icon" onclick="copyText('Eric')">📋</span>
+          </div>
+        </div>
+
+        <div style="text-align: center; margin: 15px 0 10px;">
+          <span style="color: #eab308; font-size: 14px; font-weight: 800; letter-spacing: 0.5px;">Cangwa kanda *182*8*1*2221292#</span>
+          <span class="copy-icon" style="color: #fef08a; margin-left: 6px;" onclick="copyText('*182*8*1*2221292#')">📋</span>
+        </div>
+
+        <button id="btnEmezaPayment" class="btn-confirm-payment" onclick="confirmPaymentAction(${Number(selectedDepositAmount)})">
+          Emeza ko umaze kwishyura
+        </button>
+
+        <button class="btn-back" onclick="closeModal(); switchTab('ahabanza');" style="margin-top: 12px; border-radius: 14px;">
+          🏠 Subira ahabanza
+        </button>
+      </div>
+    `;
+  }
+
+  window.openWithdrawModal = function() {
+    const modal = document.getElementById('generalModal');
+    const content = document.getElementById('modalCardContent');
+    modal.style.display = 'flex';
+
+    content.className = 'modal-card';
+    content.innerHTML = `
+      <div style="position: relative; text-align: left;">
+        <div class="modal-nav-btns">
+          <button class="btn-modal-nav" onclick="closeModal()">⬅ Subira inyuma</button>
+          <button class="btn-modal-nav" onclick="closeModal(); switchTab('ahabanza');">🏠 Ahabanza</button>
+        </div>
+
+        <h3 style="font-size: 16px; font-weight: 800; color: #fef08a; margin-bottom: 8px;">Bikuza Inyungu Zawe</h3>
+
+        <div style="background: #292524; border: 1px solid #78350f; padding: 10px; border-radius: 10px; font-size: 12px; color: #fef08a; margin-bottom: 15px; line-height:1.65;">
+          <b>Amabwiriza yo kubikuza:</b><br>
+          • Kubikuza biremewe buri munsi kuva <b>10:00 AM - 04:00 PM</b><br>
+          • Amafaranga make yo kubikuza ni <b>1,100 RWF</b><br>
+          • Amafaranga menshi yo kubikuza ni <b>500,000 RWF ku munsi</b><br>
+          • Platform ifata <b>15%</b> kuri buri withdrawal<br>
+          • Ubusabe bushobora gukorwa mu gihe cya <b>iminota 30 kugeza ku masaha 72</b><br>
+          • Nyamuneka <b>tegereza wihanganye</b> mu gihe ubusabe buri gukorerwa<br>
+          • Amafaranga yo kwimenyereza ntabwo abikuzwa<br>
+          • Inyungu ufite ubu: <b>${(window.user ? window.user.withdrawableEarnings || 0 : 0).toLocaleString()} RWF</b>
+        </div>
+
+        <div style="margin-bottom: 12px;">
+          <label style="font-size: 11px; font-weight: 800; color: #d97706; display: block; margin-bottom: 4px;">UMUBARE W'AMAFARANGA (RWF)</label>
+          <input type="number" id="withdrawAmount" placeholder="Urugero: 1100" min="1100" max="500000" class="input-box-normal" style="background:#292524; color:#fef08a; border:1px solid #78350f;">
+          <div id="withdrawFeePreview" style="display:none;margin-top:8px;background:#1e1b18;border:1px solid #78350f;border-radius:10px;padding:10px;font-size:12px;line-height:1.7;color:#fef08a;">
+            <div><b>Umubare wasabye:</b> <span id="withdrawGrossPreview">0</span> RWF</div>
+            <div><b>15% withdrawal fee:</b> <span id="withdrawFeePreviewValue">0</span> RWF</div>
+            <div><b>Amafaranga azoherezwa:</b> <span id="withdrawNetPreview">0</span> RWF</div>
+          </div>
+        </div>
+
+        <div style="margin-bottom: 15px;">
+          <label style="font-size: 11px; font-weight: 800; color: #d97706; display: block; margin-bottom: 4px;">NUMERO Y'AKIRA AMAFARANGA (MoMo/Airtel)</label>
+          <input type="tel" id="withdrawPhone" value="${window.user ? window.user.phone : ''}" placeholder="078xxxxxxx" class="input-box-normal" style="background:#292524; color:#fef08a; border:1px solid #78350f;">
+        </div>
+
+        <button class="btn-main" onclick="submitWithdrawal()" style="background:#b91c1c;">Emeza Kubikuza</button>
+      </div>
+    `;
+
+    const amountInput = document.getElementById('withdrawAmount');
+    const updateWithdrawalPreview = () => {
+      const gross = Math.max(0, Number(amountInput?.value || 0));
+      const fee = Math.round(gross * 0.15);
+      const net = gross - fee;
+      const box = document.getElementById('withdrawFeePreview');
+      if (!box) return;
+      box.style.display = gross > 0 ? 'block' : 'none';
+      document.getElementById('withdrawGrossPreview').textContent = gross.toLocaleString();
+      document.getElementById('withdrawFeePreviewValue').textContent = fee.toLocaleString();
+      document.getElementById('withdrawNetPreview').textContent = Math.max(0, net).toLocaleString();
+    };
+    amountInput?.addEventListener('input', updateWithdrawalPreview);
+  }
+
+  window.openHistoryModal = function() {
+    const modal = document.getElementById('generalModal');
+    const content = document.getElementById('modalCardContent');
+    modal.style.display = 'flex';
+    
+    content.className = 'modal-card';
+    content.innerHTML = `
+      <div style="position: relative; text-align: left;">
+        <div class="modal-nav-btns">
+          <button class="btn-modal-nav" onclick="closeModal()">⬅ Subira inyuma</button>
+          <button class="btn-modal-nav" onclick="closeModal(); switchTab('ahabanza');">🏠 Ahabanza</button>
+        </div>
+
+        <h3 style="font-size: 16px; font-weight: 800; color: #fef08a; margin-bottom: 10px;">Amateka ya Tesla Motors</h3>
+        
+        <div style="font-size: 12px; color: #d6d3d1; line-height: 1.6;">
+          <p style="margin-bottom: 8px;"><b>Tesla Motors & Assets</b> ni urubuga rufasha abantu gushora imari mu mishinga y'amashanyarazi n'ingufu zisubira mu buzima bwa buri munsi.</p>
+          <p style="margin-bottom: 8px;">Binyuze muri gahunda yacu, ushobora kureba amavideo y'amasegonda 30 buri munsi ukabona inyungu zihamye zizamura ubuzima bwawe n'ubukungu bw'igihugu.</p>
+        </div>
+      </div>
+    `;
+  }
+
+  window.openBonusModal = function() {
+    const modal = document.getElementById('generalModal');
+    const content = document.getElementById('modalCardContent');
+    modal.style.display = 'flex';
+    
+    content.className = 'modal-card';
+    content.innerHTML = `
+      <div style="position: relative; text-align: center;">
+        <div class="modal-nav-btns">
+          <button class="btn-modal-nav" onclick="closeModal()">⬅ Subira inyuma</button>
+          <button class="btn-modal-nav" onclick="closeModal(); switchTab('ahabanza');">🏠 Ahabanza</button>
+        </div>
+
+        <div style="font-size: 40px; margin-bottom: 5px;">🎁</div>
+        <h3 style="font-size: 16px; font-weight: 800; color: #fef08a; margin-bottom: 10px;">Agashimwe ka Tesla</h3>
+        
+        <p style="font-size: 13px; color: #d6d3d1; margin-bottom: 15px; line-height: 1.5;">
+          <b>Shora imari ingana cyangwa irenga 200,000 RWF uhabwe agashimwe k'inyongera ka 20,000 RWF!</b>
+        </p>
+
+        <button class="btn-main" onclick="claimBonus()">Saba Agashimwe</button>
+      </div>
+    `;
+  }
+
+  window.claimBonus = function() {
+    const inv = (window.user ? window.user.investedAmount || 0 : 0);
+    if (inv >= 200000) {
+      alert("Ubusabe bwawe bw'agashimwe bwoherejwe neza!");
+      closeModal();
+    } else {
+      alert("Ntabwo urashora imari igera ku 200,000 RWF.");
+    }
+  }
+
+  window.openRewardsModal = function() {
+    const modal = document.getElementById('generalModal');
+    const content = document.getElementById('modalCardContent');
+    modal.style.display = 'flex';
+    
+    content.className = 'modal-card';
+    content.innerHTML = `
+      <div style="position: relative; text-align: center;">
+        <div class="modal-nav-btns">
+          <button class="btn-modal-nav" onclick="closeModal()">⬅ Subira inyuma</button>
+          <button class="btn-modal-nav" onclick="closeModal(); switchTab('ahabanza');">🏠 Ahabanza</button>
+        </div>
+
+        <div style="font-size: 40px; margin-bottom: 5px;">🏆</div>
+        <h3 style="font-size: 16px; font-weight: 800; color: #fef08a; margin-bottom: 10px;">Ibihembo by'Abahiga Abandi</h3>
+        
+        <p style="font-size: 13px; color: #d6d3d1; margin-bottom: 15px; line-height: 1.5;">
+          <b>Gura imigabane nibura 3 ukaba watsindira igihembo cyihariye cya 10,000 RWF!</b>
+        </p>
+
+        <button class="btn-main" onclick="claimReward()">Saba Igihembo</button>
+      </div>
+    `;
+  }
+
+  window.claimReward = function() {
+    const count = (window.user ? window.user.totalInvestments || 0 : 0);
+    if (count >= 3) {
+      alert("Ubusabe bwawe bw'igihembo bwoherejwe!");
+      closeModal();
+    } else {
+      alert("Ntabwo uragura imigabane nibura 3.");
+    }
+  }
+
+  window.openSupport = function() {
+    const modal = document.getElementById('generalModal');
+    const content = document.getElementById('modalCardContent');
+    modal.style.display = 'flex';
+    
+    content.className = 'modal-card';
+    content.innerHTML = `
+      <div style="position: relative; text-align: center;">
+        <div class="modal-nav-btns">
+          <button class="btn-modal-nav" onclick="closeModal()">⬅ Subira inyuma</button>
+          <button class="btn-modal-nav" onclick="closeModal(); switchTab('ahabanza');">🏠 Ahabanza</button>
+        </div>
+
+        <div style="font-size: 40px; margin-bottom: 5px;">🎧</div>
+        <h3 style="font-size: 16px; font-weight: 800; color: #fef08a; margin-bottom: 8px;">Serivisi y'Ubufasha</h3>
+        
+        <p style="font-size: 13px; color: #d6d3d1; margin-bottom: 15px;">
+          Ukeneye ubufasha bwihuse? Andikira umuyobozi wacu kuri Telegram!
+        </p>
+
+        <a href="https://t.me/+6283165153330" target="_blank" rel="noopener noreferrer" class="btn-main" style="background: #0088cc; text-decoration: none; display:block;">
+          💬 Vugana n'Ubufasha kuri Telegram
+        </a>
+        <div style="font-size:11px;color:#d6d3d1;margin-top:7px;">Telegram Support</div>
+
+        <a href="https://t.me/+IJV5S1720eU2ZjFl" target="_blank" rel="noopener noreferrer" class="btn-main" style="background:#0088cc;text-decoration:none;margin-top:12px;display:block;">
+          👥 Join Telegram Group ya Tesla Platform
+        </a>
+      </div>
+    `;
+  }
+
+  window.copyRefLink = function() {
+    const realLink = getReferralLink();
+    navigator.clipboard.writeText(realLink).then(() => {
+      alert("Ihuro ryo gutumira ryakoporowe neza:\n" + realLink);
+    }).catch(() => {
+      const dummy = document.createElement("input");
+      document.body.appendChild(dummy);
+      dummy.value = realLink;
+      dummy.select();
+      document.execCommand("copy");
+      document.body.removeChild(dummy);
+      alert("Ihuro ryo gutumira ryakoporowe neza:\n" + realLink);
+    });
+  }
+
+  window.closeModal = function() {
+    document.getElementById('generalModal').style.display = 'none';
+  }
+
+  window.copyText = function(txt) {
+    navigator.clipboard.writeText(txt).then(() => {
+      alert("Byakoporowe: " + txt);
+    }).catch(() => {
+      alert("Byakoporowe: " + txt);
+    });
+  }
+</script>
+
+</body>
+</html>
