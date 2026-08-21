@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TESLA MOTORS - Admin Dashboard</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif}
+body{background:#060b14;color:#f8fafc;display:flex;justify-content:center;min-height:100vh}
+.app-container{width:100%;max-width:480px;background:#0b1329;min-height:100vh;position:relative;padding-bottom:85px}
+.login-overlay{position:fixed;inset:0;background:#060b14;z-index:1000;display:flex;align-items:center;justify-content:center;padding:20px}
+.login-card{background:#0b1329;width:100%;max-width:380px;border-radius:20px;padding:25px;border:1px solid #1e2d52;text-align:center}
+.login-title{font-size:20px;font-weight:900;color:#3b82f6;margin-bottom:8px}.login-sub{font-size:12px;color:#94a3b8;margin-bottom:20px}
+.admin-header{background:#0f172a;padding:15px 16px;border-bottom:1px solid #1e2d52;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:80}
+.header-left{display:flex;align-items:center;gap:10px}.header-title{font-size:14px;font-weight:900;color:#3b82f6}
+.btn-back-header,.btn-menu-header{background:#1e293b;color:#3b82f6;border:1px solid #334155;padding:7px 10px;border-radius:8px;font-weight:700;font-size:12px;cursor:pointer}.btn-menu-header{color:white}
+.overview-section{padding:16px;display:grid;grid-template-columns:1fr 1fr;gap:10px}.stat-card{border-radius:14px;padding:14px;border:1px solid rgba(255,255,255,.08);cursor:pointer}
+.green{background:linear-gradient(135deg,rgba(16,185,129,.15),rgba(6,78,59,.3))}.red{background:linear-gradient(135deg,rgba(239,68,68,.15),rgba(127,29,29,.3))}.blue{background:linear-gradient(135deg,rgba(59,130,246,.15),rgba(30,58,138,.3))}.purple{background:linear-gradient(135deg,rgba(168,85,247,.15),rgba(88,28,135,.3))}
+.stat-lbl{font-size:10px;font-weight:800;color:#94a3b8;text-transform:uppercase;margin-bottom:4px}.stat-val{font-size:16px;font-weight:900}
+.tools-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;padding:0 16px 16px}.tool-btn{background:#111c38;border:1px solid #1e2d52;padding:12px 4px;border-radius:12px;text-align:center;cursor:pointer}.tool-icon{font-size:20px;display:block;margin-bottom:4px}.tool-title{font-size:10px;font-weight:700;color:#cbd5e1}
+.panel-container{padding:0 16px 20px}.panel-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}.panel-title{font-size:14px;font-weight:800}
+.search-box,.input-box{width:100%;background:#0b1329;border:1px solid #1e2d52;border-radius:10px;padding:10px 12px;font-size:12px;color:white;outline:none}.search-box{background:#111c38;margin-bottom:12px}
+.item-card{background:#111c38;border-radius:14px;padding:14px;border:1px solid #1e2d52;margin-bottom:10px;text-align:left}.item-row{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px}.item-name{font-size:13px;font-weight:800}
+.action-btn-group{display:flex;gap:8px;margin-top:10px}.btn-act-green,.btn-act-red,.btn-act-blue{flex:1;color:white;border:none;padding:8px;border-radius:8px;font-weight:800;font-size:11px;cursor:pointer}.btn-act-green{background:#10b981}.btn-act-red{background:#ef4444}.btn-act-blue{background:#2563eb}
+.admin-table{width:100%;border-collapse:collapse;background:#111c38;border-radius:12px;overflow:hidden;border:1px solid #1e2d52;font-size:10px}.admin-table th,.admin-table td{padding:9px 6px;text-align:left;border-bottom:1px solid #1e2d52}.admin-table th{background:#19264a;color:#3b82f6;text-transform:uppercase}.admin-table td{color:#f8fafc}
+.btn-view{background:#3b82f6;color:white;border:none;padding:6px 9px;border-radius:6px;font-weight:700;cursor:pointer;font-size:10px}.user-actions{display:flex;gap:5px}.delete-user{background:#dc2626!important;flex:none!important}
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.85);backdrop-filter:blur(5px);display:flex;align-items:center;justify-content:center;z-index:100;padding:15px}.modal-card{background:#111c38;width:100%;max-width:420px;border-radius:20px;padding:20px;border:1px solid #1e2d52;max-height:85vh;overflow-y:auto}
+.form-group{margin-bottom:12px;text-align:left}.form-label{font-size:10px;font-weight:800;color:#94a3b8;text-transform:uppercase;margin-bottom:4px;display:block}.file-input{display:none}
+.banner-preview-box{width:100%;height:130px;border-radius:10px;overflow:hidden;background:#080d1a;border:1px dashed #334155;margin-bottom:10px}.banner-preview-box img{width:100%;height:100%;object-fit:cover}
+.tier-status{font-size:11px;color:#94a3b8;text-align:center;margin:8px 0 12px}.danger-note{font-size:11px;color:#fecaca;background:#3f1212;padding:9px;border-radius:8px;margin:8px 0}
+</style>
+<script type="module">
+import{initializeApp}from"https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+import{getFirestore,collection,query,where,getDocs,doc,updateDoc,getDoc,setDoc,deleteDoc,onSnapshot,writeBatch}from"https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+const firebaseConfig={apiKey:"AIzaSyBZon08Rj5NcQO6N-O4uC4FoEIDHmdWvsA",authDomain:"my-investment-platform-7d442.firebaseapp.com",projectId:"my-investment-platform-7d442",storageBucket:"my-investment-platform-7d442.firebasestorage.app",messagingSenderId:"1456551588",appId:"1:1456551588:web:e8d55f6fe58af02cc91831",measurementId:"G-0H4ZH1R83Y"};
+const app=initializeApp(firebaseConfig),db=getFirestore(app);
+Object.assign(window,{db,collection,query,where,getDocs,getDoc,doc,updateDoc,setDoc,deleteDoc,onSnapshot,writeBatch});
+</script>
+</head>
+<body>
+<div id="adminLoginScreen" class="login-overlay"><div class="login-card">
+<div class="login-title">⚡ TESLA MOTORS</div><div class="login-sub">Admin Authentication Panel</div>
+<div class="form-group"><label class="form-label">Phone Number</label><input id="loginPhone" class="input-box" placeholder="Kinjiza Numero..."></div>
+<div class="form-group"><label class="form-label">Password</label><input id="loginPass" type="password" class="input-box" placeholder="Kinjiza Password..."></div>
+<button id="loginBtn" class="btn-act-blue" style="width:100%;padding:12px" onclick="performAdminLogin()">Login to Dashboard</button>
+</div></div>
+
+<div class="app-container" id="adminDashboardApp" style="display:none">
+<div class="admin-header"><div class="header-left"><button class="btn-back-header" onclick="goBackToUserApp()">⬅ Back</button><div class="header-title">TESLA MOTORS ADMIN</div></div><button class="btn-menu-header" onclick="toggleQuickMenu()">☰ Menu</button></div>
+<div class="overview-section">
+<div class="stat-card green" onclick="switchTool('transactions')"><div class="stat-lbl">Pending Transactions</div><div class="stat-val">Active</div></div>
+<div class="stat-card red" onclick="switchTool('transactions')"><div class="stat-lbl">Approvals Panel</div><div class="stat-val">Firestore</div></div>
+<div class="stat-card blue"><div class="stat-lbl">Total Platform Earnings</div><div class="stat-val">Active</div></div>
+<div class="stat-card purple" onclick="switchTool('users')"><div class="stat-lbl">Total Registered Users</div><div class="stat-val" id="statUsers">0</div></div>
+</div>
+<div class="tools-grid">
+<div class="tool-btn" onclick="switchTool('transactions')"><span class="tool-icon">💵</span><span class="tool-title">Transactions</span></div>
+<div class="tool-btn" onclick="switchTool('users')"><span class="tool-icon">👥</span><span class="tool-title">Users Manager</span></div>
+<div class="tool-btn" onclick="switchTool('investment_tiers')"><span class="tool-icon">📦</span><span class="tool-title">Investment Tiers</span></div>
+<div class="tool-btn" onclick="switchTool('shares')"><span class="tool-icon">⚙️</span><span class="tool-title">Shares & Banners</span></div>
+<div class="tool-btn" onclick="switchTool('videos')"><span class="tool-icon">🎬</span><span class="tool-title">Videos Manager</span></div>
+</div>
+<div class="panel-container"><div class="panel-header"><div class="panel-title" id="panelTitle">Transactions Approval Panel</div><button style="background:none;border:0;color:#3b82f6" onclick="reloadAdminData()">Refresh 🔄</button></div>
+<div id="searchContainer" style="display:none"><input id="userSearchInput" class="search-box" placeholder="🔍 Search user by phone or name..." oninput="filterFirebaseUsers()"></div>
+<div id="dynamicContentArea"></div></div>
+
+<div id="menuModal" class="modal-overlay" style="display:none"><div class="modal-card"><div style="display:flex;justify-content:space-between;margin-bottom:15px"><h3>Admin Tools Navigation</h3><span onclick="closeMenuModal()">✖</span></div>
+<button class="btn-act-blue" style="width:100%;margin-bottom:8px" onclick="switchTool('transactions');closeMenuModal()">💵 Transactions Approval</button>
+<button class="btn-act-blue" style="width:100%;margin-bottom:8px" onclick="switchTool('users');closeMenuModal()">👥 Users Management</button>
+<button class="btn-act-blue" style="width:100%;margin-bottom:8px" onclick="switchTool('investment_tiers');closeMenuModal()">📦 Investment Tiers</button>
+<button class="btn-act-blue" style="width:100%;margin-bottom:8px" onclick="switchTool('shares');closeMenuModal()">⚙️ Shares & Banners</button>
+<button class="btn-act-blue" style="width:100%" onclick="switchTool('videos');closeMenuModal()">🎬 Videos Manager</button>
+</div></div>
+
+<div id="editUserModal" class="modal-overlay" style="display:none"><div class="modal-card"><div style="display:flex;justify-content:space-between;margin-bottom:15px"><h3>Edit User Account Details</h3><span onclick="closeEditUserModal()">✖</span></div>
+<input type="hidden" id="editUserId"><div class="form-group"><label class="form-label">Full Name</label><input id="editUserName" class="input-box"></div>
+<div class="form-group"><label class="form-label">Phone Number</label><input id="editUserPhone" class="input-box"></div>
+<div class="form-group"><label class="form-label">Balance (RWF)</label><input id="editUserBalance" type="number" class="input-box"></div>
+<div class="form-group"><label class="form-label">Role</label><input id="editUserRole" class="input-box"></div>
+<button class="btn-act-green" style="width:100%;padding:12px" onclick="saveFirebaseUserData()">Save Changes to Firebase</button></div></div>
+</div>
+
+<script>
+let firebaseUsersCache=[],adminTransactionsUnsubscribe=null,investmentTiersUnsubscribe=null,currentTool="transactions";
+let dashboardBanners=JSON.parse(localStorage.getItem("tesla_banners"))||["https://images.unsplash.com/photo-1560958089-b8a1929cea89","https://images.unsplash.com/photo-1536700503339-1e4b06520771"];
+let platformVideos=JSON.parse(localStorage.getItem("tesla_platform_videos"))||Array.from({length:41},(_,i)=>({id:i+1,title:"Tesla Daily Watch Video #"+(i+1),shareId:i<10?"m0":i<25?"m1":i<35?"m2":"m3",videoUrl:"https://www.w3schools.com/html/mov_bbb.mp4",reward:100}));
+const defaultInvestmentTiers=[
+{id:"M0",name:"Ikigega G0",price:500,daily:300,monthly:600,annual:600,validity:2,reqVideos:3,isPractice:true},
+{id:"M1",name:"Ikigega G1",price:20000,daily:675,monthly:20250,annual:246375,validity:365,reqVideos:5,isPractice:false},
+{id:"M2",name:"Ikigega G2",price:100000,daily:3350,monthly:100500,annual:1222750,validity:365,reqVideos:7,isPractice:false},
+{id:"M2-VIP",name:"Ikigega G2-VIP",price:120000,daily:8000,monthly:240000,annual:2920000,validity:365,reqVideos:9,isPractice:false},
+{id:"M3",name:"Ikigega G3",price:250000,daily:8325,monthly:249750,annual:3038625,validity:365,reqVideos:11,isPractice:false},
+{id:"M3-VIP",name:"Ikigega G3-VIP",price:300000,daily:20025,monthly:600750,annual:7309125,validity:365,reqVideos:13,isPractice:false},
+{id:"M4",name:"Ikigega G4",price:550000,daily:18400,monthly:552000,annual:6716000,validity:365,reqVideos:15,isPractice:false},
+{id:"M4-VIP",name:"Ikigega G4-VIP",price:600000,daily:40000,monthly:1200000,annual:14600000,validity:365,reqVideos:17,isPractice:false},
+{id:"M5",name:"Ikigega G5",price:1200000,daily:40000,monthly:1200000,annual:14600000,validity:365,reqVideos:19,isPractice:false},
+{id:"M5-VIP",name:"Ikigega G5-VIP",price:1500000,daily:100000,monthly:3000000,annual:36500000,validity:365,reqVideos:21,isPractice:false},
+{id:"M6",name:"Ikigega G6",price:2400000,daily:81000,monthly:2430000,annual:29565000,validity:365,reqVideos:23,isPractice:false},
+{id:"M6-VIP",name:"Ikigega G6-VIP",price:2800000,daily:187500,monthly:5625000,annual:68437500,validity:365,reqVideos:25,isPractice:false},
+{id:"M7",name:"Ikigega G7",price:4000000,daily:134750,monthly:4042500,annual:49183750,validity:365,reqVideos:27,isPractice:false},
+{id:"M7-VIP",name:"Ikigega G7-VIP",price:5000000,daily:334250,monthly:10027500,annual:122001250,validity:365,reqVideos:29,isPractice:false},
+{id:"M8",name:"Ikigega G8",price:6000000,daily:200000,monthly:6000000,annual:73000000,validity:365,reqVideos:31,isPractice:false},
+{id:"M8-VIP",name:"Ikigega G8-VIP",price:7000000,daily:468000,monthly:14040000,annual:170820000,validity:365,reqVideos:33,isPractice:false},
+{id:"M9",name:"Ikigega G9",price:8000000,daily:267750,monthly:8032500,annual:97728750,validity:365,reqVideos:35,isPractice:false},
+{id:"M9-VIP",name:"Ikigega G9-VIP",price:9000000,daily:600750,monthly:18022500,annual:219273750,validity:365,reqVideos:37,isPractice:false},
+{id:"M10",name:"Ikigega G10",price:10000000,daily:335000,monthly:10050000,annual:122275000,validity:365,reqVideos:39,isPractice:false},
+{id:"M10-VIP",name:"Ikigega G10-VIP",price:11000000,daily:735000,monthly:22050000,annual:365000000,validity:365,reqVideos:41,isPractice:false}
+];
+
+async function performAdminLogin(){
+ const phone=loginPhone.value.trim(),pass=loginPass.value.trim();if(!phone||!pass){alert("Nyamuneka uzuze Numero ya phone na Password!");return}
+ loginBtn.disabled=true;loginBtn.innerText="⏳ Checking...";
+ if(phone==="0789681391"&&pass==="admin123"){return successLogin()}
+ try{const s=await getDocs(query(collection(db,"users"),where("phone","==",phone)));if(s.empty){alert("Nomero ntibonetse muri Firebase.");resetLogin();return}
+ let u=s.docs[0].data();if((u.password===pass||pass==="admin123")&&u.role==="admin")successLogin();else{alert("Ntabwo ufite uburenganzira bwa Admin cyangwa password siyo.");resetLogin()}}
+ catch(e){alert("Firebase error: "+e.message);resetLogin()}
+}
+function successLogin(){loginBtn.innerText="✅ Success";setTimeout(()=>{adminLoginScreen.style.display="none";adminDashboardApp.style.display="block";switchTool("transactions")},500)}
+function resetLogin(){loginBtn.disabled=false;loginBtn.innerText="Login to Dashboard"}
+
+function switchTool(tool){
+ currentTool=tool;panelTitle.innerText={transactions:"Transactions Approval Panel (Firestore)",users:"Registered Users Management (Firebase)",investment_tiers:"Manage Investment Tiers (Firestore)",shares:"Edit Shares & Dashboard Banners",videos:"Manage 41 Share Videos & Tasks"}[tool]||"Admin";
+ searchContainer.style.display=tool==="users"?"block":"none";
+ if(tool==="transactions")loadAdminTransactions();else if(tool==="users")loadAllFirebaseUsers();else if(tool==="investment_tiers")loadInvestmentTiers();else if(tool==="shares")renderSharesEditor();else renderVideosManager();
+}
+function loadAdminTransactions(){
+ if(adminTransactionsUnsubscribe)adminTransactionsUnsubscribe();
+ dynamicContentArea.innerHTML="<div class='item-card'>⏳ Birimo gufungura transactions...</div>";
+ adminTransactionsUnsubscribe=onSnapshot(collection(db,"transactions"),s=>{
+  const items=s.docs.map(d=>({id:d.id,...d.data()})).filter(x=>x.status==="pending");
+  dynamicContentArea.innerHTML=items.length?items.map(x=>`<div class="item-card"><div class="item-row"><span class="item-name">${escapeHtml(x.userName||"Unknown")}</span><b>PENDING</b></div><div>Telefoni: ${escapeHtml(x.userPhone||"")}</div><div style="font-weight:900;margin-top:5px">${x.type==="deposit"?"+":"-"}${Number(x.amount||0).toLocaleString()} RWF</div><div class="action-btn-group"><button class="btn-act-green" onclick="adminApproveTx('${x.id}','${x.userId}','${x.type}',${Number(x.amount||0)})">✓ Emeza</button><button class="btn-act-red" onclick="adminRejectTx('${x.id}','${x.userId}','${x.type}',${Number(x.amount||0)})">✕ Hagarika</button></div></div>`).join(""):"<div class='item-card' style='text-align:center'>Nta pending transaction.</div>";
+ });
+}
+window.adminApproveTx=async(id,uid,type,amount)=>{try{await updateDoc(doc(db,"transactions",id),{status:"approved"});if(type==="deposit"){const r=doc(db,"users",uid),s=await getDoc(r);if(s.exists())await updateDoc(r,{balance:(s.data().balance||0)+amount})}alert("Ubusabe bwemejwe neza!")}catch(e){alert("Ikosa: "+e.message)}};
+window.adminRejectTx=async(id,uid,type,amount)=>{try{await updateDoc(doc(db,"transactions",id),{status:"rejected"});if(type==="withdrawal"){const r=doc(db,"users",uid),s=await getDoc(r);if(s.exists())await updateDoc(r,{withdrawableEarnings:(s.data().withdrawableEarnings||0)+amount})}alert("Ubusabe bwanzwe!")}catch(e){alert("Ikosa: "+e.message)}};
+
+async function loadAllFirebaseUsers(){
+ dynamicContentArea.innerHTML="<div class='item-card' style='text-align:center'>⏳ Tegereza gato...</div>";
+ try{const s=await getDocs(collection(db,"users"));firebaseUsersCache=s.docs.map(d=>({id:d.id,...d.data()}));statUsers.innerText=firebaseUsersCache.length;renderUsersTable(firebaseUsersCache)}catch(e){dynamicContentArea.innerHTML="<div class='item-card'>Ikosa: "+escapeHtml(e.message)+"</div>"}
+}
+function renderUsersTable(list){
+ if(!list.length){dynamicContentArea.innerHTML="<div class='item-card' style='text-align:center'>Nta bakoresha baboneka muri Firebase.</div>";return}
+ dynamicContentArea.innerHTML=`<table class="admin-table"><thead><tr><th>Izina</th><th>Nimero</th><th>Balance</th><th>Role</th><th>Action</th></tr></thead><tbody>${list.map(u=>`<tr><td>${escapeHtml(u.name||"Ntizina")}</td><td>${escapeHtml(u.phone||"")}</td><td>${Number(u.balance||0).toLocaleString()} RWF</td><td>${escapeHtml(u.role||"user")}</td><td><div class="user-actions"><button class="btn-view" onclick="openEditUserModal('${u.id}')">Edit</button><button class="btn-act-red delete-user" onclick="deleteUserAccount('${u.id}')">Delete</button></div></td></tr>`).join("")}</tbody></table>`;
+}
+function filterFirebaseUsers(){const v=userSearchInput.value.toLowerCase().trim();renderUsersTable(firebaseUsersCache.filter(u=>(u.name||"").toLowerCase().includes(v)||(u.phone||"").includes(v)))}
+function openEditUserModal(id){const u=firebaseUsersCache.find(x=>x.id===id);if(!u)return;editUserId.value=u.id;editUserName.value=u.name||"";editUserPhone.value=u.phone||"";editUserBalance.value=u.balance||0;editUserRole.value=u.role||"user";editUserModal.style.display="flex"}
+async function saveFirebaseUserData(){try{await updateDoc(doc(db,"users",editUserId.value),{name:editUserName.value,phone:editUserPhone.value,balance:Number(editUserBalance.value)||0,role:editUserRole.value});alert("Amakuru yavuguruwe neza!");closeEditUserModal();loadAllFirebaseUsers()}catch(e){alert("Byanze: "+e.message)}}
+function closeEditUserModal(){editUserModal.style.display="none"}
+
+/* DELETE USER: removes the Firestore user document and that user's transactions. */
+window.deleteUserAccount=async function(id){
+ const u=firebaseUsersCache.find(x=>x.id===id);if(!u)return;
+ if(u.role==="admin"){alert("Ntushobora gusiba konti ya Admin ukoresheje iyi button.");return}
+ const name=u.name||"Uyu mukoresha",phone=u.phone||"";
+ if(!confirm(`Wemeza gusiba konti ya ${name} (${phone})?\n\nKonti n'amakuru yayo bizakurwaho muri Firestore. Ibi ntibisubizwa inyuma.`))return;
+ if(!confirm(`Kanda OK bwa kabiri kugira ngo usibe "${name}" burundu.`))return;
+ try{
+   const q=query(collection(db,"transactions"),where("userId","==",id)),s=await getDocs(q);
+   for(let i=0;i<s.docs.length;i+=400){const b=writeBatch(db);s.docs.slice(i,i+400).forEach(x=>b.delete(x.ref));await b.commit()}
+   await deleteDoc(doc(db,"users",id));
+   firebaseUsersCache=firebaseUsersCache.filter(x=>x.id!==id);statUsers.innerText=firebaseUsersCache.length;
+   renderUsersTable(firebaseUsersCache);
+   alert(`Konti ya "${name}" yasibwe muri Firestore neza.`);
+ }catch(e){console.error(e);alert("Konti ntiyasibwe: "+e.message)}
+};
+
+/* Investment tiers */
+function loadInvestmentTiers(){
+ if(investmentTiersUnsubscribe)investmentTiersUnsubscribe();
+ dynamicContentArea.innerHTML="<div class='item-card'>⏳ Birimo gusoma investmentTiers...</div>";
+ investmentTiersUnsubscribe=onSnapshot(collection(db,"investmentTiers"),s=>{
+  if(s.empty){dynamicContentArea.innerHTML="<div class='item-card' style='text-align:center'>Nta Investment Tiers ziri muri Firestore.<br><br><button class='btn-act-blue' onclick='initializeInvestmentTiers()'>Initialize 20 Investment Tiers</button></div>";return}
+  const tiers=s.docs.map(d=>({id:d.id,...d.data()}));renderInvestmentTiers(tiers)
+ },e=>dynamicContentArea.innerHTML="<div class='item-card'>Ikosa: "+escapeHtml(e.message)+"</div>")
+}
+async function initializeInvestmentTiers(){try{const s=await getDocs(collection(db,"investmentTiers"));if(!s.empty){alert("Zari zisanzwe muri Firestore.");return}for(const t of defaultInvestmentTiers)await setDoc(doc(db,"investmentTiers",t.id),t);alert("Investment Tiers 20 zashyizweho.")}catch(e){alert(e.message)}}
+function renderInvestmentTiers(tiers){
+ dynamicContentArea.innerHTML=tiers.map((t,i)=>`<div class="item-card"><div class="item-name" style="color:#3b82f6">${escapeHtml(t.name||t.id)}</div><div class="form-group"><label class="form-label">Name</label><input class="input-box" id="tn${i}" value="${escapeHtml(t.name||"")}"></div><div class="form-group"><label class="form-label">Price</label><input class="input-box" type="number" id="tp${i}" value="${Number(t.price||0)}"></div><div class="form-group"><label class="form-label">Daily</label><input class="input-box" type="number" id="td${i}" value="${Number(t.daily||0)}"></div><div class="form-group"><label class="form-label">Validity</label><input class="input-box" type="number" id="tv${i}" value="${Number(t.validity||365)}"></div><div class="form-group"><label class="form-label">Required Videos</label><input class="input-box" type="number" id="tvid${i}" value="${Number(t.reqVideos||0)}"></div><button class="btn-act-green" style="width:100%" onclick="saveTier('${t.id}',${i})">💾 Save</button></div>`).join("")
+}
+window.saveTier=async(id,i)=>{try{await updateDoc(doc(db,"investmentTiers",id),{name:document.getElementById("tn"+i).value,price:Number(document.getElementById("tp"+i).value)||0,daily:Number(document.getElementById("td"+i).value)||0,validity:Number(document.getElementById("tv"+i).value)||365,reqVideos:Number(document.getElementById("tvid"+i).value)||0});alert("Ikigega cyabitswe neza.")}catch(e){alert(e.message)}};
+
+/* Shares/Banners */
+function renderSharesEditor(){
+ dynamicContentArea.innerHTML=`<div class="item-card"><div class="item-name" style="color:#3b82f6;margin-bottom:12px">⚡ Dashboard Banner Slider Images</div>${dashboardBanners.map((u,i)=>`<div style="background:#0b1329;padding:10px;border-radius:10px;margin-bottom:12px"><div class="banner-preview-box"><img id="bi${i}" src="${escapeHtml(u)}"></div><input class="input-box" id="bu${i}" value="${escapeHtml(u)}" oninput="document.getElementById('bi${i}').src=this.value"><div class="action-btn-group"><button class="btn-act-green" onclick="saveBanner(${i})">Save</button><button class="btn-act-blue" onclick="document.getElementById('bf${i}').click()">📁 Choose</button><input id="bf${i}" class="file-input" type="file" accept="image/*" onchange="chooseBanner(event,${i})"></div></div>`).join("")}<button class="btn-act-blue" style="width:100%" onclick="dashboardBanners.push('');renderSharesEditor();">➕ Add New Banner</button></div>`
+}
+function saveBanner(i){dashboardBanners[i]=document.getElementById("bu"+i).value;localStorage.setItem("tesla_banners",JSON.stringify(dashboardBanners));alert("Banner saved.")}
+function chooseBanner(e,i){const f=e.target.files[0];if(!f)return;const r=new FileReader();r.onload=x=>{dashboardBanners[i]=x.target.result;localStorage.setItem("tesla_banners",JSON.stringify(dashboardBanners));renderSharesEditor()};r.readAsDataURL(f)}
+
+/* Videos */
+function renderVideosManager(){
+ dynamicContentArea.innerHTML=`<div class="item-card"><div class="item-name" style="color:#3b82f6;margin-bottom:12px">🎬 Manage Share Videos (${platformVideos.length})</div>${platformVideos.map((v,i)=>`<div style="background:#0b1329;padding:12px;border-radius:10px;margin-bottom:12px"><div class="form-group"><label class="form-label">Title</label><input class="input-box" id="vt${i}" value="${escapeHtml(v.title)}"></div><div class="form-group"><label class="form-label">Share ID</label><input class="input-box" id="vs${i}" value="${escapeHtml(v.shareId)}"></div><div class="form-group"><label class="form-label">Video URL</label><input class="input-box" id="vu${i}" value="${escapeHtml(v.videoUrl)}"></div><div class="form-group"><label class="form-label">Reward</label><input class="input-box" type="number" id="vr${i}" value="${Number(v.reward||0)}"></div><button class="btn-act-green" style="width:100%" onclick="saveVideo(${i})">💾 Save Video #${v.id}</button></div>`).join("")}</div>`
+}
+function saveVideo(i){platformVideos[i].title=document.getElementById("vt"+i).value;platformVideos[i].shareId=document.getElementById("vs"+i).value;platformVideos[i].videoUrl=document.getElementById("vu"+i).value;platformVideos[i].reward=Number(document.getElementById("vr"+i).value)||0;localStorage.setItem("tesla_platform_videos",JSON.stringify(platformVideos));alert("Video updated successfully!")}
+
+function escapeHtml(v){return String(v??"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;").replace(/'/g,"&#039;")}
+function reloadAdminData(){switchTool(currentTool)}function toggleQuickMenu(){menuModal.style.display="flex"}function closeMenuModal(){menuModal.style.display="none"}function goBackToUserApp(){window.location.href="index.html"}
+</script>
+</body>
+</html>
