@@ -387,7 +387,7 @@
             <div style="font-size:16px; font-weight:800; color:#eab308;" id="teamL1Count">0 Abantu</div>
           </div>
           <div style="background:#292524; padding:10px; border-radius:12px; border:1px solid #78350f;">
-            <div style="font-size:11px; color:#d97706;">Inyungu Z'itsinda (7%)</div>
+            <div style="font-size:11px; color:#d97706;">Inyungu Z'itsinda (12%)</div>
             <div style="font-size:16px; font-weight:800; color:#eab308;" id="teamL1Earnings">0 RWF</div>
           </div>
         </div>
@@ -892,9 +892,9 @@
         return;
       }
 
-      // Platform withdrawal fee: 15%. The user's requested amount is the
+      // Platform withdrawal fee: 6%. The user's requested amount is the
       // gross withdrawal; the net amount is what is recorded for payout.
-      const fee = Math.round(amt * 0.15);
+      const fee = Math.round(amt * 0.06);
       const netAmount = amt - fee;
 
       // Iyo practice withdrawal yamaze gufungurwa, dukura mbere ku mafaranga yo Kwiga,
